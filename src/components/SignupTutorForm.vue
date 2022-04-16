@@ -20,7 +20,7 @@ export default defineComponent({
 <template>
     <body>
         <SignupForm/>
-        <ScheduleItemVue baseColor="#26408B" hoverColor="#263f8b85"/>
+        <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85"/>
         <div class="uf-container">
             <div class="center">
                 <h1>Unidades de formación</h1>
@@ -80,7 +80,7 @@ button {
 }
 
 .center{
-    margin-inline-start: -6vw;
+    margin-inline-start: -4vw;
 }
 
 #register-uf{
