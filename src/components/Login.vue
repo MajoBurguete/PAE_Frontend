@@ -7,6 +7,32 @@
                     <button class="signup" id="signup" type="button" @click="toSignup"> Regístrate </button>
                     <h3> ¿Aun no te has registrado? </h3>
                 </div>
+                <div class="form-container" id="form-container">
+                    <div class="account-selection" id="account-selection"> 
+                        <img src="src/assets/img/PAE_Logo_con_nombre.png" alt="PAELogoNotFound">
+                        <div class="election">
+                            <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <div class="card" id="card-student">
+                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img" alt="...">
+                                        <div class="card-body" id="card-student-body">
+                                            <h5 class="card-title" id="student-title">Estudiante</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="card" id="card-tutor">
+                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img" alt="...">
+                                        <div class="card-body" id="card-tutor-body">
+                                            <h5 class="card-title" id="tutor-title">Asesor</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="section-signup" id="section-signup">
@@ -169,6 +195,87 @@ input {
     padding: 0;
 }
 
+/* Sección para crear una cuenta */
+.row {
+    gap: 5vw;
+    margin: 0 2.5vw;
+    z-index: 10;
+}
+
+#account-type-h1 {
+    margin: 5vh 0;
+    font-weight: bolder;
+    font-size: 5vh;
+    color: black;
+}
+
+.form-container {
+    opacity: 0;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    visibility: hidden;
+    overflow-y: scroll;
+}
+.account-selection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#register-form{
+    visibility: hidden;
+}
+
+.election {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    padding: 0;
+    border: 0;
+    border-radius: 1rem;
+}
+
+.card-img-top{
+    width: 50%;
+    height: 40%;
+}
+
+#student-img{
+    margin: 6.3vh 5vw;
+}
+
+#tutor-img{
+    margin: 6vh 5vw;
+}
+
+#card-student {
+    background-color: #A6CFD5;
+}
+
+#card-student-body,
+#card-tutor-body{
+    height: 45%;
+    background-color: white;
+    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.25);
+    border-radius: 0 0 1rem 1rem;
+    padding: 4vh 3vw;
+}
+
+#card-tutor{
+    background-color: #A4B7E3;
+}
+
+.card-title{
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 4vh;
+    text-align: center;
+}
+
 /*Botón para ir al signup*/
 .signup{
     margin: 11.5vh 0 0 0;
@@ -177,7 +284,6 @@ input {
 .login-button {
     margin: 5vh 0 0 0;
 }
-
 
 </style> 
 
@@ -193,6 +299,8 @@ input {
                 const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
                 const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
                 const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
 
 
                 //el div de la izquierda se hace más grande y va cambiando su color
@@ -237,6 +345,18 @@ input {
                 loginForm.style.transitionTimingFunction = "ease-in-out";
                 loginForm.style.opacity = "0";
                 loginForm.style.visibility = "hidden";
+
+                accountSelection.style.transitionProperty = "opacity";
+                accountSelection.style.transitionDuration = "350ms";
+                accountSelection.style.transitionTimingFunction = "ease-in-out";
+                accountSelection.style.opacity = "1";
+                accountSelection.style.visibility = "visible";
+                formContainer.style.transitionProperty = "opacity";
+                formContainer.style.transitionDuration = "350ms";
+                formContainer.style.transitionTimingFunction = "ease-in-out";
+                formContainer.style.opacity = "1";
+                formContainer.style.visibility = "visible";
+
             },
             toLogin() {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
@@ -244,6 +364,9 @@ input {
                 const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
                 const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
                 const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
+
                 //el div de la derecha se hace más grande y va cambiando su color
                 //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
                 //hacia la derecha
@@ -252,6 +375,7 @@ input {
                 loginSection.style.transitionTimingFunction = "ease-in-out";
                 loginSection.style.backgroundColor = "transparent";
                 loginSection.style.width = (40) + "vw";
+
                 //el div de la izquierda se hace más pequeño y va cambiando su color
                 //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
                 //rectangulo que se traslado desde la derecha
@@ -260,21 +384,30 @@ input {
                 signupSection.style.transitionTimingFunction = "ease-in-out";
                 signupSection.style.backgroundColor = "white";
                 signupSection.style.width = (60) + "vw";
+
                 signupContainer.style.transitionProperty = "opacity";
                 signupContainer.style.transitionDuration = "350ms";
                 signupContainer.style.transitionTimingFunction = "ease-in-out";
                 signupContainer.style.opacity = "1";
                 signupContainer.style.visibility = "visible"
+
                 logingContainer.style.transitionProperty = "opacity";
                 logingContainer.style.transitionDuration = "350ms";
                 logingContainer.style.transitionTimingFunction = "ease-in-out";
                 logingContainer.style.opacity = "0";
                 logingContainer.style.visibility = "hidden";
+
                 loginForm.style.transitionProperty = "opacity";
                 loginForm.style.transitionDuration = "350ms";
                 loginForm.style.transitionTimingFunction = "ease-in-out";
                 loginForm.style.opacity = "1";
                 loginForm.style.visibility = "visible";
+
+                accountSelection.style.transitionProperty = "opacity";
+                accountSelection.style.transitionDuration = "350ms";
+                accountSelection.style.transitionTimingFunction = "ease-in-out";
+                accountSelection.style.opacity = "0";
+                accountSelection.style.visibility = "hidden";
             }
         }
     })
