@@ -12,7 +12,7 @@
             <div class="section-signup" id="section-signup">
                 <div class="container-login" id="container-login">
                     <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
-                    <button class="login-button" id="login-button" type="button"> Ingresa </button>
+                    <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
                 <div class="login-form" id="login-form">
@@ -237,6 +237,44 @@ input {
                 loginForm.style.transitionTimingFunction = "ease-in-out";
                 loginForm.style.opacity = "0";
                 loginForm.style.visibility = "hidden";
+            },
+            toLogin() {
+                const loginSection = document.getElementById('section-login') as HTMLInputElement;
+                const signupSection = document.getElementById('section-signup') as HTMLInputElement;
+                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
+                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
+                const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                //el div de la derecha se hace más grande y va cambiando su color
+                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
+                //hacia la derecha
+                loginSection.style.transitionProperty = "background-color, width";
+                loginSection.style.transitionDuration = "550ms";
+                loginSection.style.transitionTimingFunction = "ease-in-out";
+                loginSection.style.backgroundColor = "transparent";
+                loginSection.style.width = (40) + "vw";
+                //el div de la izquierda se hace más pequeño y va cambiando su color
+                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
+                //rectangulo que se traslado desde la derecha
+                signupSection.style.transitionProperty = "background-color, width";
+                signupSection.style.transitionDuration = "550ms";
+                signupSection.style.transitionTimingFunction = "ease-in-out";
+                signupSection.style.backgroundColor = "white";
+                signupSection.style.width = (60) + "vw";
+                signupContainer.style.transitionProperty = "opacity";
+                signupContainer.style.transitionDuration = "350ms";
+                signupContainer.style.transitionTimingFunction = "ease-in-out";
+                signupContainer.style.opacity = "1";
+                signupContainer.style.visibility = "visible"
+                logingContainer.style.transitionProperty = "opacity";
+                logingContainer.style.transitionDuration = "350ms";
+                logingContainer.style.transitionTimingFunction = "ease-in-out";
+                logingContainer.style.opacity = "0";
+                logingContainer.style.visibility = "hidden";
+                loginForm.style.transitionProperty = "opacity";
+                loginForm.style.transitionDuration = "350ms";
+                loginForm.style.transitionTimingFunction = "ease-in-out";
+                loginForm.style.opacity = "1";
+                loginForm.style.visibility = "visible";
             }
         }
     })
