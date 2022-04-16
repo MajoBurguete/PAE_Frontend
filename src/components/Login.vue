@@ -4,7 +4,7 @@
             <div class="section-login" id="section-login">
                 <div class="container-signup" id="container-signup">
                     <h1> ¡Bienvenidx! </h1>
-                    <button class="signup" id="signup" type="button"> Regístrate </button>
+                    <button class="signup" id="signup" type="button" @click="toSignup"> Regístrate </button>
                     <h3> ¿Aun no te has registrado? </h3>
                 </div>
             </div>
@@ -145,3 +145,49 @@ input {
 
 
 </style> 
+
+
+<script lang="ts">
+    import { defineComponent } from "vue";
+    import { RouterLink, RouterView } from "vue-router";
+    export default defineComponent({
+        methods:{
+            toSignup() {
+                const loginSection = document.getElementById('section-login') as HTMLInputElement;
+                const signupSection =document.getElementById('section-signup') as HTMLInputElement;
+                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
+                const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                //el div de la izquierda se hace más grande y va cambiando su color
+                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
+                //hacia la derecha
+                loginSection.style.transitionProperty = "background-color, width";
+                loginSection.style.transitionDuration = "550ms";
+                loginSection.style.transitionTimingFunction = "ease-in-out";
+                loginSection.style.backgroundColor = "white";
+                loginSection.style.width = (60) + "vw";
+                //el div de la derecha se hace más pequeño y va cambiando su color
+                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
+                //rectangulo que se traslado desde la derecha
+                signupSection.style.transitionProperty = "background-color, width";
+                signupSection.style.transitionDuration = "550ms";
+                signupSection.style.transitionTimingFunction = "ease-in-out";
+                signupSection.style.backgroundColor = "transparent";
+                signupSection.style.width = (40) + "vw";
+                //Se hace una transición para desaparecer el container
+                //del div lateral izquierdo
+                signupContainer.style.transitionProperty = "opacity";
+                signupContainer.style.transitionDuration = "350ms";
+                signupContainer.style.transitionTimingFunction = "ease-in-out";
+                signupContainer.style.opacity = "0";
+                signupContainer.style.visibility = "hidden";
+                //Se hace una transición para aparecer el container
+                //del div lateral derecho
+                loginForm.style.transitionProperty = "opacity";
+                loginForm.style.transitionDuration = "350ms";
+                loginForm.style.transitionTimingFunction = "ease-in-out";
+                loginForm.style.opacity = "0";
+                loginForm.style.visibility = "hidden";
+            }
+        }
+    })
+</script> 
