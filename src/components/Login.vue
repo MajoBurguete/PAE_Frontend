@@ -10,7 +10,7 @@
                 <div class="form-container" id="form-container">
                     <div class="account-selection" id="account-selection"> 
                         <img src="src/assets/img/PAE_Logo_con_nombre.png" alt="PAELogoNotFound">
-                        <div class="election">
+                        <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
                                 <div class="col-sm-5">
@@ -30,6 +30,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div id="tutor-register-form">
+                            <SignupTutor/>
                         </div>
                     </div>
                 </div>
@@ -210,6 +213,7 @@ input {
 }
 
 .form-container {
+    height: 95%;
     opacity: 0;
     position: absolute;
     display: flex;
@@ -223,14 +227,17 @@ input {
     flex-direction: column;
     align-items: center;
 }
-#register-form{
+#tutor-register-form{
     visibility: hidden;
+    position: absolute;
+    margin-top: 20%;
 }
 
 .election {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 7vh;
 }
 
 .card {
@@ -291,7 +298,12 @@ input {
 <script lang="ts">
     import { defineComponent } from "vue";
     import { RouterLink, RouterView } from "vue-router";
+    import SignupTutor from "@/components/SignupTutorForm.vue"
+
     export default defineComponent({
+        components: {
+            SignupTutor
+        },
         methods:{
             toSignup() {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
@@ -408,6 +420,12 @@ input {
                 accountSelection.style.transitionTimingFunction = "ease-in-out";
                 accountSelection.style.opacity = "0";
                 accountSelection.style.visibility = "hidden";
+
+                formContainer.style.transitionProperty = "opacity";
+                formContainer.style.transitionDuration = "350ms";
+                formContainer.style.transitionTimingFunction = "ease-in-out";
+                formContainer.style.opacity = "0";
+                formContainer.style.visibility = "hidden";
             },
             changeStudentCardBackground(){
                 const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
@@ -446,6 +464,20 @@ input {
                 tutorTitle.style.color = "black";
             },
             toSignupTutorForm() {
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "0";
+                electionSection.style.visibility = "hidden";
+
+                tutorForm.style.transitionProperty = "opacity";
+                tutorForm.style.transitionDuration = "150ms";
+                tutorForm.style.transitionTimingFunction = "ease-in-out";
+                tutorForm.style.opacity = "1";
+                tutorForm.style.visibility = "visible";
                 
             },
             toSignupStudentForm() {
