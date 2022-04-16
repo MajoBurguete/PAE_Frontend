@@ -14,7 +14,7 @@
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-student">
+                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground" @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
                                         <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img" alt="...">
                                         <div class="card-body" id="card-student-body">
                                             <h5 class="card-title" id="student-title">Estudiante</h5>
@@ -22,7 +22,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-tutor">
+                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground" @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
                                         <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img" alt="...">
                                         <div class="card-body" id="card-tutor-body">
                                             <h5 class="card-title" id="tutor-title">Asesor</h5>
@@ -408,6 +408,48 @@ input {
                 accountSelection.style.transitionTimingFunction = "ease-in-out";
                 accountSelection.style.opacity = "0";
                 accountSelection.style.visibility = "hidden";
+            },
+            changeStudentCardBackground(){
+                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
+                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'pointer';
+
+                studentCard.style.backgroundColor = "#9CC8C5";
+                studentTitle.style.color = "white";
+            },
+            changeNormalStudentBackground(){
+                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
+                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'auto';
+
+                studentCard.style.backgroundColor = "white";
+                studentTitle.style.color = "black";
+            },
+            changeTutorCardBackground(){
+                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
+                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'pointer';
+
+                tutorCard.style.backgroundColor = "#8795B6";
+                tutorTitle.style.color = "white";
+            },
+            changeNormalTutorBackground(){
+                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
+                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'auto';
+
+                tutorCard.style.backgroundColor = "white";
+                tutorTitle.style.color = "black";
+            },
+            toSignupTutorForm() {
+                
+            },
+            toSignupStudentForm() {
+                
             }
         }
     })
