@@ -7,6 +7,11 @@ export default defineComponent({
     components: {
         ScheduleItem,
         SignupForm
+    },
+    methods: {
+        backButton() {
+            this.$emit('back-button');
+        }
     }
 })
 </script>
@@ -25,7 +30,7 @@ export default defineComponent({
         </div>
         <div class="button-container">
             <div>
-                <button class="bigger-buttons" id="back-button"> Regresar </button>
+                <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
                 <button class="bigger-buttons" id="signup-button"> Registrarse </button>
             </div>
         </div>
