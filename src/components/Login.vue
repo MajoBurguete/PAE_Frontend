@@ -27,7 +27,8 @@
 </template>
 
 <style scoped>
-/* Estilos generales */
+
+/* General styles */
 h1 {
     color: white;
     font-size: 9vh;
@@ -52,7 +53,13 @@ button {
     font-size: 5vh;
     padding: 2vh 2vw;
 }
-/*Flexbox para contener ambos divs (section-login y section-signup*/
+
+img{
+    width: 35%;
+    height: 35%;
+}
+
+/*Flexbox which contains two divs (section-login y section-signup*/
 .flexContainer {
     display: flex;
     background-image: url("src/assets/img/patternF7.png");
@@ -60,4 +67,81 @@ button {
     height: 100vh;
     background-size: cover;
 }
+
+.section-login {
+    box-sizing: border-box;
+    flex: 1;
+    width: 40vw;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 0 0 0 1.5vw;
+}
+/*Seccion que aparece en el lateral derecho durante el signup*/
+.section-signup {
+    padding: 5vh;
+    box-sizing: border-box;
+    background-color: white;
+    width:60vw;
+    height: 100%;
+    position: relative;
+}
+.login-message {
+    text-align:end;
+    margin: 0 -8vw 0 0;
+}
+/*Contenedor del lateral derecho (container-signup) y contenedor del 
+lado izquierdo (container-login) */
+.container-signup{
+    margin: 32vh 0 0 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 5vh;
+    align-items: center;
+}
+.login-form {
+    margin: 15vh 0 0 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+}
+#signin-button {
+    font-size: 2.3vh;
+    background-color: #26408B;
+    color: white;
+    padding: 1vh 4vw;
+    margin: 3vh 0 0 0;
+}
+.login-h3 {
+    font-family: "Catamaran";
+    font-weight: bold;
+    color:#26408B;
+    font-size: 2.5vh;
+    margin: 3.5vh 0 0 0;
+}
+.login-question-h3 {
+    font-family: "Catamaran";
+    font-weight: normal;
+    color:#26408B;
+    margin: 2vh 0 0 0;
+    text-decoration: underline;
+}
+.login-question-h3:hover{
+    cursor: pointer;
+    font-weight: bold;
+}
+input {
+    width: 23vw;
+    height: 6vh;
+    border: 2px solid;
+    border-radius: 1vh;
+    margin: 0;
+    padding: 0;
+}
+
+
 </style> 
