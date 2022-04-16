@@ -25,3 +25,39 @@
         </div>
     </body>
 </template>
+
+<style scoped>
+/* Estilos generales */
+h1 {
+    color: white;
+    font-size: 9vh;
+    font-family: "Montserrat";
+    font-weight: bold;
+    margin: 0 0 5vh 0;
+}
+h3 {
+    font-family: "Montserrat";
+    font-weight: normal;
+    font-size: 2vh;
+    color: white;
+    margin: 1.5vh 0 0 0;
+}
+button {
+    font-family: "Ubuntu";
+    font-weight: normal;
+    background-color: white;
+    color: #0F084B;
+    border-radius: 12px;
+    border: transparent;
+    font-size: 5vh;
+    padding: 2vh 2vw;
+}
+/*Flexbox para contener ambos divs (section-login y section-signup*/
+.flexContainer {
+    display: flex;
+    background-image: url("src/assets/img/patternF7.png");
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+}
+</style> 
