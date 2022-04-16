@@ -61,46 +61,59 @@
 </template>
 
 <style scoped>
-    body{
-        padding: 3vh 8vw;
-    }
+
     /* Input labels */
     label {
         font-family: "Catamaran";
         font-weight: bold;
+        font-size: 2vh;
         color: #26408B;
     }
+
     /* Text boxes and dropdowns */
     input, 
     .form-select {
         font-family: "Catamaran";
         font-weight: normal;
+        font-size: 2.5vh;
         padding: 0.25vh 1.5vw 0 0.5vw;
         margin: 0;
         border-color: black;
         border-width: 0.25vh;
         border-radius: 0.65vh;
     }
+
     input {
-        height: 4.5vh;
+        height: 6.5vh;
     }
+
     /* Dropdowns style */
     .form-select{
         width: 9.9vw;
     }
+
     .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
         border-radius: 0.65vh;
     }
+
     .input-group {
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
         margin: 1.3vh 0 0 0;
     }
+
     .dropdown-text-semester{
         margin: 0 2.5vw 0 0;
     }
+
     .dropdown-text-career {
         margin: 0 3.3vw 0 0;
     }
+
+    .row {
+        gap: 4vw;
+        margin-top: 2vh;
+    }
+
 </style>
