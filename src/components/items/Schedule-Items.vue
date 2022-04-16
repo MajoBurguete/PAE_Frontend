@@ -1,6 +1,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
+    props: {
+        baseColor: {
+            type: String,
+            default: "#26408B" 
+        },
+        hoverColor: {
+            type: String,
+            default: "#263f8b85" 
+        }
+    },
     methods:{
         //Function to change the div color when it's been selected or unselected
         changeBackgroundColor(event: Event) {
@@ -170,7 +180,7 @@ h2 {
 
 /* Class for when a div has been selected */
 .active {
-    background-color: #26408B;
+    background-color: v-bind(baseColor);
     width: 6vw;
     height: 4.5vh;
     border: 2.5px solid #000000;
@@ -179,7 +189,7 @@ h2 {
     margin: 0.5vh 0.8vw;
 }
 .inactive:hover{
-    background-color: #263f8b85;
+    background-color: v-bind(hoverColor);
 }
 
 </style>
