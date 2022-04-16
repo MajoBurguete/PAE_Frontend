@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div id="tutor-register-form">
-                            <SignupTutor/>
+                            <SignupTutor  v-on:back-button="returnFromSignupTutor"/>
                         </div>
                     </div>
                 </div>
@@ -479,6 +479,22 @@ input {
                 tutorForm.style.opacity = "1";
                 tutorForm.style.visibility = "visible";
                 
+            },
+            returnFromSignupTutor(){
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "1";
+                electionSection.style.visibility = "visible";
+
+                tutorForm.style.transitionProperty = "opacity";
+                tutorForm.style.transitionDuration = "150ms";
+                tutorForm.style.transitionTimingFunction = "ease-in-out";
+                tutorForm.style.opacity = "0";
+                tutorForm.style.visibility = "hidden";
             },
             toSignupStudentForm() {
                 
