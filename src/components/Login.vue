@@ -10,6 +10,11 @@
             </div>
 
             <div class="section-signup" id="section-signup">
+                <div class="container-login" id="container-login">
+                    <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
+                    <button class="login-button" id="login-button" type="button"> Ingresa </button>
+                    <h3> ¿Ya tienes cuenta? </h3>
+                </div>
                 <div class="login-form" id="login-form">
                     <img src="src/assets/img/PAE_Logo_con_nombre.png" alt="PAELogoNotFound">
                     <div class="form">
@@ -94,7 +99,8 @@ img{
 }
 /*Contenedor del lateral derecho (container-signup) y contenedor del 
 lado izquierdo (container-login) */
-.container-signup{
+.container-signup,
+.container-login{
     margin: 32vh 0 0 0;
     box-sizing: border-box;
     display: flex;
@@ -102,6 +108,17 @@ lado izquierdo (container-login) */
     padding: 5vh;
     align-items: center;
 }
+
+.container-signup {
+    z-index: 9;
+}
+.container-login {
+    opacity: 0;
+    position: absolute;
+    width: 90%;
+    visibility: hidden;
+}
+
 .login-form {
     margin: 15vh 0 0 0;
     display: flex;
@@ -109,6 +126,14 @@ lado izquierdo (container-login) */
     flex-direction: column;
     z-index: 10;
 }
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 5vh 0 0 0;
+}
+
 #signin-button {
     font-size: 2.3vh;
     background-color: #26408B;
@@ -116,6 +141,7 @@ lado izquierdo (container-login) */
     padding: 1vh 4vw;
     margin: 3vh 0 0 0;
 }
+
 .login-h3 {
     font-family: "Catamaran";
     font-weight: bold;
@@ -143,6 +169,15 @@ input {
     padding: 0;
 }
 
+/*Botón para ir al signup*/
+.signup{
+    margin: 11.5vh 0 0 0;
+}
+/*Botón para ir al login */
+.login-button {
+    margin: 5vh 0 0 0;
+}
+
 
 </style> 
 
@@ -156,7 +191,10 @@ input {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
                 const signupSection =document.getElementById('section-signup') as HTMLInputElement;
                 const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
+                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
                 const loginForm = document.getElementById('login-form') as HTMLInputElement;
+
+
                 //el div de la izquierda se hace más grande y va cambiando su color
                 //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
                 //hacia la derecha
@@ -165,6 +203,7 @@ input {
                 loginSection.style.transitionTimingFunction = "ease-in-out";
                 loginSection.style.backgroundColor = "white";
                 loginSection.style.width = (60) + "vw";
+
                 //el div de la derecha se hace más pequeño y va cambiando su color
                 //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
                 //rectangulo que se traslado desde la derecha
@@ -173,6 +212,8 @@ input {
                 signupSection.style.transitionTimingFunction = "ease-in-out";
                 signupSection.style.backgroundColor = "transparent";
                 signupSection.style.width = (40) + "vw";
+
+
                 //Se hace una transición para desaparecer el container
                 //del div lateral izquierdo
                 signupContainer.style.transitionProperty = "opacity";
@@ -180,8 +221,17 @@ input {
                 signupContainer.style.transitionTimingFunction = "ease-in-out";
                 signupContainer.style.opacity = "0";
                 signupContainer.style.visibility = "hidden";
+
+
                 //Se hace una transición para aparecer el container
                 //del div lateral derecho
+
+                logingContainer.style.transitionProperty = "opacity";
+                logingContainer.style.transitionDuration = "350ms";
+                logingContainer.style.transitionTimingFunction = "ease-in-out";
+                logingContainer.style.opacity = "1";
+                logingContainer.style.visibility = "visible";
+
                 loginForm.style.transitionProperty = "opacity";
                 loginForm.style.transitionDuration = "350ms";
                 loginForm.style.transitionTimingFunction = "ease-in-out";
