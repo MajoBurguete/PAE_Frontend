@@ -319,7 +319,7 @@ input {
                 //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
                 //hacia la derecha
                 loginSection.style.transitionProperty = "background-color, width";
-                loginSection.style.transitionDuration = "550ms";
+                loginSection.style.transitionDuration = "250ms";
                 loginSection.style.transitionTimingFunction = "ease-in-out";
                 loginSection.style.backgroundColor = "white";
                 loginSection.style.width = (60) + "vw";
@@ -328,7 +328,7 @@ input {
                 //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
                 //rectangulo que se traslado desde la derecha
                 signupSection.style.transitionProperty = "background-color, width";
-                signupSection.style.transitionDuration = "550ms";
+                signupSection.style.transitionDuration = "250ms";
                 signupSection.style.transitionTimingFunction = "ease-in-out";
                 signupSection.style.backgroundColor = "transparent";
                 signupSection.style.width = (40) + "vw";
@@ -383,7 +383,7 @@ input {
                 //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
                 //hacia la derecha
                 loginSection.style.transitionProperty = "background-color, width";
-                loginSection.style.transitionDuration = "550ms";
+                loginSection.style.transitionDuration = "250ms";
                 loginSection.style.transitionTimingFunction = "ease-in-out";
                 loginSection.style.backgroundColor = "transparent";
                 loginSection.style.width = (40) + "vw";
@@ -392,7 +392,7 @@ input {
                 //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
                 //rectangulo que se traslado desde la derecha
                 signupSection.style.transitionProperty = "background-color, width";
-                signupSection.style.transitionDuration = "550ms";
+                signupSection.style.transitionDuration = "250ms";
                 signupSection.style.transitionTimingFunction = "ease-in-out";
                 signupSection.style.backgroundColor = "white";
                 signupSection.style.width = (60) + "vw";
@@ -426,6 +426,8 @@ input {
                 formContainer.style.transitionTimingFunction = "ease-in-out";
                 formContainer.style.opacity = "0";
                 formContainer.style.visibility = "hidden";
+
+                this.returnFromSignupTutor();
             },
             changeStudentCardBackground(){
                 const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
