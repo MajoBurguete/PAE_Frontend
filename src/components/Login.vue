@@ -220,7 +220,7 @@ input {
     flex-direction: column;
     align-items: center;
     visibility: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 .account-selection{
     display: flex;
@@ -464,6 +464,7 @@ input {
                 tutorTitle.style.color = "black";
             },
             toSignupTutorForm() {
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
                 const electionSection = document.getElementById('election') as HTMLInputElement;
                 const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
 
@@ -478,9 +479,12 @@ input {
                 tutorForm.style.transitionTimingFunction = "ease-in-out";
                 tutorForm.style.opacity = "1";
                 tutorForm.style.visibility = "visible";
+
+                formContainer.style.overflowY = "scroll";
                 
             },
             returnFromSignupTutor(){
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
                 const electionSection = document.getElementById('election') as HTMLInputElement;
                 const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
 
@@ -495,6 +499,9 @@ input {
                 tutorForm.style.transitionTimingFunction = "ease-in-out";
                 tutorForm.style.opacity = "0";
                 tutorForm.style.visibility = "hidden";
+
+                formContainer.style.overflowY = "hidden";
+                formContainer.scrollTo(0,0);
             },
             toSignupStudentForm() {
                 
