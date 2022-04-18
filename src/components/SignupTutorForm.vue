@@ -20,6 +20,10 @@ export default defineComponent({
 <template>
     <body>
         <SignupForm/>
+        <div class = "schedule-instructions">
+            <label> Horario </label>
+            <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
+        </div>
         <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85"/>
         <div class="uf-container">
             <div class="center">
@@ -69,6 +73,14 @@ button {
     color: white;
 }
 
+label {
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 3vh;
+        color: #26408B;
+    }
+
+/* Bottom containers */
 .uf-container, .button-container {
     display: flex;
     flex-direction: column;
@@ -83,10 +95,17 @@ button {
     margin-inline-start: -4vw;
 }
 
+.schedule-instructions{
+    padding: 2vh 0 0 9vw;
+}
+
+
 #register-uf{
     background-color: #769ABA;
     font-size: 2.4vh;
 }
+
+/* Return and signup buttons */
 
 .bigger-buttons{
     font-size: 2.5vh;
