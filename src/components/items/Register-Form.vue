@@ -85,12 +85,10 @@
 
     input {
         height: 6.5vh;
+        width: 24vw;
     }
 
     /* Dropdowns style */
-    .form-select{
-        width: 9.9vw;
-    }
 
     .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
         border-radius: 0.65vh;
@@ -104,7 +102,7 @@
     }
 
     .dropdown-text-semester{
-        margin: 0 2.5vw 0 0;
+        margin: 0 2.35vw 0 0;
     }
 
     .dropdown-text-career {
@@ -112,7 +110,7 @@
     }
 
     .row {
-        gap: 4vw;
+        gap: 3vw;
         margin-top: 2vh;
     }
 
