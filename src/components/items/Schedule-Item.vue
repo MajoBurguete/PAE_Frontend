@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+
 export default defineComponent({
     props: {
         baseColor: {
@@ -9,18 +10,51 @@ export default defineComponent({
         hoverColor: {
             type: String,
             default: "#263f8b85" 
+        },
+        lockSchedule: {
+            type: String,
+            default: "active"
+        }
+    },
+    mounted(){
+        const clearButton = document.getElementById('clear-button') as HTMLInputElement;
+
+        if(this.lockSchedule == "active"){
+            clearButton.style.visibility = "visible"
+        }
+        else{
+            this.lockedSchedule(clearButton)
         }
     },
     methods:{
         //Function to change the div color when it's been selected or unselected
         changeBackgroundColor(event: Event) {
-            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            if((square.className) == "inactive"){
-                square.className = "active";
+            if(this.lockSchedule == "active"){
+                const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+                if((square.className) == "inactive"){
+                    square.className = "active";
+                }
+                else {
+                    square.className = "inactive";
+                }
             }
-            else {
-                square.className = "inactive";
+        },
+        clearSchedule(){
+            const squares = document.getElementsByClassName("active");
+            let lengthS = squares.length;
+            for (var _i = 0; _i < lengthS; _i++) {
+                squares[0].className = "inactive";
+            } 
+        },
+        lockedSchedule(clearButton: HTMLInputElement){
+            const squares = document.getElementsByClassName("inactive");
+
+            let lengthS = squares.length;
+            for (var _i = 0; _i < lengthS; _i++) {
+                squares[0].className = "locked";
             }
+
+            clearButton.style.visibility = "hidden";
         }
     }
 })
@@ -133,9 +167,8 @@ export default defineComponent({
                 <div class="inactive" id="th19" @click="changeBackgroundColor"></div>
                 <div class="inactive" id="f19" @click="changeBackgroundColor"></div>
             </div>
-
-
         </div>
+        <button id="clear-button" @click="clearSchedule">Borrar selección</button>
     </body>
 </template>
 
@@ -146,10 +179,26 @@ export default defineComponent({
 
 body{
     margin: 5vh 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h2 {
     font-size: 2vh;
+}
+
+button {
+    font-family: "Ubuntu";
+    font-weight: normal;
+    color: white;
+    font-size: 2.5vh;
+    padding: 0.5vh 1.1vw;
+    border-radius: 15px;
+    border: 2.5px solid #00000000;
+    background-color: #26408B;
+    box-sizing: border-box;
+    margin-top: 4vh;
 }
 
 .row{
@@ -169,7 +218,9 @@ h2 {
 
 /* Class for when a div has been unselected */
 
-.inactive{
+.inactive, 
+.active,
+.locked{
     width: 6vw;
     height: 4.5vh;
     border: 2.5px solid #000000;
@@ -181,15 +232,14 @@ h2 {
 /* Class for when a div has been selected */
 .active {
     background-color: v-bind(baseColor);
-    width: 6vw;
-    height: 4.5vh;
-    border: 2.5px solid #000000;
-    box-sizing: border-box;
-    border-radius: 12px;
-    margin: 0.5vh 0.8vw;
+}
+
+.locked:hover {
+    background-color: #00000000;
 }
 .inactive:hover{
     background-color: v-bind(hoverColor);
 }
+
 
 </style>
