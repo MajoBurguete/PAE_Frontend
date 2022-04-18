@@ -34,6 +34,9 @@
                         <div id="tutor-register-form">
                             <SignupTutor  v-on:back-button="returnFromSignupTutor"/>
                         </div>
+                        <div id="student-register-form">
+                            <SignupStudent  v-on:back-button="returnFromSignupStudent"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -227,7 +230,8 @@ input {
     flex-direction: column;
     align-items: center;
 }
-#tutor-register-form{
+#tutor-register-form,
+#student-register-form{
     visibility: hidden;
     position: absolute;
     margin-top: 20%;
@@ -299,10 +303,12 @@ input {
     import { defineComponent } from "vue";
     import { RouterLink, RouterView } from "vue-router";
     import SignupTutor from "@/components/SignupTutorForm.vue"
+    import SignupStudent from "@/components/SignupStudentForm.vue"
 
     export default defineComponent({
         components: {
-            SignupTutor
+            SignupTutor,
+            SignupStudent
         },
         methods:{
             toSignup() {
@@ -428,6 +434,7 @@ input {
                 formContainer.style.visibility = "hidden";
 
                 this.returnFromSignupTutor();
+                this.returnFromSignupStudent();
             },
             changeStudentCardBackground(){
                 const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
@@ -506,8 +513,41 @@ input {
                 formContainer.scrollTo(0,0);
             },
             toSignupStudentForm() {
-                
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "0";
+                electionSection.style.visibility = "hidden";
+
+                studentForm.style.transitionProperty = "opacity";
+                studentForm.style.transitionDuration = "150ms";
+                studentForm.style.transitionTimingFunction = "ease-in-out";
+                studentForm.style.opacity = "1";
+                studentForm.style.visibility = "visible";
+
+            },
+            returnFromSignupStudent(){
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "1";
+                electionSection.style.visibility = "visible";
+
+                studentForm.style.transitionProperty = "opacity";
+                studentForm.style.transitionDuration = "150ms";
+                studentForm.style.transitionTimingFunction = "ease-in-out";
+                studentForm.style.opacity = "0";
+                studentForm.style.visibility = "hidden";
+
             }
         }
     })
 </script> 
+
+
