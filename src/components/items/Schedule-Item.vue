@@ -221,12 +221,12 @@ button {
 .inactive, 
 .active,
 .locked{
-    width: 6vw;
+    width: 7vw;
     height: 4.5vh;
     border: 2.5px solid #000000;
     box-sizing: border-box;
     border-radius: 12px;
-    margin: 0.5vh 0.8vw;
+    margin: 0.5vh 0.5vw;
 }
 
 /* Class for when a div has been selected */
