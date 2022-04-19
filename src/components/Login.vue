@@ -53,7 +53,7 @@
                         <h3 class="login-h3">Correo</h3>
                         <input type="text">
                         <h3 class="login-h3">Contraseña</h3>
-                        <input type="text">
+                        <input type="password">
                         <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                     </div>
                     <button id="signin-button">Iniciar Sesión</button>
@@ -94,6 +94,17 @@ button {
 img{
     width: 35%;
     height: 35%;
+}
+
+input {
+        font-family: "Catamaran";
+        font-weight: normal;
+        font-size: 2.5vh;
+        padding: 0.25vh 1.5vw 0 200vw;
+        margin: 0;
+        border-color: black;
+        border-width: 0.25vh;
+        border-radius: 0.65vh;
 }
 
 /*Flexbox which contains two divs (section-login y section-signup*/
