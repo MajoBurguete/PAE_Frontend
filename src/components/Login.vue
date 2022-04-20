@@ -9,7 +9,7 @@
                 </div>
                 <div class="form-container" id="form-container">
                     <div class="account-selection" id="account-selection"> 
-                        <img src="src/assets/img/PAE-Logo-con-nombre.png" alt="PAELogoNotFound">
+                        <img src="../assets/img/PAE-Logo-con-nombre.png" alt="PAELogoNotFound">
                         <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
