@@ -5,7 +5,7 @@
                 <div class="container-signup" id="container-signup">
                     <h1> ¡Bienvenidx! </h1>
                     <button class="signup" id="signup" type="button" @click="toSignup"> Regístrate </button>
-                    <h3> ¿Aun no te has registrado? </h3>
+                    <h3> ¿Aún no te has registrado? </h3>
                 </div>
                 <div class="form-container" id="form-container">
                     <div class="account-selection" id="account-selection"> 
