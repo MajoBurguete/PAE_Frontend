@@ -50,10 +50,14 @@
                 <div class="login-form" id="login-form">
                     <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                     <div class="form">
-                        <h3 class="login-h3">Correo</h3>
-                        <input type="text">
-                        <h3 class="login-h3">Contraseña</h3>
-                        <input type="password">
+                        <div class="mb-3">
+                            <label class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="user_email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="user_password">
+                        </div>
                         <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                     </div>
                     <button id="signin-button">Iniciar Sesión</button>
@@ -97,14 +101,18 @@ img{
 }
 
 input {
-        font-family: "Catamaran";
-        font-weight: normal;
-        font-size: 2.5vh;
-        padding: 0.25vh 1.5vw 0 200vw;
-        margin: 0;
-        border-color: black;
-        border-width: 0.25vh;
-        border-radius: 0.65vh;
+    width: 23vw;
+    height: 6vh;
+    border: 2px solid;
+    border-radius: 1vh;
+    font-family: "Catamaran";
+    font-weight: normal;
+    font-size: 2.5vh;
+    padding: 0vh 0.4vw 0vh 0.4vw;
+    margin: 0;
+    border-color: black;
+    border-width: 0.25vh;
+    border-radius: 0.65vh;
 }
 
 /*Flexbox which contains two divs (section-login y section-signup*/
@@ -185,7 +193,8 @@ lado izquierdo (container-login) */
     margin: 3vh 0 0 0;
 }
 
-.login-h3 {
+.login-h3,
+label {
     font-family: "Catamaran";
     font-weight: bold;
     color:#26408B;
@@ -203,14 +212,7 @@ lado izquierdo (container-login) */
     cursor: pointer;
     font-weight: bold;
 }
-input {
-    width: 23vw;
-    height: 6vh;
-    border: 2px solid;
-    border-radius: 1vh;
-    margin: 0;
-    padding: 0;
-}
+
 
 /* Sección para crear una cuenta */
 .row {
