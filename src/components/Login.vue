@@ -9,7 +9,7 @@
                 </div>
                 <div class="form-container" id="form-container">
                     <div class="account-selection" id="account-selection"> 
-                        <img src="../assets/img/PAE-Logo-con-nombre.png" alt="PAELogoNotFound">
+                        <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
@@ -48,7 +48,7 @@
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
                 <div class="login-form" id="login-form">
-                    <img src="src/assets/img/PAE_Logo_con_nombre.png" alt="PAELogoNotFound">
+                    <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                     <div class="form">
                         <h3 class="login-h3">Correo</h3>
                         <input type="text">
