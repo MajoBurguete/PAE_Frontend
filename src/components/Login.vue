@@ -52,11 +52,11 @@
                     <div class="form">
                         <div class="mb-3">
                             <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" id="user_email">
+                            <input type="email" class="form-control" id="user_email_login">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="user_password">
+                            <input type="password" class="form-control" id="user_password_login">
                         </div>
                         <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                     </div>
@@ -324,6 +324,14 @@ label {
             SignupStudent
         },
         methods:{
+            cleanInputs(){
+                const userEmail = document.getElementById('user_email_login') as HTMLInputElement;
+                const userPassword = document.getElementById('user_password_login') as HTMLInputElement;
+
+                userEmail.value = "";
+                userPassword.value = "";
+
+            },
             toSignup() {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
                 const signupSection =document.getElementById('section-signup') as HTMLInputElement;
@@ -387,6 +395,8 @@ label {
                 formContainer.style.transitionTimingFunction = "ease-in-out";
                 formContainer.style.opacity = "1";
                 formContainer.style.visibility = "visible";
+
+                this.cleanInputs();
 
             },
             toLogin() {
