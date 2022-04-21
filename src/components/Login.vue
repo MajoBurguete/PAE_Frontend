@@ -1,3 +1,265 @@
+<script lang="ts">
+    import { defineComponent } from "vue";
+    import { RouterLink, RouterView } from "vue-router";
+    import SignupTutor from "@/components/SignupTutorForm.vue"
+    import SignupStudent from "@/components/SignupStudentForm.vue"
+
+    export default defineComponent({
+        components: {
+            SignupTutor,
+            SignupStudent
+        },
+        methods:{
+            cleanInputs(){
+                const userEmail = document.getElementById('user_email_login') as HTMLInputElement;
+                const userPassword = document.getElementById('user_password_login') as HTMLInputElement;
+
+                userEmail.value = "";
+                userPassword.value = "";
+
+            },
+            toSignup() {
+                const loginSection = document.getElementById('section-login') as HTMLInputElement;
+                const signupSection =document.getElementById('section-signup') as HTMLInputElement;
+                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
+                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
+                const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
+
+
+                //el div de la izquierda se hace más grande y va cambiando su color
+                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
+                //hacia la derecha
+                loginSection.style.transitionProperty = "background-color, width";
+                loginSection.style.transitionDuration = "250ms";
+                loginSection.style.transitionTimingFunction = "ease-in-out";
+                loginSection.style.backgroundColor = "white";
+                loginSection.style.width = (60) + "vw";
+
+                //el div de la derecha se hace más pequeño y va cambiando su color
+                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
+                //rectangulo que se traslado desde la derecha
+                signupSection.style.transitionProperty = "background-color, width";
+                signupSection.style.transitionDuration = "250ms";
+                signupSection.style.transitionTimingFunction = "ease-in-out";
+                signupSection.style.backgroundColor = "transparent";
+                signupSection.style.width = (40) + "vw";
+
+
+                //Se hace una transición para desaparecer el container
+                //del div lateral izquierdo
+                signupContainer.style.transitionProperty = "opacity";
+                signupContainer.style.transitionDuration = "350ms";
+                signupContainer.style.transitionTimingFunction = "ease-in-out";
+                signupContainer.style.opacity = "0";
+                signupContainer.style.visibility = "hidden";
+
+
+                //Se hace una transición para aparecer el container
+                //del div lateral derecho
+
+                logingContainer.style.transitionProperty = "opacity";
+                logingContainer.style.transitionDuration = "350ms";
+                logingContainer.style.transitionTimingFunction = "ease-in-out";
+                logingContainer.style.opacity = "1";
+                logingContainer.style.visibility = "visible";
+
+                loginForm.style.transitionProperty = "opacity";
+                loginForm.style.transitionDuration = "350ms";
+                loginForm.style.transitionTimingFunction = "ease-in-out";
+                loginForm.style.opacity = "0";
+                loginForm.style.visibility = "hidden";
+
+                accountSelection.style.transitionProperty = "opacity";
+                accountSelection.style.transitionDuration = "350ms";
+                accountSelection.style.transitionTimingFunction = "ease-in-out";
+                accountSelection.style.opacity = "1";
+                accountSelection.style.visibility = "visible";
+                formContainer.style.transitionProperty = "opacity";
+                formContainer.style.transitionDuration = "350ms";
+                formContainer.style.transitionTimingFunction = "ease-in-out";
+                formContainer.style.opacity = "1";
+                formContainer.style.visibility = "visible";
+
+                this.cleanInputs();
+
+            },
+            toLogin() {
+                const loginSection = document.getElementById('section-login') as HTMLInputElement;
+                const signupSection = document.getElementById('section-signup') as HTMLInputElement;
+                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
+                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
+                const loginForm = document.getElementById('login-form') as HTMLInputElement;
+                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
+
+                //el div de la derecha se hace más grande y va cambiando su color
+                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
+                //hacia la derecha
+                loginSection.style.transitionProperty = "background-color, width";
+                loginSection.style.transitionDuration = "250ms";
+                loginSection.style.transitionTimingFunction = "ease-in-out";
+                loginSection.style.backgroundColor = "transparent";
+                loginSection.style.width = (40) + "vw";
+
+                //el div de la izquierda se hace más pequeño y va cambiando su color
+                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
+                //rectangulo que se traslado desde la derecha
+                signupSection.style.transitionProperty = "background-color, width";
+                signupSection.style.transitionDuration = "250ms";
+                signupSection.style.transitionTimingFunction = "ease-in-out";
+                signupSection.style.backgroundColor = "white";
+                signupSection.style.width = (60) + "vw";
+
+                signupContainer.style.transitionProperty = "opacity";
+                signupContainer.style.transitionDuration = "350ms";
+                signupContainer.style.transitionTimingFunction = "ease-in-out";
+                signupContainer.style.opacity = "1";
+                signupContainer.style.visibility = "visible"
+
+                logingContainer.style.transitionProperty = "opacity";
+                logingContainer.style.transitionDuration = "350ms";
+                logingContainer.style.transitionTimingFunction = "ease-in-out";
+                logingContainer.style.opacity = "0";
+                logingContainer.style.visibility = "hidden";
+
+                loginForm.style.transitionProperty = "opacity";
+                loginForm.style.transitionDuration = "350ms";
+                loginForm.style.transitionTimingFunction = "ease-in-out";
+                loginForm.style.opacity = "1";
+                loginForm.style.visibility = "visible";
+
+                accountSelection.style.transitionProperty = "opacity";
+                accountSelection.style.transitionDuration = "350ms";
+                accountSelection.style.transitionTimingFunction = "ease-in-out";
+                accountSelection.style.opacity = "0";
+                accountSelection.style.visibility = "hidden";
+
+                formContainer.style.transitionProperty = "opacity";
+                formContainer.style.transitionDuration = "350ms";
+                formContainer.style.transitionTimingFunction = "ease-in-out";
+                formContainer.style.opacity = "0";
+                formContainer.style.visibility = "hidden";
+
+                this.returnFromSignupTutor();
+                this.returnFromSignupStudent();
+            },
+            changeStudentCardBackground(){
+                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
+                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'pointer';
+
+                studentCard.style.backgroundColor = "#9CC8C5";
+                studentTitle.style.color = "white";
+            },
+            changeNormalStudentBackground(){
+                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
+                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'auto';
+
+                studentCard.style.backgroundColor = "white";
+                studentTitle.style.color = "black";
+            },
+            changeTutorCardBackground(){
+                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
+                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'pointer';
+
+                tutorCard.style.backgroundColor = "#8795B6";
+                tutorTitle.style.color = "white";
+            },
+            changeNormalTutorBackground(){
+                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
+                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
+
+                document.body.style.cursor = 'auto';
+
+                tutorCard.style.backgroundColor = "white";
+                tutorTitle.style.color = "black";
+            },
+            toSignupTutorForm() {
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "0";
+                electionSection.style.visibility = "hidden";
+
+                tutorForm.style.transitionProperty = "opacity";
+                tutorForm.style.transitionDuration = "150ms";
+                tutorForm.style.transitionTimingFunction = "ease-in-out";
+                tutorForm.style.opacity = "1";
+                tutorForm.style.visibility = "visible";
+
+                formContainer.style.overflowY = "scroll";
+                
+            },
+            returnFromSignupTutor(){
+                const formContainer = document.getElementById('form-container') as HTMLInputElement;
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "1";
+                electionSection.style.visibility = "visible";
+
+                tutorForm.style.transitionProperty = "opacity";
+                tutorForm.style.transitionDuration = "150ms";
+                tutorForm.style.transitionTimingFunction = "ease-in-out";
+                tutorForm.style.opacity = "0";
+                tutorForm.style.visibility = "hidden";
+
+                formContainer.style.overflowY = "hidden";
+                formContainer.scrollTo(0,0);
+            },
+            toSignupStudentForm() {
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "0";
+                electionSection.style.visibility = "hidden";
+
+                studentForm.style.transitionProperty = "opacity";
+                studentForm.style.transitionDuration = "150ms";
+                studentForm.style.transitionTimingFunction = "ease-in-out";
+                studentForm.style.opacity = "1";
+                studentForm.style.visibility = "visible";
+
+            },
+            returnFromSignupStudent(){
+                const electionSection = document.getElementById('election') as HTMLInputElement;
+                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
+
+                electionSection.style.transitionProperty = "opacity";
+                electionSection.style.transitionDuration = "350ms";
+                electionSection.style.transitionTimingFunction = "ease-in-out";
+                electionSection.style.opacity = "1";
+                electionSection.style.visibility = "visible";
+
+                studentForm.style.transitionProperty = "opacity";
+                studentForm.style.transitionDuration = "150ms";
+                studentForm.style.transitionTimingFunction = "ease-in-out";
+                studentForm.style.opacity = "0";
+                studentForm.style.visibility = "hidden";
+
+            }
+        }
+    })
+</script> 
+
+
 <template>
     <body>
         <div class="flexContainer">
@@ -310,267 +572,4 @@ label {
 }
 
 </style> 
-
-
-<script lang="ts">
-    import { defineComponent } from "vue";
-    import { RouterLink, RouterView } from "vue-router";
-    import SignupTutor from "@/components/SignupTutorForm.vue"
-    import SignupStudent from "@/components/SignupStudentForm.vue"
-
-    export default defineComponent({
-        components: {
-            SignupTutor,
-            SignupStudent
-        },
-        methods:{
-            cleanInputs(){
-                const userEmail = document.getElementById('user_email_login') as HTMLInputElement;
-                const userPassword = document.getElementById('user_password_login') as HTMLInputElement;
-
-                userEmail.value = "";
-                userPassword.value = "";
-
-            },
-            toSignup() {
-                const loginSection = document.getElementById('section-login') as HTMLInputElement;
-                const signupSection =document.getElementById('section-signup') as HTMLInputElement;
-                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
-                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
-                const loginForm = document.getElementById('login-form') as HTMLInputElement;
-                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-
-
-                //el div de la izquierda se hace más grande y va cambiando su color
-                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
-                //hacia la derecha
-                loginSection.style.transitionProperty = "background-color, width";
-                loginSection.style.transitionDuration = "250ms";
-                loginSection.style.transitionTimingFunction = "ease-in-out";
-                loginSection.style.backgroundColor = "white";
-                loginSection.style.width = (60) + "vw";
-
-                //el div de la derecha se hace más pequeño y va cambiando su color
-                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
-                //rectangulo que se traslado desde la derecha
-                signupSection.style.transitionProperty = "background-color, width";
-                signupSection.style.transitionDuration = "250ms";
-                signupSection.style.transitionTimingFunction = "ease-in-out";
-                signupSection.style.backgroundColor = "transparent";
-                signupSection.style.width = (40) + "vw";
-
-
-                //Se hace una transición para desaparecer el container
-                //del div lateral izquierdo
-                signupContainer.style.transitionProperty = "opacity";
-                signupContainer.style.transitionDuration = "350ms";
-                signupContainer.style.transitionTimingFunction = "ease-in-out";
-                signupContainer.style.opacity = "0";
-                signupContainer.style.visibility = "hidden";
-
-
-                //Se hace una transición para aparecer el container
-                //del div lateral derecho
-
-                logingContainer.style.transitionProperty = "opacity";
-                logingContainer.style.transitionDuration = "350ms";
-                logingContainer.style.transitionTimingFunction = "ease-in-out";
-                logingContainer.style.opacity = "1";
-                logingContainer.style.visibility = "visible";
-
-                loginForm.style.transitionProperty = "opacity";
-                loginForm.style.transitionDuration = "350ms";
-                loginForm.style.transitionTimingFunction = "ease-in-out";
-                loginForm.style.opacity = "0";
-                loginForm.style.visibility = "hidden";
-
-                accountSelection.style.transitionProperty = "opacity";
-                accountSelection.style.transitionDuration = "350ms";
-                accountSelection.style.transitionTimingFunction = "ease-in-out";
-                accountSelection.style.opacity = "1";
-                accountSelection.style.visibility = "visible";
-                formContainer.style.transitionProperty = "opacity";
-                formContainer.style.transitionDuration = "350ms";
-                formContainer.style.transitionTimingFunction = "ease-in-out";
-                formContainer.style.opacity = "1";
-                formContainer.style.visibility = "visible";
-
-                this.cleanInputs();
-
-            },
-            toLogin() {
-                const loginSection = document.getElementById('section-login') as HTMLInputElement;
-                const signupSection = document.getElementById('section-signup') as HTMLInputElement;
-                const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
-                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
-                const loginForm = document.getElementById('login-form') as HTMLInputElement;
-                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-
-                //el div de la derecha se hace más grande y va cambiando su color
-                //de fondo de transparente hacia blanco para hacer el efecto de que se traslada 
-                //hacia la derecha
-                loginSection.style.transitionProperty = "background-color, width";
-                loginSection.style.transitionDuration = "250ms";
-                loginSection.style.transitionTimingFunction = "ease-in-out";
-                loginSection.style.backgroundColor = "transparent";
-                loginSection.style.width = (40) + "vw";
-
-                //el div de la izquierda se hace más pequeño y va cambiando su color
-                //de fondo de blanco hacia transparente para hacer el efecto de que es el mismo 
-                //rectangulo que se traslado desde la derecha
-                signupSection.style.transitionProperty = "background-color, width";
-                signupSection.style.transitionDuration = "250ms";
-                signupSection.style.transitionTimingFunction = "ease-in-out";
-                signupSection.style.backgroundColor = "white";
-                signupSection.style.width = (60) + "vw";
-
-                signupContainer.style.transitionProperty = "opacity";
-                signupContainer.style.transitionDuration = "350ms";
-                signupContainer.style.transitionTimingFunction = "ease-in-out";
-                signupContainer.style.opacity = "1";
-                signupContainer.style.visibility = "visible"
-
-                logingContainer.style.transitionProperty = "opacity";
-                logingContainer.style.transitionDuration = "350ms";
-                logingContainer.style.transitionTimingFunction = "ease-in-out";
-                logingContainer.style.opacity = "0";
-                logingContainer.style.visibility = "hidden";
-
-                loginForm.style.transitionProperty = "opacity";
-                loginForm.style.transitionDuration = "350ms";
-                loginForm.style.transitionTimingFunction = "ease-in-out";
-                loginForm.style.opacity = "1";
-                loginForm.style.visibility = "visible";
-
-                accountSelection.style.transitionProperty = "opacity";
-                accountSelection.style.transitionDuration = "350ms";
-                accountSelection.style.transitionTimingFunction = "ease-in-out";
-                accountSelection.style.opacity = "0";
-                accountSelection.style.visibility = "hidden";
-
-                formContainer.style.transitionProperty = "opacity";
-                formContainer.style.transitionDuration = "350ms";
-                formContainer.style.transitionTimingFunction = "ease-in-out";
-                formContainer.style.opacity = "0";
-                formContainer.style.visibility = "hidden";
-
-                this.returnFromSignupTutor();
-                this.returnFromSignupStudent();
-            },
-            changeStudentCardBackground(){
-                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
-                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
-
-                document.body.style.cursor = 'pointer';
-
-                studentCard.style.backgroundColor = "#9CC8C5";
-                studentTitle.style.color = "white";
-            },
-            changeNormalStudentBackground(){
-                const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
-                const studentTitle = document.getElementById('student-title') as HTMLInputElement;
-
-                document.body.style.cursor = 'auto';
-
-                studentCard.style.backgroundColor = "white";
-                studentTitle.style.color = "black";
-            },
-            changeTutorCardBackground(){
-                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
-                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
-
-                document.body.style.cursor = 'pointer';
-
-                tutorCard.style.backgroundColor = "#8795B6";
-                tutorTitle.style.color = "white";
-            },
-            changeNormalTutorBackground(){
-                const tutorCard = document.getElementById('card-tutor-body') as HTMLInputElement;
-                const tutorTitle = document.getElementById('tutor-title') as HTMLInputElement;
-
-                document.body.style.cursor = 'auto';
-
-                tutorCard.style.backgroundColor = "white";
-                tutorTitle.style.color = "black";
-            },
-            toSignupTutorForm() {
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "0";
-                electionSection.style.visibility = "hidden";
-
-                tutorForm.style.transitionProperty = "opacity";
-                tutorForm.style.transitionDuration = "150ms";
-                tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.opacity = "1";
-                tutorForm.style.visibility = "visible";
-
-                formContainer.style.overflowY = "scroll";
-                
-            },
-            returnFromSignupTutor(){
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "1";
-                electionSection.style.visibility = "visible";
-
-                tutorForm.style.transitionProperty = "opacity";
-                tutorForm.style.transitionDuration = "150ms";
-                tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.opacity = "0";
-                tutorForm.style.visibility = "hidden";
-
-                formContainer.style.overflowY = "hidden";
-                formContainer.scrollTo(0,0);
-            },
-            toSignupStudentForm() {
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "0";
-                electionSection.style.visibility = "hidden";
-
-                studentForm.style.transitionProperty = "opacity";
-                studentForm.style.transitionDuration = "150ms";
-                studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.opacity = "1";
-                studentForm.style.visibility = "visible";
-
-            },
-            returnFromSignupStudent(){
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "1";
-                electionSection.style.visibility = "visible";
-
-                studentForm.style.transitionProperty = "opacity";
-                studentForm.style.transitionDuration = "150ms";
-                studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.opacity = "0";
-                studentForm.style.visibility = "hidden";
-
-            }
-        }
-    })
-</script> 
-
 
