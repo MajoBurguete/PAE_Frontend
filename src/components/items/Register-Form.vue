@@ -1,16 +1,43 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    mounted(){
+        this.cleanInputs();
+    },
+    methods:{
+        cleanInputs(){
+            const userName = document.getElementById('user_name_signup') as HTMLInputElement;
+            const userEmail = document.getElementById('user_email_signup') as HTMLInputElement;
+            const userPassword = document.getElementById('user_password_signup') as HTMLInputElement;
+            const userConfirmPassword = document.getElementById('user_confirm_password_signup') as HTMLInputElement;
+            const userId = document.getElementById('user_id_signup') as HTMLInputElement;
+
+            userName.value = "";
+            userEmail.value = "";
+            userPassword.value = "";
+            userConfirmPassword.value = "";
+            userId.value = "";
+
+        }
+    }
+    
+})
+</script>
+
 <template>
     <body>
         <div class="row">
             <div class="col-6 col-md">
                 <div class="mb-3">
                     <label class="form-label">Nombre completo</label>
-                    <input type="text" class="form-control" id="user_name" placeholder="Nombre">
+                    <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre">
                 </div>
             </div>
             <div class="col-6 col-md">
                 <div class="mb-3">
                     <label class="form-label">Correo Institucional</label>
-                    <input type="email" class="form-control" id="user_email" placeholder="A0XXXX@tec.com">
+                    <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXX@tec.com">
                 </div>
             </div>
         </div>
@@ -18,13 +45,13 @@
             <div class="col-6 col-md">
                 <div class="mb-3">
                     <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="user_password`" placeholder="Contraseña">
+                    <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña">
                 </div>
             </div>
             <div class="col-6 col-md">
                 <div class="mb-3">
                     <label class="form-label">Confirma tu contraseña</label>
-                    <input type="password" class="form-control" id="user_confirm_password" placeholder="Contraseña">
+                    <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña">
                 </div>
             </div>
         </div>
@@ -33,7 +60,7 @@
             <div class="col-6 col-md">
                 <div class="mb-3">
                     <label class="form-label">Matrícula</label>
-                    <input type="text" class="form-control" id="user_id" placeholder="A0XXXX">
+                    <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX">
                 </div>
             </div>
             <div class="col-6 col-lg">
