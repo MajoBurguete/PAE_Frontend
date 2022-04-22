@@ -30,7 +30,10 @@ export default defineComponent({
         <div class="row">
             <div class="col-6 col-md">
                 <div class="mb-3">
-                    <label class="form-label">Nombre completo</label>
+                    <div class="col with-icon">
+                        <label class="form-label">Nombre completo</label>
+                        <img src="src/assets/img/question-icon.png" class ="question">
+                    </div>
                     <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre">
                 </div>
             </div>
@@ -63,7 +66,7 @@ export default defineComponent({
                     <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX">
                 </div>
             </div>
-            <div class="col-6 col-lg">
+            <div class="col">
                 <div class="input-group">
                     <label class="dropdown-text-semester">Semestre</label>
                     <select class="form-select">
@@ -134,6 +137,18 @@ export default defineComponent({
 
     .dropdown-text-career {
         margin: 0 3.3vw 0 0;
+    }
+
+    /* Question button */
+    .question{
+        width: 7%;
+        height: 7%;
+    }
+
+    .with-icon{
+        display: flex;
+        gap: 2vh;
+        align-items: center;
     }
 
     .row {
