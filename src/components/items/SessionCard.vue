@@ -58,6 +58,7 @@ export default defineComponent({
     border-radius: 34px;
     border-color: black;
     border-width: 2px;
+    min-width: 290px;
 }
 h1 {
     font-family: "Montserrat";
@@ -95,6 +96,7 @@ a {
     box-sizing: border-box;
     width: 6vw;
     margin: 4vh 0.3vw 0vh;
+    min-width: 80px;
 }
 #confirm-button{
     background-color: #26408B;
