@@ -98,6 +98,9 @@ a {
     margin: 4vh 0.3vw 0vh;
     min-width: 80px;
 }
+a:hover{
+    border-color: transparent;
+}
 #confirm-button{
     background-color: #26408B;
 }
