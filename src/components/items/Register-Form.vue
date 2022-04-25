@@ -2,9 +2,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    mounted(){
-        this.cleanInputs();
-    },
     methods:{
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
@@ -19,6 +16,46 @@ export default defineComponent({
             userConfirmPassword.value = "";
             userId.value = "";
 
+        },
+        questionNameOnHover(){
+            const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
+
+            messageContainer.style.visibility = "visible"
+        },
+        questionNameOutOfHover(){
+            const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
+
+            messageContainer.style.visibility = "hidden"
+        },
+        questionEmailOnHover(){
+            const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
+
+            messageContainer.style.visibility = "visible"
+        },
+        questionEmailOutOfHover(){
+            const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
+
+            messageContainer.style.visibility = "hidden"
+        },
+        questionPasswordOnHover(){
+            const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
+
+            messageContainer.style.visibility = "visible"
+        },
+        questionPasswordOutOfHover(){
+            const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
+
+            messageContainer.style.visibility = "hidden"
+        },
+        questionMatOnHover(){
+            const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
+
+            messageContainer.style.visibility = "visible"
+        },
+        questionMatOutOfHover(){
+            const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
+
+            messageContainer.style.visibility = "hidden"
         }
     }
     
@@ -30,16 +67,25 @@ export default defineComponent({
         <div class="row">
             <div class="col-6 col-md">
                 <div class="mb-3">
-                    <div class="col with-icon">
+                    <div class="with-icon">
                         <label class="form-label">Nombre completo</label>
-                        <img src="src/assets/img/question-icon.png" class ="question">
+                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionNameOnHover" @mouseleave="questionNameOutOfHover">
+                        <div class="tooltip-style" id="popover-name">
+                            Máximo 100 caracteres, sin números ni caracteres especiales.
+                        </div>
                     </div>
                     <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre">
                 </div>
             </div>
             <div class="col-6 col-md">
                 <div class="mb-3">
-                    <label class="form-label">Correo Institucional</label>
+                    <div class="with-icon">
+                        <label class="form-label">Correo Institucional</label>
+                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionEmailOnHover" @mouseleave="questionEmailOutOfHover">
+                        <div class="tooltip-style" id="popover-email">
+                            Correo válido dentro del dominio “@tec” o “@itesm”.
+                        </div>
+                    </div>
                     <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXX@tec.com">
                 </div>
             </div>
@@ -47,7 +93,13 @@ export default defineComponent({
         <div class="row">
             <div class="col-6 col-md">
                 <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
+                    <div class="with-icon">
+                        <label class="form-label">Contraseña</label>
+                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
+                        <div class="tooltip-style" id="popover-password">
+                            Entre 8-50 caracteres, minimo una minúscula, una mayúscula y un número
+                        </div>
+                    </div>
                     <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña">
                 </div>
             </div>
@@ -62,11 +114,17 @@ export default defineComponent({
         <div class = "row">
             <div class="col-6 col-md">
                 <div class="mb-3">
-                    <label class="form-label">Matrícula</label>
+                    <div class="with-icon">
+                        <label class="form-label">Matrícula</label>
+                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
+                        <div class="tooltip-style" id="popover-mat">
+                            Debe comenzar con 'a' o 'A' y seguida de 8 números.
+                        </div>
+                    </div>
                     <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX">
                 </div>
             </div>
-            <div class="col">
+            <div class="col-6 col-md">
                 <div class="input-group">
                     <label class="dropdown-text-semester">Semestre</label>
                     <select class="form-select">
@@ -92,11 +150,16 @@ export default defineComponent({
 
 <style scoped>
 
+    body{
+        padding: 0 0 0 2vw;
+    }
+
     /* Input labels */
     label {
         font-family: "Catamaran";
         font-weight: bold;
-        font-size: 2vh;
+        font-size: 2.5vh;
+        margin: 0;
         color: #26408B;
     }
 
@@ -106,8 +169,7 @@ export default defineComponent({
         font-family: "Catamaran";
         font-weight: normal;
         font-size: 2.5vh;
-        padding: 0.25vh 1.5vw 0 0.5vw;
-        margin: 0;
+        padding: 0.25vh 0vw 0 0.5vw;
         border-color: black;
         border-width: 0.25vh;
         border-radius: 0.65vh;
@@ -115,7 +177,8 @@ export default defineComponent({
 
     input {
         height: 6.5vh;
-        width: 24vw;
+        width: 23.93vw;
+        margin: 0 0vw 0 0vw;
     }
 
     /* Dropdowns style */
@@ -129,10 +192,11 @@ export default defineComponent({
         flex-wrap: nowrap;
         align-items: center;
         margin: 1.3vh 0 0 0;
+        width: 24vw;
     }
 
     .dropdown-text-semester{
-        margin: 0 2.35vw 0 0;
+        margin: 0 2.1vw 0 0;
     }
 
     .dropdown-text-career {
@@ -141,14 +205,30 @@ export default defineComponent({
 
     /* Question button */
     .question{
-        width: 7%;
-        height: 7%;
+        width: 6%;
+        height: 6%;
+        margin: 0 0 0vh 0;
     }
 
     .with-icon{
         display: flex;
-        gap: 2vh;
+        gap: 0.5vh;
         align-items: center;
+        margin: 0 0 0 0;
+    }
+
+    .tooltip-style{
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 1.2vh;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        padding: 0.5vh 0.15vw;
+        visibility: hidden;
+        width: 11.7vw;
+    }
+
+    #user_confirm_password_signup{
+        margin: 0.75vh 0 0 0;
     }
 
     .row {

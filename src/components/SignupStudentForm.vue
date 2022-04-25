@@ -33,6 +33,7 @@ body{
     display: flex;
     flex-direction: column;
     padding-bottom: 3vh;
+    z-index: 10;
 }
 
 button {
