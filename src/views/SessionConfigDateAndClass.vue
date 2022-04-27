@@ -1,9 +1,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ScheduleItem from "@/components/items/Schedule-Item.vue"
+import ClassFilter from "@/components/items/Class-Filter.vue"
 export default defineComponent({
     components: {
-        ScheduleItem
+        ScheduleItem,
+        ClassFilter
     },
     methods: {
         questionOnHover(){
@@ -34,7 +36,7 @@ export default defineComponent({
             <ScheduleItem base-color="#6F9492" hover-color="transparent"/>
         </div>
         <div class="container-side">
-            <h1>aqui va el classfilter</h1>
+            <ClassFilter/>
             <button>Continuar</button>
         </div>
     </div>
@@ -49,6 +51,9 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+.tooltip-style{
+    visibility: hidden;
 }
 .container-title{
     display: flex;
@@ -67,7 +72,7 @@ button{
 }
 
 img{
-    height: 2vh;
+    height: 3vh;
     width: auto;
     margin-left: 2vw;
 }
