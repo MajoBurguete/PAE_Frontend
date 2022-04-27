@@ -7,6 +7,27 @@ export default defineComponent({
         showAllButtons: {
             type: String,
             default: "active"
+        },
+        className: {
+            type: String
+        },
+        tutorName: {
+            type: String
+        },
+        tutorId: {
+            type: String
+        },
+        studentName: {
+            type: String
+        },
+        studentId: {
+            type: String
+        },
+        date: {
+            type: String
+        },
+        place: {
+            type: String
         }
     },
     mounted(){
@@ -32,17 +53,17 @@ export default defineComponent({
 <template>
     <div class="card">
         <div class="card-body">
-            <h1 class="card-title text-center">Estructuras de datos</h1>
+            <h1 class="card-title text-center">{{className}}</h1>
             <h2 class="card-subtitle">Asesor</h2>
-            <h3 class="card-subtitle">Daniela Hernandez</h3>
-            <h4 class="card-text ">A01732313@tec.mx</h4>
+            <h3 class="card-subtitle">{{tutorName}}</h3>
+            <h4 class="card-text ">{{tutorId}}</h4>
             <h2 class="card-subtitle">Estudiante</h2>
-            <h3 class="card-subtitle">Daniela Hernandez</h3>
-            <h4 class="card-text">A01732313@tec.mx</h4>
+            <h3 class="card-subtitle">{{studentName}}</h3>
+            <h4 class="card-text">{{studentId}}</h4>
             <h2 class="card-title">Fecha</h2>
-            <h3 class="card-subtitle">16 de mayo de 15:00</h3>
+            <h3 class="card-subtitle">{{date}}</h3>
             <h2 class="card-title">Lugar</h2>
-            <h3 class="card-subtitle">zoom.com/283748123</h3>
+            <h3 class="card-subtitle">{{place}}</h3>
             <a href="#" class="btn btn-primary" id="confirm-button">Confirmar Asesor&iacute;a</a>
             <a href="#" class="btn btn-primary" id="edit-button">Editar Asesor&iacute;a</a>
             <a href="#" class="btn btn-primary" id="cancel-button">Cancelar Asesor&iacute;a</a>
@@ -53,7 +74,7 @@ export default defineComponent({
 <style scoped>
 .card {
     box-shadow: 0px 0px 0px 8px #769ABA;
-    width: 23vw;
+    width: 24.5vw;
     padding: 0.2vh 0.2vw;
     border-radius: 34px;
     border-color: black;
