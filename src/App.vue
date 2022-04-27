@@ -1,17 +1,23 @@
 <script setup lang="ts">
+import { defineComponent } from "vue";
 import { RouterLink, RouterView } from "vue-router";
+import NavBar from "@/components/Navbar.vue"
+
 </script>
 
 <template>
   <header>
-    <div class="wrapper">
-    </div>
+    <NavBar></NavBar>
   </header>
 
-  <RouterView />
+  <RouterView class="router-view"/>
 </template>
 
 <style>
+
+.router-view{
+  padding: 8vh 0vw 0 0;
+}
 
 @font-face {
   font-family: "Catamaran";

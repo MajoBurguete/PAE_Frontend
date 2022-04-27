@@ -3,7 +3,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" >
-                    <img src="src/assets/img/PAE-LogoN.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
+                    <img src="src/assets/img/PAE-black.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,10 +22,10 @@
                         <a class="nav-link" href="#">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
                         </a>
-                        <a class="nav-link" href="# " >
+                        <a class="nav-link" href="home" >
                             <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
                         </a>
-                        <a class="nav-link" href="#"> Cerrar Sesi&oacute;n</a>
+                        <a class="nav-link" href="login"> Cerrar Sesi&oacute;n</a>
                     </div>
                 </div>
             </div>
