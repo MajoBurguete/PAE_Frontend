@@ -9,6 +9,26 @@ const router = createRouter({
       name: "login",
       component: LoginSignupView,
     },
+    {
+      path: "/home",
+      name: "home",
+      component: () => import('../views/HomeStudentTutor.vue')
+    },
+    {
+      path: "/date-and-class",
+      name: "dateAndClass",
+      component: () => import('../views/SessionConfigDateAndClass.vue')
+    },
+    {
+      path: "/question",
+      name: "sessionQuestion",
+      component: () => import('../views/SessionQuestionView.vue')
+    },
+    {
+      path: "/feedback-survey",
+      name: "feedbackSurvey",
+      component: () => import('../views/FeedbackSurvey.vue')
+    }
   ],
 });
 

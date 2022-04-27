@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ScheduleItem from "@/components/items/Schedule-Items.vue"
+import ScheduleItem from "@/components/items/Schedule-Item.vue"
 export default defineComponent({
     components: {
         ScheduleItem
@@ -19,8 +19,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container">
-      <div class="container-side">
+    <div class="container">
+        <div class="container-side">
             <div class="container-title">
                 <h1>Horario de Preferencia</h1>
                 <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover">
@@ -32,12 +32,12 @@ export default defineComponent({
                     </div>
             </div>
             <ScheduleItem base-color="#6F9492" hover-color="transparent"/>
-      </div>
-      <div class="container-side">
-          <h1>aqui va el classfilter</h1>
-          <button>Continuar</button>
-      </div>
-  </div>
+        </div>
+        <div class="container-side">
+            <h1>aqui va el classfilter</h1>
+            <button>Continuar</button>
+        </div>
+    </div>
 </template>
 
 <style scoped>
