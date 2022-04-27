@@ -178,7 +178,7 @@ export default defineComponent({
 /* General styles */
 
 body{
-    margin: 2vh 5vw;
+    margin: 2vh 0.5vw;
     display: flex;
     flex-direction: column;
     align-items: center;

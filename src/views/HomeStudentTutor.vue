@@ -57,7 +57,7 @@ export default defineComponent({
         height: auto;
     }
     .tooltip-style{
-        display: initial;
+        display: none;
         overflow-y: visible;
     }   
 
@@ -75,6 +75,7 @@ export default defineComponent({
 
     .container {
         display: flex;
+        gap:5vw;
     }
 
     .title-container{

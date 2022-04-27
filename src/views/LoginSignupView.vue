@@ -189,13 +189,11 @@
                 electionSection.style.transitionProperty = "opacity";
                 electionSection.style.transitionDuration = "350ms";
                 electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "0";
                 electionSection.style.visibility = "hidden";
 
                 tutorForm.style.transitionProperty = "opacity";
                 tutorForm.style.transitionDuration = "150ms";
                 tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.opacity = "1";
                 tutorForm.style.visibility = "visible";
 
                 formContainer.style.overflowY = "scroll";
@@ -209,13 +207,11 @@
                 electionSection.style.transitionProperty = "opacity";
                 electionSection.style.transitionDuration = "350ms";
                 electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "1";
                 electionSection.style.visibility = "visible";
 
                 tutorForm.style.transitionProperty = "opacity";
                 tutorForm.style.transitionDuration = "150ms";
                 tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.opacity = "0";
                 tutorForm.style.visibility = "hidden";
 
                 formContainer.style.overflowY = "hidden";
@@ -228,13 +224,11 @@
                 electionSection.style.transitionProperty = "opacity";
                 electionSection.style.transitionDuration = "350ms";
                 electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "0";
                 electionSection.style.visibility = "hidden";
 
                 studentForm.style.transitionProperty = "opacity";
                 studentForm.style.transitionDuration = "150ms";
                 studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.opacity = "1";
                 studentForm.style.visibility = "visible";
 
             },
@@ -245,13 +239,11 @@
                 electionSection.style.transitionProperty = "opacity";
                 electionSection.style.transitionDuration = "350ms";
                 electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.opacity = "1";
                 electionSection.style.visibility = "visible";
 
                 studentForm.style.transitionProperty = "opacity";
                 studentForm.style.transitionDuration = "150ms";
                 studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.opacity = "0";
                 studentForm.style.visibility = "hidden";
 
             }
@@ -293,12 +285,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="tutor-register-form">
-                            <SignupTutor  v-on:back-button="returnFromSignupTutor"/>
-                        </div>
-                        <div id="student-register-form">
-                            <SignupStudent  v-on:back-button="returnFromSignupStudent"/>
-                        </div>
+                        <SignupStudent id="student-register-form"  v-on:back-button="returnFromSignupStudent"/>
+                        <SignupTutor id="tutor-register-form"  v-on:back-button="returnFromSignupTutor"/>
                     </div>
                 </div>
             </div>

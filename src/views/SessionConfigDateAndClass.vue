@@ -45,6 +45,8 @@ export default defineComponent({
 <style scoped>
 .container{
     display: flex;
+    min-width: 100vw;
+    justify-content: center;
 }
 .container-side{
     margin-top: 3vh;
