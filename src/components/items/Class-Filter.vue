@@ -1,3 +1,33 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    methods: {
+        searchElements(){
+            var input, td, temp, h1, i, j, filter,  txtValue;
+
+            input = document.getElementById('search-input') as HTMLInputElement;
+            filter = input.value.toUpperCase();
+            td = document.getElementsByClassName('table-data');
+            h1 = document.getElementsByTagName('h1');
+
+
+            
+            for(i = 0; i < h1.length; i++){
+                txtValue = h1[i].textContent || h1[i].innerText;
+                if(txtValue.toUpperCase().indexOf(filter) > -1 ){
+                    td[i].style.display= "";
+                }
+                else {
+                    td[i].style.display = "none";
+                }
+            }
+
+
+        }
+    }
+})
+</script>
 
 <template>
     <body>
@@ -6,13 +36,13 @@
                 <thead>
                     <tr>
                         <td>
-                            <input type="text" id="search-input" placeholder="Busca la materia..">
+                            <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca la materia..">
                         </td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -25,7 +55,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td id="database">
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -38,7 +68,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -51,7 +81,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -64,7 +94,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -77,7 +107,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -90,7 +120,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="table-data">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label" for="flexRadioDefault1">
@@ -165,6 +195,10 @@
         height: 40vh;     
         overflow-y: auto;  
         overflow-x: hidden;  
+    }
+
+    tr{
+        min-width: 100%;
     }
 
     tr:last-child{
