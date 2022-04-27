@@ -10,12 +10,12 @@ export default defineComponent({
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.visibility = "visible"
+            messageContainer.style.display = "initial";
         },
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.visibility = "hidden"
-        },
+            messageContainer.style.display = "none";
+        }
     }
 })
 </script>
@@ -53,7 +53,7 @@ export default defineComponent({
     align-items: center;
 }
 .tooltip-style{
-    visibility: hidden;
+    display: none;
 }
 .container-title{
     display: flex;

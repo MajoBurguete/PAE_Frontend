@@ -44,7 +44,9 @@
         display: flex;
         justify-content: flex-end; 
         gap: 100vw;
+        
     }
+    
 
     /* Color de hover en elementos */
     a:hover {
