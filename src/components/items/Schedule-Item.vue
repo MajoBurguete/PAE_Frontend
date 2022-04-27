@@ -14,17 +14,39 @@ export default defineComponent({
         lockSchedule: {
             type: String,
             default: "active"
+        },
+        scheduledHours:{
+            type: Array,
+            default: []
         }
     },
     mounted(){
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
+        const squares = document.getElementsByClassName("locked");
+
 
         if(this.lockSchedule == "active"){
             clearButton.style.visibility = "visible"
         }
         else{
             this.lockedSchedule(clearButton)
+
+            var i, j;
+
+            console.log(this.scheduledHours);
+            console.log(squares);
+
+            for(i = 0; i < squares.length; i++){
+                for(j = 0; j < this.scheduledHours.length; j++){
+                    if(squares[i].id == this.scheduledHours[j]){
+                        squares[i].className = "active";
+                    }
+                }
+            }
         }
+    },
+    updated(){
+        this.fillSquares;
     },
     methods:{
         //Function to change the div color when it's been selected or unselected
@@ -55,6 +77,13 @@ export default defineComponent({
             }
 
             clearButton.style.visibility = "hidden";
+        },
+        fillSquares() {
+            var squares = document.getElementsByClassName('inactive');
+
+            console.log(this.scheduledHours)
+            console.log(squares)
+
         }
     }
 })
