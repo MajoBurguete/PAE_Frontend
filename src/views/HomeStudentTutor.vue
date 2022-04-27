@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ScheduleItem from "@/components/items/Schedule-Items.vue"
+import ScheduleItem from "@/components/items/Schedule-Item.vue"
 
 export default defineComponent({
     components: {
