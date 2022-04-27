@@ -22,19 +22,17 @@ export default defineComponent({
     },
     mounted(){
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
-        const squares = document.getElementsByClassName("locked");
 
 
         if(this.lockSchedule == "active"){
             clearButton.style.visibility = "visible"
         }
         else{
+            const squares = document.getElementsByClassName("locked");
+
             this.lockedSchedule(clearButton)
 
             var i, j;
-
-            console.log(this.scheduledHours);
-            console.log(squares);
 
             for(i = 0; i < squares.length; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
@@ -44,9 +42,6 @@ export default defineComponent({
                 }
             }
         }
-    },
-    updated(){
-        this.fillSquares;
     },
     methods:{
         //Function to change the div color when it's been selected or unselected
@@ -77,13 +72,6 @@ export default defineComponent({
             }
 
             clearButton.style.visibility = "hidden";
-        },
-        fillSquares() {
-            var squares = document.getElementsByClassName('inactive');
-
-            console.log(this.scheduledHours)
-            console.log(squares)
-
         }
     }
 })
@@ -262,6 +250,7 @@ button {
 .active {
     background-color: v-bind(baseColor);
 }
+
 
 .locked:hover {
     background-color: #00000000;

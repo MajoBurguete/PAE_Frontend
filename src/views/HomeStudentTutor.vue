@@ -8,6 +8,11 @@ export default defineComponent({
         ScheduleItem,
         SessionCard
     },
+    data() {
+        return{
+            hours: ["m8","t8", "w12"]
+        }
+    },
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
@@ -35,10 +40,10 @@ export default defineComponent({
                         Horario Disponible
                     </div>
                 </div>
-                <ScheduleItem base-color="#365295" lock-schedule="inactive"/>
+                <ScheduleItem base-color="#365295" lock-schedule="home-inactive" :scheduledHours="hours"/>
             </div>
             <div class="card-container">
-                    <session-card/>
+                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1203" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
                     <button> Agendar nueva asesoría </button>
             </div>
         </div>
