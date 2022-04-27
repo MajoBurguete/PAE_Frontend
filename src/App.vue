@@ -17,6 +17,7 @@ import NavBar from "@/components/Navbar.vue"
 
 .router-view{
   padding: 8vh 0vw 0 0;
+  width: 100vw;
 }
 
 @font-face {

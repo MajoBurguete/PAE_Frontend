@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ScheduleItem from "@/components/items/Schedule-Item.vue"
+import SessionCard from "@/components/items/SessionCard.vue"
 
 export default defineComponent({
     components: {
-        ScheduleItem
+        ScheduleItem,
+        SessionCard
     }
 })
 </script>
@@ -20,7 +22,7 @@ export default defineComponent({
                 <ScheduleItem base-color="#365295" lock-schedule="inactive"/>
             </div>
             <div class="card-container">
-                    <h1>card uwu</h1>
+                    <session-card/>
                     <button> Agendar nueva asesoría </button>
             </div>
         </div>
@@ -48,6 +50,7 @@ export default defineComponent({
         border: transparent;
         font-size: 2.5vh;
         padding: 1vh 2vw;
+        margin-top: 3vh;
     }
 
     .container {
@@ -65,6 +68,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
     }
 
 </style>
