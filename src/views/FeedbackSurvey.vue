@@ -71,7 +71,7 @@
                 </div>
             </form>
         </div>
-       <button id="send-button">Enviar</button>
+       <a href="home">Enviar</a>
     </div>
 </template>
 
@@ -145,7 +145,7 @@
     margin: 1vh 1.5vw;
     font-size: 3vh;
 }
-button {
+a {
     font-family: "Ubuntu";
     font-weight: normal;
     color: white;
@@ -156,6 +156,7 @@ button {
     background-color: #26408B;
     box-sizing: border-box;
     margin: 3vh;
+    text-decoration: none;
 }
 
 </style>

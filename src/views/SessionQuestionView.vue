@@ -3,7 +3,9 @@
         <div class="container">
             <div class="left">
                 <button id="back-button">
-                    <img src="src/assets/img/left-arrow.png"/>
+                    <a href="date-and-class">
+                        <img src="src/assets/img/left-arrow.png"/>
+                    </a>
                 </button>
             </div>
             <div class="right">
@@ -14,7 +16,9 @@
                 <div class="file-container">
                     <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
                 </div>
-                <button id="send-button">Enviar</button>
+                <a href="feedback-survey" id="send-button">
+                    Enviar
+                </a>               
             </div>
         </div>
     </body>
@@ -41,8 +45,6 @@
     }
 
     button{
-        font-family: "Ubuntu";
-        font-weight: normal;
         border: transparent;
     }
 
@@ -52,6 +54,11 @@
         margin: 3vh 0 0 0;
         border: transparent;
         box-shadow: 0px 0px 0px 10px #DAF4EA;
+    }
+    a{
+        text-decoration: none;
+        font-family: "Ubuntu";
+        font-weight: normal;
     }
 
     /*Button to come back*/

@@ -44,7 +44,7 @@ export default defineComponent({
             </div>
             <div class="card-container">
                     <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
-                    <button> Agendar nueva asesoría </button>
+                    <a href="date-and-class"> Agendar nueva asesoría </a>
             </div>
         </div>
     </body>
@@ -72,7 +72,7 @@ export default defineComponent({
         width: 11.7vw;
     }
 
-    button{
+    a{
         font-family: "Ubuntu";
         font-weight: normal;
         background-color: #26408B;
@@ -82,6 +82,7 @@ export default defineComponent({
         font-size: 2.5vh;
         padding: 1vh 2vw;
         margin-top: 3vh;
+        text-decoration: none;
     }
 
     .container {
