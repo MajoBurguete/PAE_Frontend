@@ -35,15 +35,15 @@ export default defineComponent({
                     <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
                     <div class="tooltip-style" id="popover">
                         <img src="src/assets/img/circle.png" id="selected">
-                        Horario Seleccionado <br>
+                        Asesoria Seleccionada <br>
                         <img src="src/assets/img/circle.png" id="available">
-                        Horario Disponible
+                        Asesoria Agendada
                     </div>
                 </div>
                 <ScheduleItem base-color="#365295" lock-schedule="home-inactive" :scheduledHours="hours"/>
             </div>
             <div class="card-container">
-                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1203" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
+                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
                     <button> Agendar nueva asesoría </button>
             </div>
         </div>
@@ -62,9 +62,15 @@ export default defineComponent({
         height: auto;
     }
     .tooltip-style{
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 1.5vh;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        padding: 0.5vh 0.15vw;
         display: none;
         overflow-y: visible;
-    }   
+        width: 11.7vw;
+    }
 
     button{
         font-family: "Ubuntu";

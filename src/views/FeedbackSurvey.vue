@@ -71,7 +71,7 @@
                 </div>
             </form>
         </div>
-       <button id="send-button" @click="clearSchedule">Enviar</button>
+       <button id="send-button">Enviar</button>
     </div>
 </template>
 
