@@ -25,7 +25,7 @@
                         <a class="nav-link" href="home" >
                             <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
                         </a>
-                        <a class="nav-link" href="login"> Cerrar Sesi&oacute;n</a>
+                        <a class="nav-link" href="/"> Cerrar Sesi&oacute;n</a>
                     </div>
                 </div>
             </div>
