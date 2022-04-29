@@ -1,8 +1,38 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import ScheduleItem from "@/components/items/Schedule-Item.vue"
 import ClassFilter from "@/components/items/Class-Filter.vue"
+import axios from 'axios'
+
+const api = 'http://localhost:8000/api/'
+const sessions = ref([]);
+
 export default defineComponent({
+     mounted() {
+         axios
+        .get(api + 'available_sessions/')
+        .then(result => {
+            sessions.value = result.data
+            console.log(sessions.value)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    },
+
+    data() {
+    },
+
+    computed: {
+        getSessionList() {
+            var sk = []
+            for(var i=0; i<sessions.value.length; i++) {
+                sk.push(sessions.value[i].id_tutor__schedule__day_hour)
+            } 
+            return sk
+        }
+    },
+ 
     components: {
         ScheduleItem,
         ClassFilter
@@ -33,7 +63,7 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#6F9492" hover-color="transparent"/>
+            <ScheduleItem base-color="#6F9492" hover-color="transparent" lock-schedule="inactive" :scheduled-hours="getSessionList"/>
         </div>
         <div class="container-side">
             <ClassFilter/>

@@ -1,7 +1,31 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import axios from "axios";
+
+const api = 'http://localhost:8000/api/'
+
+const subjects = ref([]);
 
 export default defineComponent({
+    mounted() {
+         axios
+        .get(api + 'subjects/')
+        .then(result => {
+            subjects.value = result.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+        
+    },
+
+    data() {
+        return {
+            subjectList: subjects
+        }
+    },
+
     methods: {
         searchElements(){
             var input, td, temp, h1, i, j, filter,  txtValue;
@@ -10,6 +34,8 @@ export default defineComponent({
             filter = input.value.toUpperCase();
             td = document.getElementsByClassName('table-data');
             h1 = document.getElementsByTagName('h1');
+
+             
 
 
             
@@ -41,92 +67,14 @@ export default defineComponent({
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr v-for="(subject, i) in subjectList" :key="i">
                         <td class="table-data">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <input class="form-check-input" type="radio"  id="check-input"  :value=subject.id >
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     <div class="text-container">
-                                        <h1>Estructura de datos</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Bases de datos</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Gráficas Computacionales</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
+                                        <h1>{{ subject.name }}</h1>
+                                        <h2>{{ subject.id }} | {{ subject.id_career[0] }}</h2>
                                     </div>
                                 </label>
                             </div>

@@ -29,17 +29,24 @@ export default defineComponent({
             clearButton.style.visibility = "visible"
         }
         else{
-            this.lockedSchedule(clearButton)
-
-            var i, j;
+            this.lockedSchedule(clearButton); 
 
             console.log(this.scheduledHours);
-            console.log(squares);
 
-            for(i = 0; i < squares.length; i++){
+            var i, j, n;
+
+            n=0;
+
+            const listL = squares.length;
+
+            for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
-                    if(squares[i].id == this.scheduledHours[j]){
-                        squares[i].className = "active";
+                    if(squares[n].id == this.scheduledHours[j]){
+                        squares[n].className = "active";
+                        break;
+                    }
+                    else if(j == this.scheduledHours.length-1){
+                        n++
                     }
                 }
             }

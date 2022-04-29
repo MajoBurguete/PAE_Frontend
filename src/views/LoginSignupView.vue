@@ -1,14 +1,26 @@
 <script lang="ts">
-    import { defineComponent } from "vue";
+    import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
     import SignupTutor from "@/components/SignupTutorForm.vue"
     import SignupStudent from "@/components/SignupStudentForm.vue"
 
+    const user = ref({
+        username: '',
+        password: ''
+    })
+
     export default defineComponent({
+        data() {
+            return {
+                userData: user
+            }
+        },
+
         components: {
             SignupTutor,
             SignupStudent
         },
+
         methods:{
             cleanInputs(){
                 const userEmail = document.getElementById('user_email_login') as HTMLInputElement;
@@ -299,17 +311,17 @@
                 </div>
                 <div class="login-form" id="login-form">
                     <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-                    <div class="form">
+                    <form class="form">
                         <div class="mb-3">
-                            <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" id="user_email_login">
+                            <label class="form-label">Matrícula</label>
+                            <input type="text" class="form-control" id="user_email_login" v-model="userData.username">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="user_password_login">
+                            <input type="password" class="form-control" id="user_password_login" v-model="userData.password">
                         </div>
                         <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
-                    </div>
+                    </form>
                     <button id="signin-button">Iniciar Sesión</button>
                 </div>
             </div>
