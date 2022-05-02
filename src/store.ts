@@ -3,18 +3,23 @@ import type { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
 
 export interface State {
-    count: number
+    selectedHours: String[],
+    selectedClass: String[]
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
     state: {
-        count: 0
+        selectedHours: [],
+        selectedClass: []
     },
     mutations: {
-        setValue(state, val){
-            state.count = val;
+        setHours(state, val){
+            state.selectedHours = val;
+        },
+        setClassName(state, val){
+            state.selectedClass = val;
         }
     }
 })
