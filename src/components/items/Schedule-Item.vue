@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { store, useStore } from '../../store'
 
 export default defineComponent({
+    setup () {
+        const store = useStore()
+    },
     props: {
         baseColor: {
             type: String,
@@ -20,24 +24,35 @@ export default defineComponent({
             default: []
         }
     },
-    mounted(){
+    mounted() {
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
+        const squares = document.getElementsByClassName("locked");
 
-
-        if(this.lockSchedule == "active"){
+        if(this.lockSchedule == "active") {
             clearButton.style.visibility = "visible"
-        }
-        else{
-            const squares = document.getElementsByClassName("locked");
+        } else {
+            this.lockedSchedule(clearButton); 
 
-            this.lockedSchedule(clearButton)
+            console.log(this.scheduledHours);
 
-            var i, j;
+            var i, j, n;
 
-            for(i = 0; i < squares.length; i++){
+            n=0;
+
+            const listL = squares.length;
+
+            for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
-                    if(squares[i].id == this.scheduledHours[j]){
-                        squares[i].className = "active";
+                    if(squares[n].id == this.scheduledHours[j]){
+                        this.scheduledHours.shift(); 
+                        if(this.lockSchedule == "home-inactive"){ 
+                            squares[n].addEventListener("click", this.saveHourSelected); 
+                        }
+                        squares[n].className = "active";
+                        break;
+                    }
+                    else if(j == this.scheduledHours.length-1){
+                        n++
                     }
                 }
             }
@@ -72,7 +87,11 @@ export default defineComponent({
             }
 
             clearButton.style.visibility = "hidden";
-        }
+        }, 
+        saveHourSelected(event: Event){
+            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            store.commit('setSessionSelected', square.id);  
+        }  
     }
 })
 </script>

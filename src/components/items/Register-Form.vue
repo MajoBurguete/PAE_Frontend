@@ -1,7 +1,29 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import axios from "axios";
+
+const api = 'http://localhost:8000/api/'
+const careers = ref([]);
 
 export default defineComponent({
+
+    mounted() {
+        axios
+        .get(api + 'careers/')
+        .then(result => {
+            careers.value = result.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    },
+
+    data() {
+        return {
+            careerList: careers
+        }
+    },
+
     methods:{
         checkForm(){
             'use strict'
@@ -132,10 +154,10 @@ export default defineComponent({
                             <label class="form-label">Contraseña</label>
                             <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
                             <div class="tooltip-style" id="popover-password">
-                                Entre 8-50 caracteres, minimo una minúscula, una mayúscula y un número
+                                Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número
                             </div>
                         </div>
-                        <div class="input-group">
+                       <div class="input-group">
                             <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
@@ -159,7 +181,6 @@ export default defineComponent({
                     </div>
                 </div>
             </div>
-
             <div class = "row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
@@ -167,7 +188,7 @@ export default defineComponent({
                             <label class="form-label">Matrícula</label>
                             <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
                             <div class="tooltip-style" id="popover-mat">
-                                Debe comenzar con 'a' o 'A' y seguida de 8 números.
+                                Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
                         <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX" required>
@@ -181,15 +202,19 @@ export default defineComponent({
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
+                            <option value="4">4º</option>
+                            <option value="5">5º</option>
+                            <option value="6">6º</option>
+                            <option value="7">7º</option>
+                            <option value="8">8º</option>
+                            <option value="9">9º</option>
                         </select>
                     </div>
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
-                        <select class="form-select" required>
+                        <select class="form-select">
                             <option selected>Carrera</option>
-                            <option value="1">ITC</option>
-                            <option value="2">LMT</option>
-                            <option value="3">LAD</option>
+                            <option v-for="(career, i) in careerList" :key="i" value="{{ career.id }}">{{ career.id }}</option>
                         </select>
                     </div>
                 </div>
