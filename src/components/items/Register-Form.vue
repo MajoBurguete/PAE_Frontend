@@ -3,6 +3,24 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     methods:{
+        checkForm(){
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                form.addEventListener('submit', function (event: Event) {
+                    if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        },
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
             const userEmail = document.getElementById('user_email_signup') as HTMLInputElement;
@@ -56,6 +74,22 @@ export default defineComponent({
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
             messageContainer.style.visibility = "hidden"
+        },
+        showPassword(passwordID: string, imageID: string){
+            const password = document.getElementById(passwordID) as HTMLInputElement;
+            const eye = document.getElementById(imageID) as HTMLImageElement;
+            if (password.type == "password") {
+                password.type = "text";
+                eye.src = "src/assets/img/no-visibility.png";
+                console.log(password.type);
+                console.log(eye.src);
+            } else {
+                password.type = "password";
+                console.log(password.type);
+                eye.src = "src/assets/img/visibility.png";
+                console.log(eye.src);
+
+            }
         }
     }
     
@@ -64,87 +98,103 @@ export default defineComponent({
 
 <template>
     <body>
-        <div class="row">
-            <div class="col-6 col-md">
-                <div class="mb-3">
-                    <div class="with-icon">
-                        <label class="form-label">Nombre completo</label>
-                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionNameOnHover" @mouseleave="questionNameOutOfHover">
-                        <div class="tooltip-style" id="popover-name">
-                            Máximo 100 caracteres, sin números ni caracteres especiales.
+        <form class="needs-validation" novalidate>
+            <div class="row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <div class="with-icon">
+                            <label class="form-label">Nombre completo</label>
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionNameOnHover" @mouseleave="questionNameOutOfHover">
+                            <div class="tooltip-style" id="popover-name">
+                                Máximo 100 caracteres, sin números ni caracteres especiales.
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" required>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <div class="with-icon">
+                            <label class="form-label">Correo Institucional</label>
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionEmailOnHover" @mouseleave="questionEmailOutOfHover">
+                            <div class="tooltip-style" id="popover-email">
+                                Correo válido dentro del dominio “@tec” o “@itesm”.
+                            </div>
+                        </div>
+                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXX@tec.com" required @input="checkForm">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <div class="with-icon">
+                            <label class="form-label">Contraseña</label>
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
+                            <div class="tooltip-style" id="popover-password">
+                                Entre 8-50 caracteres, minimo una minúscula, una mayúscula y un número
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre">
                 </div>
-            </div>
-            <div class="col-6 col-md">
-                <div class="mb-3">
-                    <div class="with-icon">
-                        <label class="form-label">Correo Institucional</label>
-                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionEmailOnHover" @mouseleave="questionEmailOutOfHover">
-                        <div class="tooltip-style" id="popover-email">
-                            Correo válido dentro del dominio “@tec” o “@itesm”.
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <label class="form-label">Confirma tu contraseña</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXX@tec.com">
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-6 col-md">
-                <div class="mb-3">
-                    <div class="with-icon">
-                        <label class="form-label">Contraseña</label>
-                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
-                        <div class="tooltip-style" id="popover-password">
-                            Entre 8-50 caracteres, minimo una minúscula, una mayúscula y un número
-                        </div>
-                    </div>
-                    <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña">
-                </div>
-            </div>
-            <div class="col-6 col-md">
-                <div class="mb-3">
-                    <label class="form-label">Confirma tu contraseña</label>
-                    <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña">
-                </div>
-            </div>
-        </div>
 
-        <div class = "row">
-            <div class="col-6 col-md">
-                <div class="mb-3">
-                    <div class="with-icon">
-                        <label class="form-label">Matrícula</label>
-                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
-                        <div class="tooltip-style" id="popover-mat">
-                            Debe comenzar con 'a' o 'A' y seguida de 8 números.
+            <div class = "row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <div class="with-icon">
+                            <label class="form-label">Matrícula</label>
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
+                            <div class="tooltip-style" id="popover-mat">
+                                Debe comenzar con 'a' o 'A' y seguida de 8 números.
+                            </div>
                         </div>
+                        <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX" required>
                     </div>
-                    <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX">
+                </div>
+                <div class="col-6 col-md">
+                    <div class="input-group">
+                        <label class="dropdown-text-semester">Semestre</label>
+                        <select class="form-select" required>
+                            <option selected>Semestre</option>
+                            <option value="1">1º</option>
+                            <option value="2">2º</option>
+                            <option value="3">3º</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="dropdown-text-career">Carrera</label>
+                        <select class="form-select" required>
+                            <option selected>Carrera</option>
+                            <option value="1">ITC</option>
+                            <option value="2">LMT</option>
+                            <option value="3">LAD</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-6 col-md">
-                <div class="input-group">
-                    <label class="dropdown-text-semester">Semestre</label>
-                    <select class="form-select">
-                        <option selected>Semestre</option>
-                        <option value="1">1º</option>
-                        <option value="2">2º</option>
-                        <option value="3">3º</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label class="dropdown-text-career">Carrera</label>
-                    <select class="form-select">
-                        <option selected>Carrera</option>
-                        <option value="1">ITC</option>
-                        <option value="2">LMT</option>
-                        <option value="3">LAD</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        </form>
     </body>
 </template>
 
@@ -162,7 +212,11 @@ export default defineComponent({
         margin: 0;
         color: #26408B;
     }
-
+    span{
+        height: 6.6vh;
+        margin-bottom: -0.8vh;
+        width: 4vw;
+    }
     /* Text boxes and dropdowns */
     input, 
     .form-select {
@@ -191,6 +245,7 @@ export default defineComponent({
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
+        justify-items: center;
         margin: 1.3vh 0 0 0;
         width: 24vw;
     }
