@@ -30,6 +30,9 @@ export default defineComponent({
             myModal.addEventListener('shown.bs.modal', function () {
                 myInput.focus()
             });
+        },
+        sendForm(){
+            this.$emit('send-form');
         }
     }
 })
@@ -54,7 +57,7 @@ export default defineComponent({
         <div class="button-container">
             <div>
                 <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
-                <button class="bigger-buttons" id="signup-button"> Registrarse </button>
+                <button class="bigger-buttons" id="signup-button" @click="sendForm" > Registrarse </button>
             </div>
         </div>
 
