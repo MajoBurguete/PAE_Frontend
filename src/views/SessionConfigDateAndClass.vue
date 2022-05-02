@@ -10,7 +10,7 @@ const sessions = ref([]);
 export default defineComponent({
      mounted() {
          axios
-        .get(api + 'available_sessions/')
+        .get(api + 'available_sessions/?subject=TI1015')
         .then(result => {
             sessions.value = result.data
             console.log(sessions.value)
