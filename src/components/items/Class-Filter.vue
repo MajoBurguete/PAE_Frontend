@@ -30,14 +30,18 @@ export default defineComponent({
             table.style.boxShadow = "0px 0px 0px 2px #26408B";
             input.style.backgroundImage = "url(" + "src/assets/img/search-blue.png" + ")";
             table.style.color = "white";
-            check.style.borderColor = "white";
+            for(var i=0; i<check.length; i++){
+                check[i].style.borderColor = "white";
+            }
         } else {
             table.style.backgroundColor = "#E1F0EA";
             table.style.boxShadow = "0px 0px 0px 2px #C2E7D9";
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
-            check.style.borderColor = "#6F9492";
-            check.className = "form-check-input-green"
+            for(var i=0; i<check.length; i++){
+                check[i].style.borderColor = "white";
+                check[i].className = "form-check-input-green"
+            }
         }
         
     },

@@ -499,6 +499,7 @@ label {
     align-items: center;
     visibility: hidden;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .account-selection{
     display: flex;
