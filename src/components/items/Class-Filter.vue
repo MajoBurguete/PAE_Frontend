@@ -8,7 +8,7 @@ const subjects = ref([]);
 
 export default defineComponent({
     mounted() {
-         axios
+        axios
         .get(api + 'subjects/')
         .then(result => {
             subjects.value = result.data
@@ -35,9 +35,6 @@ export default defineComponent({
             td = document.getElementsByClassName('table-data');
             h1 = document.getElementsByTagName('h1');
 
-             
-
-
             
             for(i = 0; i < h1.length; i++){
                 txtValue = h1[i].textContent || h1[i].innerText;
@@ -48,8 +45,11 @@ export default defineComponent({
                     td[i].style.display = "none";
                 }
             }
-
-
+        },
+        changeCheck(event: Event) {
+            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            console.log(square);
+            
         }
     }
 })
@@ -70,8 +70,8 @@ export default defineComponent({
                     <tr v-for="(subject, i) in subjectList" :key="i">
                         <td class="table-data">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio"  id="check-input"  :value=subject.id >
-                                <label class="form-check-label" for="flexRadioDefault1">
+                                <input class="form-check-input" type="radio" name="form-radio-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
+                                <label class="form-check-label" for="check-input">
                                     <div class="text-container">
                                         <h1>{{ subject.name }}</h1>
                                         <h2>{{ subject.id }} | {{ subject.id_career[0] }}</h2>
@@ -113,6 +113,7 @@ export default defineComponent({
     .form-check-input{
         background-color: transparent;
         border-color: white;
+        min-width: 1.2vw;
     }
 
     .form-check-input:checked{

@@ -1,15 +1,15 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import ScheduleItem from "@/components/items/Schedule-Item.vue"
-import ClassFilter from "@/components/items/Class-Filter.vue"
+import ScheduleItem from "../components/items/Schedule-Item.vue"
+import ClassFilter from "../components/items/Class-Filter.vue"
 import axios from 'axios'
 
 const api = 'http://localhost:8000/api/'
 const sessions = ref([]);
 
 export default defineComponent({
-     mounted() {
-         axios
+    mounted() {
+        axios
         .get(api + 'available_sessions/')
         .then(result => {
             sessions.value = result.data
@@ -28,11 +28,11 @@ export default defineComponent({
             var sk = []
             for(var i=0; i<sessions.value.length; i++) {
                 sk.push(sessions.value[i].id_tutor__schedule__day_hour)
-            } 
+            }
             return sk
         }
     },
- 
+
     components: {
         ScheduleItem,
         ClassFilter

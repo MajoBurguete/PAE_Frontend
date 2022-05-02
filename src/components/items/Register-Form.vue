@@ -8,7 +8,7 @@ const careers = ref([]);
 export default defineComponent({
 
     mounted() {
-         axios
+        axios
         .get(api + 'careers/')
         .then(result => {
             careers.value = result.data
