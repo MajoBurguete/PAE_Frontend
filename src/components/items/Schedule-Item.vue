@@ -24,15 +24,13 @@ export default defineComponent({
             default: []
         }
     },
-    mounted(){
+    mounted() {
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
         const squares = document.getElementsByClassName("locked");
 
-
-        if(this.lockSchedule == "active"){
+        if(this.lockSchedule == "active") {
             clearButton.style.visibility = "visible"
-        }
-        else{
+        } else {
             this.lockedSchedule(clearButton); 
 
             console.log(this.scheduledHours);
@@ -271,6 +269,7 @@ button {
 .active {
     background-color: v-bind(baseColor);
 }
+
 
 .locked:hover {
     background-color: #00000000;

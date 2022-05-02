@@ -28,21 +28,29 @@ export default defineComponent({
         },
         place: {
             type: String
+        },
+        status: {
+            type: String
         }
     },
     mounted(){
         const editButton = document.getElementById('edit-button') as HTMLInputElement;
         const confirmButton = document.getElementById('confirm-button') as HTMLInputElement;
+        const statusContainer = document.getElementById('status-container') as HTMLInputElement;
 
 
         if(this.showAllButtons == "active"){
-            editButton.style.visibility = "visible"
-            confirmButton.style.visibility = "visible"
+            editButton.style.display = ""
+            confirmButton.style.display = ""
+            statusContainer.style.display ="none"
+
 
         }
         else{
-            editButton.style.visibility = "invisible"
-            confirmButton.style.visibility = "invisible"
+            editButton.style.display = "none"
+            confirmButton.style.display = "none"
+            statusContainer.style.display =""
+
 
         }
     }
@@ -64,6 +72,10 @@ export default defineComponent({
             <h3 class="card-subtitle">{{date}}</h3>
             <h2 class="card-title">Lugar</h2>
             <h3 class="card-subtitle">{{place}}</h3>
+            <div id="status-container">
+                <h2 class="card-title">Estatus</h2>
+                <h3 class="card-subtitle">{{status}}</h3>
+            </div>
             <a href="#" class="btn btn-primary" id="confirm-button">Confirmar Asesor&iacute;a</a>
             <a href="#" class="btn btn-primary" id="edit-button">Editar Asesor&iacute;a</a>
             <a href="#" class="btn btn-primary" id="cancel-button">Cancelar Asesor&iacute;a</a>

@@ -3,7 +3,9 @@
         <div class="container">
             <div class="left">
                 <button id="back-button">
-                    <img src="src/assets/img/left-arrow.png"/>
+                    <a href="date-and-class">
+                        <img src="src/assets/img/left-arrow.png"/>
+                    </a>
                 </button>
             </div>
             <div class="right">
@@ -14,13 +16,28 @@
                 <div class="file-container">
                     <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
                 </div>
-                <button id="send-button">Enviar</button>
+                <a href="feedback-survey" id="send-button">
+                    Enviar
+                </a>               
             </div>
         </div>
     </body>
 </template>
 
 <style scoped>
+
+    .container{
+        display: flex;
+        flex-direction: row;
+        min-width: 100vw;
+        padding: 0 2vw;
+        
+    }
+
+    .left{
+        margin-right: 10vw;
+    }
+
 
     h1{
         color: #6F9492;
@@ -32,6 +49,7 @@
         font-family: "Montserrat";
         font-weight: normal;
         color: #96BECC;
+        font-size: 3vh;
     }
 
     img{
@@ -41,17 +59,25 @@
     }
 
     button{
-        font-family: "Ubuntu";
-        font-weight: normal;
         border: transparent;
     }
 
     textarea{
         width: 45vw;
         height: 25vh;
-        margin: 3vh 0 0 0;
+        margin: 4vh 0;
         border: transparent;
         box-shadow: 0px 0px 0px 10px #DAF4EA;
+    }
+
+    a{
+        text-decoration: none;
+        font-family: "Ubuntu";
+        font-weight: normal;
+    }
+
+    .file-container{
+        margin-bottom: 5vh;
     }
 
     /*Button to come back*/

@@ -70,7 +70,7 @@ export default defineComponent({
         </div>
         <div class="container-side">
             <ClassFilter/>
-            <button>Continuar</button>
+            <a href="question"> Continuar </a>
         </div>
     </div>
 </template>
@@ -95,7 +95,7 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
 }
-button{
+a{
     font-family: "Ubuntu";
     font-weight: normal;
     background-color: #26408B;
@@ -104,6 +104,7 @@ button{
     border: transparent;
     font-size: 3vh;
     padding: 1vh 8vw;
+    text-decoration: none;
 }
 
 img{

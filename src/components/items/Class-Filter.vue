@@ -20,7 +20,25 @@ export default defineComponent({
         .catch(error => {
             console.log(error)
         })
+        
+        const table = document.getElementById('table') as HTMLInputElement;
+        const input = document.getElementById('search-input') as HTMLInputElement;
+        const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
 
+        if(this.paletteColor == "blue"){
+            table.style.backgroundColor = "#8B9FD9";
+            table.style.boxShadow = "0px 0px 0px 2px #26408B";
+            input.style.backgroundImage = "url(" + "src/assets/img/search-blue.png" + ")";
+            table.style.color = "white";
+            check.style.borderColor = "white";
+        } else {
+            table.style.backgroundColor = "#E1F0EA";
+            table.style.boxShadow = "0px 0px 0px 2px #C2E7D9";
+            input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
+            table.style.color = "#6F9492";
+            check.style.borderColor = "#6F9492";
+            check.className = "form-check-input-green"
+        }
         
     },
 
@@ -29,6 +47,14 @@ export default defineComponent({
             subjectList: subjects
         }
     },
+    
+    props: {
+        paletteColor: {
+            type: String,
+            default: "blue" 
+        }
+    },
+    
 
     methods: {
         searchElements(){
@@ -62,7 +88,7 @@ export default defineComponent({
 <template>
     <body>
         <div class="table-scroll">
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="table">
                 <thead>
                     <tr>
                         <td>
@@ -123,7 +149,6 @@ export default defineComponent({
     .form-check-input:checked{
         background-color: white;
     }
-
     /* Table styles */
 
     .table-scroll{
@@ -131,11 +156,8 @@ export default defineComponent({
     }
 
     table{
-        color: white;
         border-radius: 10px;
         border-style: hidden;
-        background-color: #8B9FD9;
-        box-shadow: 0px 0px 0px 2px #26408B;
         width: 40vw;
         margin: 0;
     }
@@ -167,7 +189,7 @@ export default defineComponent({
         width: 38vw;
         margin: 0 0 0.5vh 0.5vw;
         padding: 0.3vh 4vh;
-        background-image: url('src/assets/img/search-blue.png'); /* Add a search icon to input */
+        /*background-image: url('src/assets/img/loupe.png');*/
         background-position: 0.2vw 0.4vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 3.5%;
