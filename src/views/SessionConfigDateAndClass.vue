@@ -2,12 +2,16 @@
 import { defineComponent, ref, computed } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue"
 import ClassFilter from "../components/items/Class-Filter.vue"
+import { store, useStore } from '../store'
 import axios from 'axios'
 
 const api = 'http://localhost:8000/api/'
 const sessions = ref([]);
 
 export default defineComponent({
+    setup () {
+        const store = useStore()
+    },
     mounted() {
         axios
         .get(api + 'available_sessions/')
@@ -19,7 +23,6 @@ export default defineComponent({
             console.log(error)
         })
     },
-
     data() {
     },
 
@@ -45,6 +48,9 @@ export default defineComponent({
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
             messageContainer.style.display = "none";
+        },
+        saveAns(){
+            console.log(store.state.selectedClass);
         }
     }
 })
@@ -67,7 +73,7 @@ export default defineComponent({
         </div>
         <div class="container-side">
             <ClassFilter/>
-            <button>Continuar</button>
+            <button @click="saveAns">Continuar</button>
         </div>
     </div>
 </template>
