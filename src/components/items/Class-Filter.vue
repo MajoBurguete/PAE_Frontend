@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { store, useStore } from '../../store'
 import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
@@ -7,6 +8,9 @@ const api = 'http://localhost:8000/api/'
 const subjects = ref([]);
 
 export default defineComponent({
+    setup () {
+        const store = useStore()
+    },
     mounted() {
         axios
         .get(api + 'subjects/')
@@ -47,8 +51,8 @@ export default defineComponent({
             }
         },
         changeCheck(event: Event) {
-            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            console.log(square);
+            const className = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            store.commit('setClassName', className.value)
             
         }
     }
