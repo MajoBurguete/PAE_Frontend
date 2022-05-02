@@ -4,7 +4,8 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex'
 
 export interface State {
     selectedHours: String[],
-    selectedClass: String[]
+    selectedClass: String[],
+    sessionSelected: String
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -12,7 +13,8 @@ export const key: InjectionKey<Store<State>> = Symbol()
 export const store = createStore<State>({
     state: {
         selectedHours: [],
-        selectedClass: []
+        selectedClass: [],
+        sessionSelected: ""
     },
     mutations: {
         setHours(state, val){
@@ -20,6 +22,9 @@ export const store = createStore<State>({
         },
         setClassName(state, val){
             state.selectedClass = val;
+        },
+        setSessionSelected(state, val){
+            state.sessionSelected = val;
         }
     }
 })

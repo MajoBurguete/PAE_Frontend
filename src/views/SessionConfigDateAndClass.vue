@@ -48,9 +48,6 @@ export default defineComponent({
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
             messageContainer.style.display = "none";
-        },
-        saveAns(){
-            console.log(store.state.selectedClass);
         }
     }
 })
@@ -69,11 +66,11 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#6F9492" hover-color="transparent" lock-schedule="inactive" :scheduled-hours="getSessionList"/>
+            <ScheduleItem base-color="#6F9492" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getSessionList"/>
         </div>
         <div class="container-side">
             <ClassFilter/>
-            <button @click="saveAns">Continuar</button>
+            <button>Continuar</button>
         </div>
     </div>
 </template>

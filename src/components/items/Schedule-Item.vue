@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { store, useStore } from '../../store'
 
 export default defineComponent({
+    setup () {
+        const store = useStore()
+    },
     props: {
         baseColor: {
             type: String,
@@ -42,6 +46,10 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
+                        this.scheduledHours.shift(); 
+                        if(this.lockSchedule == "home-inactive"){ 
+                            squares[n].addEventListener("click", this.saveHourSelected); 
+                        }
                         squares[n].className = "active";
                         break;
                     }
@@ -51,9 +59,6 @@ export default defineComponent({
                 }
             }
         }
-    },
-    updated(){
-        this.fillSquares;
     },
     methods:{
         //Function to change the div color when it's been selected or unselected
@@ -84,14 +89,11 @@ export default defineComponent({
             }
 
             clearButton.style.visibility = "hidden";
-        },
-        fillSquares() {
-            var squares = document.getElementsByClassName('inactive');
-
-            console.log(this.scheduledHours)
-            console.log(squares)
-
-        }
+        }, 
+        saveHourSelected(event: Event){
+            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            store.commit('setSessionSelected', square.id);  
+        }  
     }
 })
 </script>
