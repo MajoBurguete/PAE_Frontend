@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SignupForm from '@/components/items/Register-Form.vue'
+import SignupForm from '../components/items/Register-Form.vue'
 
 export default defineComponent({
     components: {

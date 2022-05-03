@@ -1,10 +1,10 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
-    import SignupTutor from "@/components/SignupTutorForm.vue"
-    import SignupStudent from "@/components/SignupStudentForm.vue"
+    import SignupTutor from "../components/SignupTutorForm.vue"
+    import SignupStudent from "../components/SignupStudentForm.vue"
     import axios from 'axios'
-import router from "@/router";
+    import router from "@/router";
 
     /* const user = ref({
         username: '',
@@ -520,6 +520,7 @@ label {
     align-items: center;
     visibility: hidden;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .account-selection{
     display: flex;
