@@ -30,23 +30,21 @@ export default defineComponent({
     },
     mounted() {
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
-<<<<<<< HEAD
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
-=======
-        const squares = document.getElementsByClassName("locked");
+
         const dates = document.getElementsByClassName("date") as HTMLCollection;;
         if (this.showDate == "active"){
-            for(i = 0; i < 5; i++){
+            for(var i = 0; i < 5; i++){
                 dates[i].style.display = "";
             }
         }
         else{
-            for(i = 0; i < 5; i++){
+            for(var i = 0; i < 5; i++){
                 dates[i].style.display = "none";
             }
         }
->>>>>>> 8f5137df856b72998fdd08da7047e61fa7b7d3e4
+
         if(this.lockSchedule == "active") {
             clearButton.style.visibility = "visible"
         } else {
@@ -103,10 +101,10 @@ export default defineComponent({
             const currentDay = current.getDay();
             //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
             for(var i = -4; i < 5; i++){
-               if(currentDay+i == day) {
-                const date = (current.getDate()+i)+' '+(this.getMonth(current.getMonth()));
-                return date;
-               }
+                if(currentDay+i == day) {
+                    const date = (current.getDate()+i)+' '+(this.getMonth(current.getMonth()));
+                    return date;
+                }
             }
         },
         getMonth(date: Number){
