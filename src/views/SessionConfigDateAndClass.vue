@@ -1,41 +1,30 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import ScheduleItem from "../components/items/Schedule-Item.vue"
-import ClassFilter from "../components/items/Class-Filter.vue"
-import { store, useStore } from '../store'
-import axios from 'axios'
-
-const api = 'http://localhost:8000/api/'
-const sessions = ref([]);
+import ScheduleItem from "../components/items/Schedule-Item.vue";
+import ClassFilter from "../components/items/Class-Filter.vue";
+import { store, useStore } from '../store';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
     setup () {
         const store = useStore()
     },
-    mounted() {
-        axios
-        .get(api + 'available_sessions/')
-        .then(result => {
-            sessions.value = result.data
-            console.log(sessions.value)
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    },
+    
     data() {
-    },
-
-    computed: {
-        getSessionList() {
-            var sk = []
-            for(var i=0; i<sessions.value.length; i++) {
-                sk.push(sessions.value[i].id_tutor__schedule__day_hour)
-            }
-            return sk
+        return{
+            hours: []
         }
     },
-
+    computed: {
+        getHours(){
+            this.hours = store.state.hoursAvailable;
+            return this.hours;
+        },
+        ...mapGetters([
+            'getClassName',
+            'state'
+        ])
+    },
     components: {
         ScheduleItem,
         ClassFilter
@@ -66,11 +55,11 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#6F9492" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getSessionList"/>
+            <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
-            <ClassFilter/>
-            <a href="question"> Continuar </a>
+            <ClassFilter paletteColor="green"/>
+            <a href="/question"> Continuar </a>
         </div>
     </div>
 </template>
