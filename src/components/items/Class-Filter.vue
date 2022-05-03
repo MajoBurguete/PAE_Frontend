@@ -6,6 +6,7 @@ import axios from "axios";
 const api = 'http://localhost:8000/api/'
 
 const subjects = ref([]);
+const sessions = ref([]);
 
 export default defineComponent({
     setup () {
@@ -51,15 +52,13 @@ export default defineComponent({
             subjectList: subjects
         }
     },
-    
+
     props: {
         paletteColor: {
             type: String,
             default: "blue" 
         }
     },
-    
-
     methods: {
         searchElements(){
             var input, td, temp, h1, i, j, filter,  txtValue;
@@ -80,11 +79,23 @@ export default defineComponent({
                 }
             }
         },
-        changeCheck(event: Event) {
+
+        async changeCheck(event: Event) {
+            var sk = []
             const className = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            store.commit('setClassName', className.value)
-            
-        }
+            localStorage.setItem("classId", className.value);
+            localStorage.setItem("className", className.id);
+            store.commit('setClassName', className.value);
+
+            let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
+            this.sessions = response.data
+
+            for(var i=0; i<this.sessions.length; i++) {
+                sk.push(this.sessions[i].id_tutor__schedule__day_hour)
+            }
+
+            store.commit('setHoursAvailable', sk);
+        },
     }
 })
 </script>
