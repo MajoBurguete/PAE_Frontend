@@ -19,6 +19,10 @@ export default defineComponent({
             type: String,
             default: "active"
         },
+        showDate: {
+            type: String,
+            default: "active"
+        },
         scheduledHours:{
             type: Array,
             default: []
@@ -27,7 +31,17 @@ export default defineComponent({
     mounted() {
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
         const squares = document.getElementsByClassName("locked");
-
+        const dates = document.getElementsByClassName("date") as HTMLCollection;;
+        if (this.showDate == "active"){
+            for(i = 0; i < 5; i++){
+                dates[i].style.display = "";
+            }
+        }
+        else{
+            for(i = 0; i < 5; i++){
+                dates[i].style.display = "none";
+            }
+        }
         if(this.lockSchedule == "active") {
             clearButton.style.visibility = "visible"
         } else {
@@ -71,6 +85,55 @@ export default defineComponent({
                 }
             }
         },
+        currentDateTime(day: number) {
+            const current = new Date();
+            const currentDay = current.getDay();
+            //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
+            for(var i = -4; i < 5; i++){
+               if(currentDay+i == day) {
+                const date = (current.getDate()+i)+' '+(this.getMonth(current.getMonth()));
+                return date;
+               }
+            }
+        },
+        getMonth(date: Number){
+            if(date == 0){
+                return "Ene";
+            }
+            else if(date == 1){
+                return "Feb";
+            }
+            else if(date == 2){
+                return "Mar";
+            }
+            else if(date == 3){
+                return "Abr";
+            }
+            else if(date == 4){
+                return "May";
+            }
+            else if(date == 5){
+                return "Jun";
+            }
+            else if(date == 6){
+                return "Jul";
+            }
+            else if(date == 7){
+                return "Ago";
+            }
+            else if(date == 8){
+                return "Sep";
+            }
+            else if(date == 9){
+                return "Oct";
+            }
+            else if(date == 10){
+                return "Nov";
+            }
+            else if(date == 11){
+                return "Dic";
+            }
+        },
         clearSchedule(){
             const squares = document.getElementsByClassName("active");
             let lengthS = squares.length;
@@ -99,13 +162,28 @@ export default defineComponent({
 <template>
     <body>
         <div id="weekly-schedule">
-            <div class="row">
+            <div class="date-header">
                 <h2 class="col-sm-1"></h2>
-                <h2 class="col-sm" @click="changeBackgroundColor">Lun</h2>
-                <h2 class="col-sm" @click="changeBackgroundColor">Mar</h2>
-                <h2 class="col-sm" @click="changeBackgroundColor">Mie</h2>
-                <h2 class="col-sm" @click="changeBackgroundColor">Jue</h2>
-                <h2 class="col-sm" @click="changeBackgroundColor">Vie</h2>
+                <div class="day-date">
+                    <h2 class="col-sm-3" @click="changeBackgroundColor">Lunes</h2>
+                    <h2 class="date">{{currentDateTime(1)}}</h2>
+                </div>
+                <div class="day-date">
+                    <h2 class="col-sm-3" @click="changeBackgroundColor">Martes</h2>
+                    <h2 class="date">{{currentDateTime(2)}}</h2>
+                </div>
+                <div class="day-date">
+                    <h2 class="col-sm-3" @click="changeBackgroundColor">Miercoles</h2>
+                    <h2 class="date">{{currentDateTime(3)}}</h2>
+                </div>
+                <div class="day-date">
+                    <h2 class="col-sm-3" @click="changeBackgroundColor">Jueves</h2>
+                    <h2 class="date">{{currentDateTime(4)}}</h2>
+                </div>
+                <div class="day-date">
+                    <h2 class="col-sm-3" @click="changeBackgroundColor">Viernes</h2>
+                    <h2 class="date">{{currentDateTime(5)}}</h2>
+                </div>
             </div>
             <div class="row">
                 <h2 class="col-sm">8:00</h2>
@@ -220,10 +298,6 @@ body{
     align-items: center;
 }
 
-h2 {
-    font-size: 2vh;
-}
-
 button {
     font-family: "Ubuntu";
     font-weight: normal;
@@ -236,6 +310,20 @@ button {
     box-sizing: border-box;
     margin-top: 4vh;
 }
+.date-header{
+    display: flex;
+    direction: column;
+    height: 6vh;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+.day-date{
+    display: flex;
+    flex-flow: column wrap;
+    margin-right: 1.5vw;
+    margin-left: 1.5vw;
+}
 
 .row{
     margin: 0;
@@ -243,7 +331,7 @@ button {
 }
 
 .col-sm-1{
-    width: 2.85vw;
+    width: 3vw;
 }
 
 .col-sm,
@@ -251,7 +339,19 @@ button {
     text-align: center;
     padding: 1.5vh 0 0 0;
 }
+.col-sm-3{
+    text-align: center;
+    width: 5vw;
+    margin-bottom: 0.5vh;
+}
+.date{
+    color: gray;
 
+}
+h2 {
+    font-size: 2vh;
+    text-align: center;
+    }
 /* Class for when a div has been unselected */
 
 .inactive, 
