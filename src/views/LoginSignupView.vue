@@ -10,6 +10,22 @@
             SignupStudent
         },
         methods:{
+            showPassword(){
+                const password = document.getElementById("user_password_login") as HTMLInputElement;
+                const eye = document.getElementById("visibility_password_image_login") as HTMLImageElement;
+                if (password.type == "password") {
+                    password.type = "text";
+                    eye.src = "src/assets/img/no-visibility.png";
+                    console.log(password.type);
+                    console.log(eye.src);
+                } else {
+                    password.type = "password";
+                    console.log(password.type);
+                    eye.src = "src/assets/img/visibility.png";
+                    console.log(eye.src);
+
+                }
+            },
             cleanInputs(){
                 const userEmail = document.getElementById('user_email_login') as HTMLInputElement;
                 const userPassword = document.getElementById('user_password_login') as HTMLInputElement;
@@ -246,6 +262,24 @@
                 studentForm.style.transitionTimingFunction = "ease-in-out";
                 studentForm.style.visibility = "hidden";
 
+            },
+            checkForm(){
+                'use strict'
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms = document.querySelectorAll('.needs-validation')
+
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                    form.addEventListener('submit', function (event: Event) {
+                        if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
             }
         }
     })
@@ -297,21 +331,30 @@
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <div class="login-form" id="login-form">
-                    <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-                    <div class="form">
-                        <div class="mb-3">
-                            <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" id="user_email_login">
+                <form>
+                    <div class="login-form" id="login-form">
+                        <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
+                        <div class="form">
+                            <div class="mb-3">
+                                <label class="form-label">Correo</label>
+                                <input type="email" class="form-control" id="user_email_login" placeholder="A0XXXX@tec.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="user_password_login" placeholder="Contraseña" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" @click="showPassword">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="user_password_login">
-                        </div>
-                        <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
+                        <button id="signin-button" @click="checkForm">Iniciar Sesión</button>
                     </div>
-                    <button id="signin-button">Iniciar Sesión</button>
-                </div>
+                </form>
             </div>
         </div>
     </body>
@@ -364,7 +407,24 @@ input {
     border-width: 0.25vh;
     border-radius: 0.65vh;
 }
-
+span{
+        height: 6.2vh;
+        width: 3.5vw;
+        justify-content: center;
+    }
+.input-group-text{
+    height: 6.2vh;
+    width: 3.5vw;
+    padding: 0.5vh;
+}
+.input-group {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-items: center;
+        margin: 1.3vh 0 0 0;
+        width: 23vw;
+    }
 /*Flexbox which contains two divs (section-login y section-signup*/
 .flexContainer {
     display: flex;
@@ -419,6 +479,7 @@ lado izquierdo (container-login) */
     width: 90%;
     visibility: hidden;
 }
+
 
 .login-form {
     margin: 15vh 0 0 0;
@@ -557,6 +618,10 @@ label {
 /*Botón para ir al login */
 .login-button {
     margin: 5vh 0 0 0;
+}
+#visibility_password_image_login{
+    width: 2.5vw;
+    height: auto;
 }
 
 </style> 
