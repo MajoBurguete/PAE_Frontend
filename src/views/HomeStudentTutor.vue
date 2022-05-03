@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ScheduleItem from "@/components/items/Schedule-Item.vue"
-import SessionCard from "@/components/items/Session-Card.vue"
+import ScheduleItem from "../components/items/Schedule-Item.vue"
+import SessionCard from "../components/items/Session-Card.vue"
 
 export default defineComponent({
     components: {

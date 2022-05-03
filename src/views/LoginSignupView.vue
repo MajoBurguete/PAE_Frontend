@@ -1,8 +1,8 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
-    import SignupTutor from "@/components/SignupTutorForm.vue"
-    import SignupStudent from "@/components/SignupStudentForm.vue"
+    import SignupTutor from "../components/SignupTutorForm.vue"
+    import SignupStudent from "../components/SignupStudentForm.vue"
 
     const user = ref({
         username: '',
