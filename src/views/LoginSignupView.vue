@@ -3,16 +3,20 @@
     import { RouterLink, RouterView } from "vue-router";
     import SignupTutor from "@/components/SignupTutorForm.vue"
     import SignupStudent from "@/components/SignupStudentForm.vue"
+    import axios from 'axios'
+import router from "@/router";
 
-    const user = ref({
+    /* const user = ref({
         username: '',
         password: ''
-    })
+    }) */
 
     export default defineComponent({
         data() {
             return {
-                userData: user
+                username: '',
+                password: '',
+                token: localStorage.getItem('user-token') || null
             }
         },
 
@@ -96,6 +100,23 @@
 
                 this.cleanInputs();
 
+            },
+            login() {
+                axios
+                .post('http://localhost:8000/auth/', {
+                    username: this.username,
+                    password: this.password
+                })
+                .then(result => {
+                    this.token = result.data.token
+                    console.log(this.token)
+                    localStorage.setItem('user-token', result.data.token)
+                    router.push('http://localhost:3000/home')
+                })
+                .catch(error => {
+                    console.log(error)
+                    localStorage.removeItem('user-token')
+                })
             },
             toLogin() {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
@@ -311,18 +332,18 @@
                 </div>
                 <div class="login-form" id="login-form">
                     <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-                    <form class="form">
+                    <form class="form" @submit.prevent="login">
                         <div class="mb-3">
                             <label class="form-label">Matrícula</label>
-                            <input type="text" class="form-control" id="user_email_login" v-model="userData.username">
+                            <input type="text" class="form-control" id="user_email_login" v-model="username">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="user_password_login" v-model="userData.password">
+                            <input type="password" class="form-control" id="user_password_login" v-model="password">
                         </div>
                         <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
+                        <button id="signin-button">Iniciar Sesión</button>
                     </form>
-                    <button id="signin-button">Iniciar Sesión</button>
                 </div>
             </div>
         </div>
