@@ -26,20 +26,30 @@ export default defineComponent({
     },
     mounted() {
         const clearButton = document.getElementById('clear-button') as HTMLInputElement;
-        const squares = document.getElementsByClassName("locked");
+        const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
         if(this.lockSchedule == "active") {
             clearButton.style.visibility = "visible"
         } else {
             this.lockedSchedule(clearButton); 
-
-            console.log(this.scheduledHours);
+            this.checkLockedSchedule(squares);
+            
+        }
+    },
+    updated() {
+        const squares = document.getElementsByClassName("locked") as HTMLCollection;
+        this.checkLockedSchedule(squares);
+        
+    },
+    methods:{
+        checkLockedSchedule(squares: HTMLCollection){
 
             var i, j, n;
 
             n=0;
 
             const listL = squares.length;
+            this.clearLockedSchedule();
 
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
@@ -56,9 +66,7 @@ export default defineComponent({
                     }
                 }
             }
-        }
-    },
-    methods:{
+        },
         //Function to change the div color when it's been selected or unselected
         changeBackgroundColor(event: Event) {
             if(this.lockSchedule == "active"){
@@ -73,10 +81,35 @@ export default defineComponent({
         },
         clearSchedule(){
             const squares = document.getElementsByClassName("active");
+            const squares2 = document.getElementsByClassName("locked");
+
             let lengthS = squares.length;
+            let lengthS2 = squares2.length;
+
             for (var _i = 0; _i < lengthS; _i++) {
                 squares[0].className = "inactive";
             } 
+
+            for (var _i = 0; _i < lengthS2; _i++) {
+                squares2[0].className = "inactive";
+            } 
+            
+        },
+        clearLockedSchedule(){
+            const squares = document.getElementsByClassName("active");
+            const squaresSelect = document.getElementsByClassName("selected");
+
+            let lengthS = squares.length;
+            let lengthSel = squaresSelect.length;
+
+            for (var _i = 0; _i < lengthS; _i++) {
+                squares[0].className = "locked";
+            } 
+
+            for (var _i = 0; _i < lengthSel; _i++) {
+                squaresSelect[0].className = "locked";
+            } 
+            
         },
         lockedSchedule(clearButton: HTMLInputElement){
             const squares = document.getElementsByClassName("inactive");
@@ -90,7 +123,28 @@ export default defineComponent({
         }, 
         saveHourSelected(event: Event){
             const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            store.commit('setSessionSelected', square.id);  
+            const squares = document.getElementsByClassName("active") as HTMLCollection;
+            const squaresSelect = document.getElementsByClassName("selected") as HTMLCollection;
+
+            let lengthS = squares.length;
+            let lengthSel = squaresSelect.length;
+
+
+            for(var i=0; i<lengthS; i ++){
+                squares[i].className = "active";
+            }
+
+            for(var i=0; i<lengthSel; i ++){
+                squaresSelect[i].className = "active";
+            }
+
+
+            square.className = "selected";
+
+            localStorage.setItem("sessionSelected", square.id);
+
+            this.$store.commit('setSessionSelected', square.id);  
+            console.log(store.state.sessionSelected)
         }  
     }
 })
@@ -256,13 +310,18 @@ button {
 
 .inactive, 
 .active,
-.locked{
+.locked,
+.selected{
     width: 7vw;
     height: 4.5vh;
     border: 2.5px solid #000000;
     box-sizing: border-box;
     border-radius: 12px;
     margin: 0.5vh 0.5vw;
+}
+
+.selected{
+    background-color: #6F9492;
 }
 
 /* Class for when a div has been selected */
