@@ -5,6 +5,7 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex'
 export interface State {
     selectedHours: String[],
     selectedClass: String[],
+    hoursAvailable: String[],
     sessionSelected: String
 }
 
@@ -14,6 +15,7 @@ export const store = createStore<State>({
     state: {
         selectedHours: [],
         selectedClass: [],
+        hoursAvailable:[],
         sessionSelected: ""
     },
     mutations: {
@@ -23,9 +25,20 @@ export const store = createStore<State>({
         setClassName(state, val){
             state.selectedClass = val;
         },
+        setHoursAvailable(state, val){
+            state.hoursAvailable = val;
+        },
         setSessionSelected(state, val){
             state.sessionSelected = val;
         }
+    },
+    getters: {
+        getClassName: state => {
+            return state.selectedClass;
+        },
+        state(state) {
+            return state;
+          }
     }
 })
 
