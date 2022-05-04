@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SignupForm from '../components/items/Register-Form.vue'
+import router from "@/router";
 
 export default defineComponent({
     components: {
@@ -8,7 +9,8 @@ export default defineComponent({
     },
     methods: {
         backButton() {
-            this.$emit('back-button');
+            localStorage.setItem("fromSignupForm", "true")
+            router.push('http://localhost:3000/')
         }
     }
 })
@@ -17,13 +19,14 @@ export default defineComponent({
 
 <template>
     <body>
-        <SignupForm/>
-        <div class="button-container">
-            <div>
-                <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
-                <button class="bigger-buttons" id="signup-button"> Registrarse </button>
+        <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
+            <SignupForm/>
+            <div class="button-container">
+                <div>
+                    <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
+                    <button class="bigger-buttons" id="signup-button"> Registrarse </button>
+                </div>
             </div>
-        </div>
     </body>
 </template>
 
@@ -32,8 +35,13 @@ export default defineComponent({
 body{
     display: flex;
     flex-direction: column;
+    align-items: center;
     padding-bottom: 3vh;
-    z-index: 10;
+}
+
+img{
+    width: 15%;
+    height: 15%;
 }
 
 button {

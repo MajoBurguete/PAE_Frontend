@@ -4,12 +4,15 @@ import { defineComponent } from 'vue'
 import ScheduleItem from '@/components/items/Schedule-Item.vue'
 import SignupForm from '@/components/items/Register-Form.vue'
 import ClassModal from '@/components/items/Class-Modal.vue'
+import ClassFilter from "@/components/items/Class-Filter.vue"
+import router from "@/router";
 
 
 export default defineComponent({
     components: {
         ScheduleItem,
         SignupForm,
+        ClassFilter,
         ClassModal
     },
     data() {
@@ -18,8 +21,12 @@ export default defineComponent({
         }
     },
     methods: {
+        cleanInputs(){
+
+        },
         backButton() {
-            this.$emit('back-button');
+            localStorage.setItem("fromSignupForm", "true")
+            router.push('http://localhost:3000/')
         },
         showClasses(){
 
@@ -41,17 +48,24 @@ export default defineComponent({
 
 <template>
     <body>
+        <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
         <SignupForm/>
-        <div class = "schedule-instructions">
-            <label> Horario </label>
-            <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
-        </div>
-        <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85"/>
-        <div class="uf-container">
-            <div class="center">
-                <h1>Unidades de formación</h1>
-                <h2>Escoge las unidades de formación que asesorarás.</h2>
-                <button type="button" id="register-uf" data-bs-toggle="modal" data-bs-target="#class-modal">Registrar UFs</button>
+        <div class="tutor-elections">
+            <div class="schedule-info">
+                <div class="schedule-instructions">
+                    <label> Horario </label>
+                    <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
+                </div>
+                <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive"/>
+
+            </div>
+            <div class="uf-container">
+                <div class="center">
+                    <label>Unidades de formación</label>
+                    <h2>Escoge las unidades de formación que asesorarás.</h2>
+                    <ClassFilter/>
+                    <button type="button" id="register-uf" data-bs-toggle="modal" data-bs-target="#class-modal">Registrar UFs</button>
+                </div>
             </div>
         </div>
         <div class="button-container">
@@ -76,8 +90,15 @@ export default defineComponent({
     body{
         display: flex;
         flex-direction: column;
+        align-items: center;
         padding-bottom: 3vh;
     }
+
+    img{
+    width: 15%;
+    height: 15%;
+}
+
 
     h1{
         font-family: "Catamaran";
@@ -108,13 +129,24 @@ export default defineComponent({
             font-weight: bold;
             font-size: 3vh;
             color: #26408B;
-        }
+    }
+
+    .tutor-elections{
+        display: flex;
+        gap: 9vw;
+    }
 
     /* Bottom containers */
-    .uf-container, .button-container {
+    .uf-container, 
+    .button-container {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .uf-container{
+        width: 25vw;
+        align-content: center;
     }
 
     .button-container{
@@ -122,11 +154,16 @@ export default defineComponent({
     }
 
     .center{
-        margin-inline-start: -4vw;
+        margin: 0 0 0 0vw;
+        padding: 2vh 0 0 0vw;
+    }
+
+    .schedule-info{
+        margin: 0 0 0 -2vw;
     }
 
     .schedule-instructions{
-        padding: 2vh 0 0 9vw;
+        padding: 2vh 0 0 0vw;
     }
 
 

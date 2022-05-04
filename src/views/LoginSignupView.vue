@@ -1,8 +1,6 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
-    import SignupTutor from "../components/SignupTutorForm.vue"
-    import SignupStudent from "../components/SignupStudentForm.vue"
     import axios from 'axios'
     import router from "@/router";
 
@@ -19,12 +17,6 @@
                 token: localStorage.getItem('user-token') || null
             }
         },
-
-        components: {
-            SignupTutor,
-            SignupStudent
-        },
-
         methods:{
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
@@ -54,9 +46,8 @@
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
                 const signupSection =document.getElementById('section-signup') as HTMLInputElement;
                 const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
-                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
+                const loginContainer = document.getElementById('container-login') as HTMLInputElement; 
                 const loginForm = document.getElementById('login-form') as HTMLInputElement;
-                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
                 const formContainer = document.getElementById('form-container') as HTMLInputElement;
 
 
@@ -91,11 +82,11 @@
                 //Se hace una transición para aparecer el container
                 //del div lateral derecho
 
-                logingContainer.style.transitionProperty = "opacity";
-                logingContainer.style.transitionDuration = "350ms";
-                logingContainer.style.transitionTimingFunction = "ease-in-out";
-                logingContainer.style.opacity = "1";
-                logingContainer.style.visibility = "visible";
+                loginContainer.style.transitionProperty = "opacity";
+                loginContainer.style.transitionDuration = "350ms";
+                loginContainer.style.transitionTimingFunction = "ease-in-out";
+                loginContainer.style.opacity = "1";
+                loginContainer.style.visibility = "visible";
 
                 loginForm.style.transitionProperty = "opacity";
                 loginForm.style.transitionDuration = "350ms";
@@ -103,11 +94,6 @@
                 loginForm.style.opacity = "0";
                 loginForm.style.visibility = "hidden";
 
-                accountSelection.style.transitionProperty = "opacity";
-                accountSelection.style.transitionDuration = "350ms";
-                accountSelection.style.transitionTimingFunction = "ease-in-out";
-                accountSelection.style.opacity = "1";
-                accountSelection.style.visibility = "visible";
                 formContainer.style.transitionProperty = "opacity";
                 formContainer.style.transitionDuration = "350ms";
                 formContainer.style.transitionTimingFunction = "ease-in-out";
@@ -138,9 +124,8 @@
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
                 const signupSection = document.getElementById('section-signup') as HTMLInputElement;
                 const signupContainer = document.getElementById('container-signup') as HTMLInputElement;
-                const logingContainer = document.getElementById('container-login') as HTMLInputElement; 
+                const loginContainer = document.getElementById('container-login') as HTMLInputElement; 
                 const loginForm = document.getElementById('login-form') as HTMLInputElement;
-                const accountSelection = document.getElementById('account-selection') as HTMLInputElement;
                 const formContainer = document.getElementById('form-container') as HTMLInputElement;
 
                 //el div de la derecha se hace más grande y va cambiando su color
@@ -167,11 +152,11 @@
                 signupContainer.style.opacity = "1";
                 signupContainer.style.visibility = "visible"
 
-                logingContainer.style.transitionProperty = "opacity";
-                logingContainer.style.transitionDuration = "350ms";
-                logingContainer.style.transitionTimingFunction = "ease-in-out";
-                logingContainer.style.opacity = "0";
-                logingContainer.style.visibility = "hidden";
+                loginContainer.style.transitionProperty = "opacity";
+                loginContainer.style.transitionDuration = "350ms";
+                loginContainer.style.transitionTimingFunction = "ease-in-out";
+                loginContainer.style.opacity = "0";
+                loginContainer.style.visibility = "hidden";
 
                 loginForm.style.transitionProperty = "opacity";
                 loginForm.style.transitionDuration = "350ms";
@@ -179,20 +164,12 @@
                 loginForm.style.opacity = "1";
                 loginForm.style.visibility = "visible";
 
-                accountSelection.style.transitionProperty = "opacity";
-                accountSelection.style.transitionDuration = "350ms";
-                accountSelection.style.transitionTimingFunction = "ease-in-out";
-                accountSelection.style.opacity = "0";
-                accountSelection.style.visibility = "hidden";
-
                 formContainer.style.transitionProperty = "opacity";
                 formContainer.style.transitionDuration = "350ms";
                 formContainer.style.transitionTimingFunction = "ease-in-out";
                 formContainer.style.opacity = "0";
                 formContainer.style.visibility = "hidden";
 
-                this.returnFromSignupTutor();
-                this.returnFromSignupStudent();
             },
             changeStudentCardBackground(){
                 const studentCard = document.getElementById('card-student-body') as HTMLInputElement;
@@ -231,70 +208,10 @@
                 tutorTitle.style.color = "black";
             },
             toSignupTutorForm() {
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.visibility = "hidden";
-
-                tutorForm.style.transitionProperty = "opacity";
-                tutorForm.style.transitionDuration = "150ms";
-                tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.visibility = "visible";
-
-                formContainer.style.overflowY = "scroll";
-                
-            },
-            returnFromSignupTutor(){
-                const formContainer = document.getElementById('form-container') as HTMLInputElement;
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const tutorForm = document.getElementById('tutor-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.visibility = "visible";
-
-                tutorForm.style.transitionProperty = "opacity";
-                tutorForm.style.transitionDuration = "150ms";
-                tutorForm.style.transitionTimingFunction = "ease-in-out";
-                tutorForm.style.visibility = "hidden";
-
-                formContainer.style.overflowY = "hidden";
-                formContainer.scrollTo(0,0);
+                router.push('http://localhost:3000/tutor-signup')
             },
             toSignupStudentForm() {
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.visibility = "hidden";
-
-                studentForm.style.transitionProperty = "opacity";
-                studentForm.style.transitionDuration = "150ms";
-                studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.visibility = "visible";
-
-            },
-            returnFromSignupStudent(){
-                const electionSection = document.getElementById('election') as HTMLInputElement;
-                const studentForm = document.getElementById('student-register-form') as HTMLInputElement;
-
-                electionSection.style.transitionProperty = "opacity";
-                electionSection.style.transitionDuration = "350ms";
-                electionSection.style.transitionTimingFunction = "ease-in-out";
-                electionSection.style.visibility = "visible";
-
-                studentForm.style.transitionProperty = "opacity";
-                studentForm.style.transitionDuration = "150ms";
-                studentForm.style.transitionTimingFunction = "ease-in-out";
-                studentForm.style.visibility = "hidden";
-
+                router.push('http://localhost:3000/student-signup')
             },
             checkForm(){
                 'use strict'
@@ -352,8 +269,6 @@
                                 </div>
                             </div>
                         </div>
-                        <SignupStudent id="student-register-form"  v-on:back-button="returnFromSignupStudent"/>
-                        <SignupTutor id="tutor-register-form"  v-on:back-button="returnFromSignupTutor"/>
                     </div>
                 </div>
             </div>
@@ -369,8 +284,8 @@
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
-                                <label class="form-label">Correo</label>
-                                <input type="email" class="form-control" id="user_email_login" placeholder="A0XXXX@tec.com" required>
+                                <label class="form-label">Matrícula</label>
+                                <input type="email" class="form-control" id="user_email_login" placeholder="A0XXXX" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
@@ -427,7 +342,7 @@ img{
 }
 
 input {
-    width: 23vw;
+    width: 25vw;
     height: 6vh;
     border: 2px solid;
     border-radius: 1vh;
@@ -456,7 +371,7 @@ span{
         align-items: center;
         justify-items: center;
         margin: 1.3vh 0 0 0;
-        width: 23vw;
+        width: 25vw;
     }
 /*Flexbox which contains two divs (section-login y section-signup*/
 .flexContainer {
@@ -587,12 +502,6 @@ label {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-#tutor-register-form,
-#student-register-form{
-    visibility: hidden;
-    position: absolute;
-    margin-top: 20%;
 }
 
 .election {

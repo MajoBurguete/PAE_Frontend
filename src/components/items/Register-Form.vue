@@ -157,7 +157,7 @@ export default defineComponent({
                                 Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número
                             </div>
                         </div>
-                       <div class="input-group">
+                        <div class="input-group">
                             <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
@@ -172,7 +172,7 @@ export default defineComponent({
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
                             <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" required>
-                            <div class="input-group-append">
+                            <div class="input-group-append" id="pass-hide">
                                 <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
                                 </span>
@@ -227,6 +227,13 @@ export default defineComponent({
 
     body{
         padding: 0 0 0 2vw;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    .mb-3{
+        width: 40vw;
     }
 
     /* Input labels */
@@ -242,6 +249,7 @@ export default defineComponent({
         margin-bottom: -0.8vh;
         width: 4vw;
     }
+
     /* Text boxes and dropdowns */
     input, 
     .form-select {
@@ -256,7 +264,8 @@ export default defineComponent({
 
     input {
         height: 6.5vh;
-        width: 23.93vw;
+        width: 35vw;
+        padding: 0 0vw 0 0;
         margin: 0 0vw 0 0vw;
     }
 
@@ -269,10 +278,8 @@ export default defineComponent({
     .input-group {
         display: flex;
         flex-wrap: nowrap;
-        align-items: center;
-        justify-items: center;
         margin: 1.3vh 0 0 0;
-        width: 24vw;
+        width: 35vw;
     }
 
     .dropdown-text-semester{
@@ -285,8 +292,8 @@ export default defineComponent({
 
     /* Question button */
     .question{
-        width: 6%;
-        height: 6%;
+        width: 5%;
+        height: 5%;
         margin: 0 0 0vh 0;
     }
 
@@ -307,12 +314,13 @@ export default defineComponent({
         width: 11.7vw;
     }
 
-    #user_confirm_password_signup{
+    #user_confirm_password_signup,
+    #pass-hide{
         margin: 0.75vh 0 0 0;
     }
 
     .row {
-        gap: 3vw;
+        gap: 0.5vw;
         margin-top: 2vh;
     }
 
