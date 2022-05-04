@@ -1,8 +1,30 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import ScheduleItem from "@/components/items/Schedule-Item.vue"
-import ClassFilter from "@/components/items/Class-Filter.vue"
+import { defineComponent, ref, computed } from "vue";
+import ScheduleItem from "../components/items/Schedule-Item.vue";
+import ClassFilter from "../components/items/Class-Filter.vue";
+import { store, useStore } from '../store';
+import { mapGetters } from 'vuex';
+
 export default defineComponent({
+    setup () {
+        const store = useStore()
+    },
+    
+    data() {
+        return{
+            hours: []
+        }
+    },
+    computed: {
+        getHours(){
+            this.hours = store.state.hoursAvailable;
+            return this.hours;
+        },
+        ...mapGetters([
+            'getClassName',
+            'state'
+        ])
+    },
     components: {
         ScheduleItem,
         ClassFilter
@@ -33,11 +55,11 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#6F9492" hover-color="transparent"/>
+            <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
-            <ClassFilter/>
-            <a href="question"> Continuar </a>
+            <ClassFilter paletteColor="green"/>
+            <a href="/question"> Continuar </a>
         </div>
     </div>
 </template>

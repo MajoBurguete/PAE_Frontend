@@ -1,14 +1,30 @@
 <script lang="ts">
-    import { defineComponent } from "vue";
+    import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
-    import SignupTutor from "@/components/SignupTutorForm.vue"
-    import SignupStudent from "@/components/SignupStudentForm.vue"
+    import SignupTutor from "../components/SignupTutorForm.vue"
+    import SignupStudent from "../components/SignupStudentForm.vue"
+    import axios from 'axios'
+    import router from "@/router";
+
+    /* const user = ref({
+        username: '',
+        password: ''
+    }) */
 
     export default defineComponent({
+        data() {
+            return {
+                username: '',
+                password: '',
+                token: localStorage.getItem('user-token') || null
+            }
+        },
+
         components: {
             SignupTutor,
             SignupStudent
         },
+
         methods:{
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
@@ -100,6 +116,23 @@
 
                 this.cleanInputs();
 
+            },
+            login() {
+                axios
+                .post('http://localhost:8000/auth/', {
+                    username: this.username,
+                    password: this.password
+                })
+                .then(result => {
+                    this.token = result.data.token
+                    console.log(this.token)
+                    localStorage.setItem('user-token', result.data.token)
+                    router.push('http://localhost:3000/home')
+                })
+                .catch(error => {
+                    console.log(error)
+                    localStorage.removeItem('user-token')
+                })
             },
             toLogin() {
                 const loginSection = document.getElementById('section-login') as HTMLInputElement;
@@ -548,6 +581,7 @@ label {
     align-items: center;
     visibility: hidden;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .account-selection{
     display: flex;

@@ -1,34 +1,62 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { store, useStore } from '../../store'
+import axios from "axios";
+
+const api = 'http://localhost:8000/api/'
+
+const subjects = ref([]);
+const sessions = ref([]);
 
 export default defineComponent({
-    props: {
-        paletteColor: {
-            type: String,
-            default: "blue" 
-        }
+    setup () {
+        const store = useStore()
     },
-    mounted(){
+    mounted() {
+        axios
+        .get(api + 'subjects/')
+        .then(result => {
+            subjects.value = result.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+        
         const table = document.getElementById('table') as HTMLInputElement;
         const input = document.getElementById('search-input') as HTMLInputElement;
         const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
-
-
 
         if(this.paletteColor == "blue"){
             table.style.backgroundColor = "#8B9FD9";
             table.style.boxShadow = "0px 0px 0px 2px #26408B";
             input.style.backgroundImage = "url(" + "src/assets/img/search-blue.png" + ")";
             table.style.color = "white";
-            check.style.borderColor = "white";
-        }
-        else {
+            for(var i=0; i<check.length; i++){
+                check[i].style.borderColor = "white";
+            }
+        } else {
             table.style.backgroundColor = "#E1F0EA";
             table.style.boxShadow = "0px 0px 0px 2px #C2E7D9";
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
-            check.style.borderColor = "#6F9492";
-            check.className = "form-check-input-green"
+            for(var i=0; i<check.length; i++){
+                check[i].style.borderColor = "white";
+                check[i].className = "form-check-input-green"
+            }
+        }
+        
+    },
+
+    data() {
+        return {
+            subjectList: subjects
+        }
+    },
+
+    props: {
+        paletteColor: {
+            type: String,
+            default: "blue" 
         }
     },
     methods: {
@@ -40,7 +68,6 @@ export default defineComponent({
             td = document.getElementsByClassName('table-data');
             h1 = document.getElementsByTagName('h1');
 
-
             
             for(i = 0; i < h1.length; i++){
                 txtValue = h1[i].textContent || h1[i].innerText;
@@ -51,9 +78,24 @@ export default defineComponent({
                     td[i].style.display = "none";
                 }
             }
+        },
 
+        async changeCheck(event: Event) {
+            var sk = []
+            const className = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            localStorage.setItem("classId", className.value);
+            localStorage.setItem("className", className.id);
+            store.commit('setClassName', className.value);
 
-        }
+            let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
+            this.sessions = response.data
+
+            for(var i=0; i<this.sessions.length; i++) {
+                sk.push(this.sessions[i].id_tutor__schedule__day_hour)
+            }
+
+            store.commit('setHoursAvailable', sk);
+        },
     }
 })
 </script>
@@ -70,92 +112,14 @@ export default defineComponent({
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr v-for="(subject, i) in subjectList" :key="i">
                         <td class="table-data">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
+                                <input class="form-check-input" type="radio" name="form-radio-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
+                                <label class="form-check-label" for="check-input">
                                     <div class="text-container">
-                                        <h1>Estructura de datos</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Bases de datos</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Gráficas Computacionales</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
-                                    </div>
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-data">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <div class="text-container">
-                                        <h1>Modelación computaciónal de las leyes del movimiento</h1>
-                                        <h2>TC2005B | 1º | ITC | Ingeniería</h2>
+                                        <h1>{{ subject.name }}</h1>
+                                        <h2>{{ subject.id }} | {{ subject.id_career[0] }}</h2>
                                     </div>
                                 </label>
                             </div>
@@ -193,6 +157,8 @@ export default defineComponent({
 
     .form-check-input{
         background-color: transparent;
+        border-color: white;
+        min-width: 1.2vw;
     }
 
     .form-check-input:checked{
