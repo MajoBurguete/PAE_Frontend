@@ -167,7 +167,7 @@ export default defineComponent({
     /* Table styles */
 
     .table-scroll{
-        padding: 0vh 0vw 3vh 0vw;
+        padding: 3vh 3vw 3vh 3vw;
     }
 
     table{

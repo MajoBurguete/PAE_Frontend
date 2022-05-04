@@ -1,6 +1,6 @@
 <script lang="ts">
     import { defineComponent } from 'vue'
-    import ClassFilter from "@/components/items/Class-Filter.vue"
+    import ClassFilter from "../items/Class-Filter.vue"
 
 
     export default defineComponent({
@@ -13,7 +13,7 @@
 
 <template>
     <body>
-        <ClassFilter />
+        <ClassFilter/>
         <div class="button-container">
             <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close"> Cancelar </button>
             <button id="save-button"> Guardar cambios </button>

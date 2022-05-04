@@ -63,7 +63,6 @@ export default defineComponent({
                 <div class="center">
                     <label>Unidades de formación</label>
                     <h2>Escoge las unidades de formación que asesorarás.</h2>
-                    <ClassFilter/>
                     <button type="button" id="register-uf" data-bs-toggle="modal" data-bs-target="#class-modal">Registrar UFs</button>
                 </div>
             </div>
