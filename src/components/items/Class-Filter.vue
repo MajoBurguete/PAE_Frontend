@@ -94,6 +94,8 @@ export default defineComponent({
                 sk.push(this.sessions[i].id_tutor__schedule__day_hour)
             }
 
+            this.$emit('class-checked')
+
             store.commit('setHoursAvailable', sk);
         },
     }
