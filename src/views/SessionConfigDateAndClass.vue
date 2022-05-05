@@ -9,10 +9,21 @@ export default defineComponent({
     setup () {
         const store = useStore()
     },
-    
+    mounted(){
+        const subjectC = localStorage.getItem("className");
+        if(subjectC != null){
+            if(store.state.hoursAvailable.length == 0){
+                this.legendDescription = "No hay horarios disponibles para esta materia"
+            }
+            else{
+                this.legendDescription = "Selecciona alguno de los horarios disponibles"
+            }
+        }
+    },
     data() {
         return{
-            hours: []
+            hours: [],
+            classLegend: "Escoge la materia para tu asesoría"
         }
     },
     computed: {
@@ -20,10 +31,14 @@ export default defineComponent({
             this.hours = store.state.hoursAvailable;
             return this.hours;
         },
-        ...mapGetters([
-            'getClassName',
-            'state'
-        ])
+        legendDescription: {
+            get() {
+                return this.classLegend;
+            },
+            set(val) {
+                this.classLegend = val;
+            }
+        }
     },
     components: {
         ScheduleItem,
@@ -37,6 +52,22 @@ export default defineComponent({
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
             messageContainer.style.display = "none";
+        },
+        emptyLegend(){
+            this.legendDescription = "No hay horarios disponibles para esta materia"
+            /* 
+            const subjectC = localStorage.getItem("className");
+            if(subjectC != null){
+                if(store.state.hoursAvailable.length == 0){
+                    this.legendDescription = "No hay horarios disponibles para esta materia"
+                }
+                else{
+                    this.legendDescription = "Selecciona alguno de los horarios disponibles"
+                }
+            } */
+        },
+        changeLegend(){
+            this.legendDescription = "Selecciona alguno de los horarios disponibles"
         }
     }
 })
@@ -58,13 +89,19 @@ export default defineComponent({
             <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
-            <ClassFilter paletteColor="green"/>
+            <h1 class="class-legend"> {{legendDescription}} </h1>
+            <ClassFilter paletteColor="green" v-on:empty-list="emptyLegend" v-on:hours-available="changeLegend" />
             <a href="/question"> Continuar </a>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+.class-legend{
+    margin: 10vh 0 3vh 0;
+}
+
 .container{
     display: flex;
     min-width: 100vw;

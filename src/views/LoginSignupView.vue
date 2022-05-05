@@ -285,12 +285,12 @@
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" id="user_email_login" placeholder="A0XXXXXXX"  @input="checkForm" required>
+                                <input type="text" class="form-control" id="user_email_login" v-model="username" placeholder="A0XXXXXXX"  @input="checkForm" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="user_password_login" placeholder="Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="user_password_login"  v-model="password" placeholder="Contraseña"  @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
@@ -300,7 +300,7 @@
                             </div>
                             <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>
-                        <button id="signin-button" type="submit">Iniciar Sesión</button>
+                        <button id="signin-button" type="submit" @click="login">Iniciar Sesión</button>
                     </div>
                 </form>
             </div>
