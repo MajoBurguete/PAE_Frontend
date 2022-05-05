@@ -2,7 +2,7 @@
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
-    import router from "@/router";
+    import router from "../router";
 
     /* const user = ref({
         username: '',
@@ -279,18 +279,18 @@
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <form>
+                <form class="needs-validation" novalidate  @submit.prevent="checkForm">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
-                                <input type="email" class="form-control" id="user_email_login" placeholder="A0XXXX" required>
+                                <input type="text" class="form-control" id="user_email_login" placeholder="A0XXXXXXX"  @input="checkForm" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="user_password_login" placeholder="Contraseña" required>
+                                    <input type="password" class="form-control" id="user_password_login" placeholder="Contraseña"  @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
@@ -300,7 +300,7 @@
                             </div>
                             <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>
-                        <button id="signin-button" @click="checkForm">Iniciar Sesión</button>
+                        <button id="signin-button" type="submit">Iniciar Sesión</button>
                     </div>
                 </form>
             </div>

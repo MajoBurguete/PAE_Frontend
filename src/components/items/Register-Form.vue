@@ -292,8 +292,8 @@ export default defineComponent({
 
     /* Question button */
     .question{
-        width: 5%;
-        height: 5%;
+        width: 4%;
+        height: 4%;
         margin: 0 0 0vh 0;
     }
 
