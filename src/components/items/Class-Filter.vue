@@ -23,30 +23,37 @@ export default defineComponent({
         })
         
         const table = document.getElementById('table') as HTMLInputElement;
-        const input = document.getElementById('search-input') as HTMLInputElement;
-        const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
-
+        const input = document.getElementById('search-input') as HTMLInputElement;        
         if(this.paletteColor == "blue"){
             table.style.backgroundColor = "#8B9FD9";
             table.style.boxShadow = "0px 0px 0px 2px #26408B";
             input.style.backgroundImage = "url(" + "src/assets/img/search-blue.png" + ")";
-            table.style.color = "white";
-            for(var i=0; i<check.length; i++){
-                check[i].style.borderColor = "white";
-            }
+            table.style.color = "white";            
         } else {
             table.style.backgroundColor = "#E1F0EA";
             table.style.boxShadow = "0px 0px 0px 2px #C2E7D9";
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
-            for(var i=0; i<check.length; i++){
-                check[i].style.borderColor = "white";
-                check[i].className = "form-check-input-green"
-            }
         }
         
     },
+    updated(){
+        const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+        const checkL = check.length;
+        if(this.paletteColor == "blue"){
+            for(var i=0; i<checkL; i++){
+                console.log(i)
+                console.log(check[i])
+                check[i].type = "checkbox";
+            }
+        }
+        else {
+           for(var i=0; i<checkL; i++){
+                check[i].type = "radio";
+            } 
+        }
 
+    },
     data() {
         return {
             subjectList: subjects
@@ -89,7 +96,7 @@ export default defineComponent({
 
             let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
             this.sessions = response.data
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
             for(var i=0; i<this.sessions.length; i++) {
                 sk.push(this.sessions[i].id_tutor__schedule__day_hour)
             }
@@ -117,7 +124,7 @@ export default defineComponent({
                     <tr v-for="(subject, i) in subjectList" :key="i">
                         <td class="table-data">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="form-radio-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
+                                <input class="form-check-input" type="radio" name="form-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
                                 <label class="form-check-label" for="check-input">
                                     <div class="text-container">
                                         <h1>{{ subject.name }}</h1>
@@ -161,6 +168,14 @@ export default defineComponent({
         background-color: transparent;
         border-color: white;
         min-width: 1.2vw;
+    }
+    .form-check-input-green{
+        background-color: transparent;
+        border-color: green;
+        min-width: 1.2vw;
+    }
+    .form-check-input-green:checked{
+        background-color: green;
     }
 
     .form-check-input:checked{
