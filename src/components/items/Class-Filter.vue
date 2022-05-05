@@ -101,7 +101,12 @@ export default defineComponent({
                 sk.push(this.sessions[i].id_tutor__schedule__day_hour)
             }
 
-            this.$emit('class-checked')
+            if(sk.length == 0){
+                this.$emit('empty-list')
+            }
+            else{
+                this.$emit('hours-available')
+            }
 
             store.commit('setHoursAvailable', sk);
         },
