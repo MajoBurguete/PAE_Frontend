@@ -104,12 +104,15 @@
 
             },
             login() {
+                const errorMess = document.getElementById('login-error') as HTMLInputElement;
+                
                 axios
                 .post('http://localhost:8000/auth/', {
                     username: this.username,
                     password: this.password
                 })
                 .then(result => {
+                    errorMess.style.visibility = "hidden";
                     this.token = result.data.token
                     console.log(this.token)
                     localStorage.setItem('user-token', result.data.token)
@@ -118,6 +121,9 @@
                 .catch(error => {
                     console.log(error)
                     localStorage.removeItem('user-token')
+
+                    errorMess.style.visibility = "visible"
+
                 })
             },
             toLogin() {
@@ -214,7 +220,7 @@
                 router.push('http://localhost:3000/student-signup')
             },
             checkForm(){
-                'use strict'
+                /* 'use strict'
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
                 const forms = document.querySelectorAll('.needs-validation')
 
@@ -223,13 +229,13 @@
                     .forEach(function (form) {
                     form.addEventListener('submit', function (event: Event) {
                         if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                            event.preventDefault()
+                            event.stopPropagation()
                         }
 
                         form.classList.add('was-validated')
                     }, false)
-                })
+                }) */
             }
         }
     })
@@ -297,6 +303,7 @@
                                         </span>
                                     </div>
                                 </div>
+                                <h3 class="error-message" id="login-error"> Tu usuario o tu contraseña es incorrecto </h3>
                             </div>
                             <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>
@@ -310,62 +317,64 @@
 
 <style scoped>
 
-/* General styles */
-h1 {
-    color: white;
-    font-size: 9vh;
-    font-family: "Montserrat";
-    font-weight: bold;
-    margin: 0 0 5vh 0;
-}
-h3 {
-    font-family: "Montserrat";
-    font-weight: normal;
-    font-size: 2vh;
-    color: white;
-    margin: 1.5vh 0 0 0;
-}
-button {
-    font-family: "Ubuntu";
-    font-weight: normal;
-    background-color: white;
-    color: #0F084B;
-    border-radius: 12px;
-    border: transparent;
-    font-size: 5vh;
-    padding: 2vh 2vw;
-}
+    /* General styles */
+    h1 {
+        color: white;
+        font-size: 9vh;
+        font-family: "Montserrat";
+        font-weight: bold;
+        margin: 0 0 5vh 0;
+    }
+    h3 {
+        font-family: "Montserrat";
+        font-weight: normal;
+        font-size: 2vh;
+        color: white;
+        margin: 1.5vh 0 0 0;
+    }
+    button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        background-color: white;
+        color: #0F084B;
+        border-radius: 12px;
+        border: transparent;
+        font-size: 5vh;
+        padding: 2vh 2vw;
+    }
 
-img{
-    width: 35%;
-    height: 35%;
-}
+    img{
+        width: 35%;
+        height: 35%;
+    }
 
-input {
-    width: 25vw;
-    height: 6vh;
-    border: 2px solid;
-    border-radius: 1vh;
-    font-family: "Catamaran";
-    font-weight: normal;
-    font-size: 2.5vh;
-    padding: 0vh 0.4vw 0vh 0.4vw;
-    margin: 0;
-    border-color: black;
-    border-width: 0.25vh;
-    border-radius: 0.65vh;
-}
-span{
+    input {
+        width: 25vw;
+        height: 6vh;
+        border: 2px solid;
+        border-radius: 1vh;
+        font-family: "Catamaran";
+        font-weight: normal;
+        font-size: 2.5vh;
+        padding: 0vh 0.4vw 0vh 0.4vw;
+        margin: 0;
+        border-color: black;
+        border-width: 0.25vh;
+        border-radius: 0.65vh;
+    }
+
+    span{
         height: 6.2vh;
         width: 3.5vw;
         justify-content: center;
     }
-.input-group-text{
-    height: 6.2vh;
-    width: 3.5vw;
-    padding: 0.5vh;
-}
-.input-group {
+
+    .input-group-text{
+        height: 6.2vh;
+        width: 3.5vw;
+        padding: 0.5vh;
+    }
+    .input-group {
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
@@ -373,199 +382,209 @@ span{
         margin: 1.3vh 0 0 0;
         width: 25vw;
     }
-/*Flexbox which contains two divs (section-login y section-signup*/
-.flexContainer {
-    display: flex;
-    background-image: url("src/assets/img/patternF7.png");
-    width: 100vw;
-    height: 100vh;
-    background-size: cover;
-}
 
-.section-login {
-    box-sizing: border-box;
-    flex: 1;
-    width: 40vw;
-    height: 100%;
-    background-color: transparent;
-    display: flex;
-    position: relative;
-    align-items: center;
-    padding: 0 0 0 1.5vw;
-}
-/*Seccion que aparece en el lateral derecho durante el signup*/
-.section-signup {
-    padding: 5vh;
-    box-sizing: border-box;
-    background-color: white;
-    width:60vw;
-    height: 100%;
-    position: relative;
-}
-.login-message {
-    text-align:end;
-    margin: 0 -8vw 0 0;
-}
-/*Contenedor del lateral derecho (container-signup) y contenedor del 
-lado izquierdo (container-login) */
-.container-signup,
-.container-login{
-    margin: 32vh 0 0 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding: 5vh;
-    align-items: center;
-}
+    /*Flexbox which contains two divs (section-login y section-signup*/
+    .flexContainer {
+        display: flex;
+        background-image: url("src/assets/img/patternF7.png");
+        width: 100vw;
+        height: 100vh;
+        background-size: cover;
+    }
 
-.container-signup {
-    z-index: 9;
-}
-.container-login {
-    opacity: 0;
-    position: absolute;
-    width: 90%;
-    visibility: hidden;
-}
+    .section-login {
+        box-sizing: border-box;
+        flex: 1;
+        width: 40vw;
+        height: 100%;
+        background-color: transparent;
+        display: flex;
+        position: relative;
+        align-items: center;
+        padding: 0 0 0 1.5vw;
+    }
 
+    /*Seccion que aparece en el lateral derecho durante el signup*/
+    .section-signup {
+        padding: 5vh;
+        box-sizing: border-box;
+        background-color: white;
+        width:60vw;
+        height: 100%;
+        position: relative;
+    }
 
-.login-form {
-    margin: 15vh 0 0 0;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    z-index: 10;
-}
+    .login-message {
+        text-align:end;
+        margin: 0 -8vw 0 0;
+    }
+    /*Contenedor del lateral derecho (container-signup) y contenedor del 
+    lado izquierdo (container-login) */
+    .container-signup,
+    .container-login{
+        margin: 32vh 0 0 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        padding: 5vh;
+        align-items: center;
+    }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 5vh 0 0 0;
-}
-
-#signin-button {
-    font-size: 2.3vh;
-    background-color: #26408B;
-    color: white;
-    padding: 1vh 4vw;
-    margin: 3vh 0 0 0;
-}
-
-.login-h3,
-label {
-    font-family: "Catamaran";
-    font-weight: bold;
-    color:#26408B;
-    font-size: 2.5vh;
-    margin: 3.5vh 0 0 0;
-}
-.login-question-h3 {
-    font-family: "Catamaran";
-    font-weight: normal;
-    color:#26408B;
-    margin: 2vh 0 0 0;
-    text-decoration: underline;
-}
-.login-question-h3:hover{
-    cursor: pointer;
-    font-weight: bold;
-}
+    .container-signup {
+        z-index: 9;
+    }
+    .container-login {
+        opacity: 0;
+        position: absolute;
+        width: 90%;
+        visibility: hidden;
+    }
 
 
-/* Sección para crear una cuenta */
-.row {
-    gap: 5vw;
-    margin: 0 2.5vw;
-    z-index: 10;
-}
+    .login-form {
+        margin: 15vh 0 0 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+    }
 
-#account-type-h1 {
-    margin: 5vh 0;
-    font-weight: bolder;
-    font-size: 5vh;
-    color: black;
-}
+    .form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 5vh 0 0 0;
+    }
 
-.form-container {
-    height: 95%;
-    opacity: 0;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    visibility: hidden;
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
-.account-selection{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    #signin-button {
+        font-size: 2.3vh;
+        background-color: #26408B;
+        color: white;
+        padding: 1vh 4vw;
+        margin: 3vh 0 0 0;
+    }
 
-.election {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 7vh;
-}
+    .login-h3,
+    label {
+        font-family: "Catamaran";
+        font-weight: bold;
+        color:#26408B;
+        font-size: 2.5vh;
+        margin: 3.5vh 0 0 0;
+    }
+    .login-question-h3 {
+        font-family: "Catamaran";
+        font-weight: normal;
+        color:#26408B;
+        margin: 2vh 0 0 0;
+        text-decoration: underline;
+    }
+    .login-question-h3:hover{
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-.card {
-    padding: 0;
-    border: 0;
-    border-radius: 1rem;
-}
+    .error-message{
+        color: rgb(221, 31, 31);
+        visibility: hidden;
+        font-family: "Catamaran";
+        font-weight: lighter;
+    }
 
-.card-img-top{
-    width: 50%;
-    height: 40%;
-}
 
-#student-img{
-    margin: 6.3vh 5vw;
-}
+    /* Sección para crear una cuenta */
+    .row {
+        gap: 5vw;
+        margin: 0 2.5vw;
+        z-index: 10;
+    }
 
-#tutor-img{
-    margin: 6vh 5vw;
-}
+    #account-type-h1 {
+        margin: 5vh 0;
+        font-weight: bolder;
+        font-size: 5vh;
+        color: black;
+    }
 
-#card-student {
-    background-color: #A6CFD5;
-}
+    .form-container {
+        height: 95%;
+        opacity: 0;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        visibility: hidden;
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+    .account-selection{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-#card-student-body,
-#card-tutor-body{
-    height: 45%;
-    background-color: white;
-    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.25);
-    border-radius: 0 0 1rem 1rem;
-    padding: 4vh 3vw;
-}
+    .election {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 7vh;
+    }
 
-#card-tutor{
-    background-color: #A4B7E3;
-}
+    .card {
+        padding: 0;
+        border: 0;
+        border-radius: 1rem;
+    }
 
-.card-title{
-    font-family: "Montserrat";
-    font-weight: bold;
-    font-size: 4vh;
-    text-align: center;
-}
+    .card-img-top{
+        width: 50%;
+        height: 40%;
+    }
 
-/*Botón para ir al signup*/
-.signup{
-    margin: 11.5vh 0 0 0;
-}
-/*Botón para ir al login */
-.login-button {
-    margin: 5vh 0 0 0;
-}
-#visibility_password_image_login{
-    width: 2.5vw;
-    height: auto;
-}
+    #student-img{
+        margin: 6.3vh 5vw;
+    }
+
+    #tutor-img{
+        margin: 6vh 5vw;
+    }
+
+    #card-student {
+        background-color: #A6CFD5;
+    }
+
+    #card-student-body,
+    #card-tutor-body{
+        height: 45%;
+        background-color: white;
+        box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.25);
+        border-radius: 0 0 1rem 1rem;
+        padding: 4vh 3vw;
+    }
+
+    #card-tutor{
+        background-color: #A4B7E3;
+    }
+
+    .card-title{
+        font-family: "Montserrat";
+        font-weight: bold;
+        font-size: 4vh;
+        text-align: center;
+    }
+
+    /*Botón para ir al signup*/
+    .signup{
+        margin: 11.5vh 0 0 0;
+    }
+    /*Botón para ir al login */
+    .login-button {
+        margin: 5vh 0 0 0;
+    }
+    #visibility_password_image_login{
+        width: 2.5vw;
+        height: auto;
+    }
 
 </style> 
 
