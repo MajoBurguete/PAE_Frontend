@@ -1,7 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { store, useStore } from '../store'
-import { mapGetters } from 'vuex'
 import router from "../router"
 import axios from "axios";
 
@@ -22,19 +20,11 @@ const id_admin_verify = ref (null)
 
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
-    computed: {
-        ...mapGetters([
-            'getClassName'
-        ])
-    },
     data(){
         return{
-            classIdS: localStorage.getItem("classId"),
-            classNameS: localStorage.getItem("className"),
-            sessionSel: this.getSessionDate(localStorage.getItem("sessionSelected")),
+            classIdS: sessionStorage.getItem("classId"),
+            classNameS: sessionStorage.getItem("className"),
+            sessionSel: this.getSessionDate(sessionStorage.getItem("sessionSelected")),
             questionVal: ""
         }
     },

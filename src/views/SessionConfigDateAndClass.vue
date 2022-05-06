@@ -1,18 +1,15 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue";
 import ClassFilter from "../components/items/Class-Filter.vue";
-import { store, useStore } from '../store';
 import { mapGetters } from 'vuex';
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
     mounted(){
-        const subjectC = localStorage.getItem("className");
+        const subjectC = sessionStorage.getItem("className");
+        const hoursA = JSON.parse(sessionStorage.getItem("hoursAvailable"))
         if(subjectC != null){
-            if(store.state.hoursAvailable.length == 0){
+            if(hoursA.length == 0){
                 this.legendDescription = "No hay horarios disponibles para esta materia"
             }
             else{
@@ -26,10 +23,19 @@ export default defineComponent({
             classLegend: "Escoge la materia para tu asesoría"
         }
     },
+    updated(){
+        console.log(JSON.parse(sessionStorage.getItem("hoursAvailable")))
+        this.getHours = JSON.parse(sessionStorage.getItem("hoursAvailable"))
+    },
     computed: {
-        getHours(){
-            this.hours = store.state.hoursAvailable;
-            return this.hours;
+        getHours:{
+            get(){
+                return this.hours;
+            },
+            set(val){
+                console.log("hours", JSON.parse(sessionStorage.getItem("hoursAvailable")))
+                this.hours = val;
+            }
         },
         legendDescription: {
             get() {
@@ -55,19 +61,10 @@ export default defineComponent({
         },
         emptyLegend(){
             this.legendDescription = "No hay horarios disponibles para esta materia"
-            /* 
-            const subjectC = localStorage.getItem("className");
-            if(subjectC != null){
-                if(store.state.hoursAvailable.length == 0){
-                    this.legendDescription = "No hay horarios disponibles para esta materia"
-                }
-                else{
-                    this.legendDescription = "Selecciona alguno de los horarios disponibles"
-                }
-            } */
         },
         changeLegend(){
             this.legendDescription = "Selecciona alguno de los horarios disponibles"
+            this.getHours
         }
     }
 })
@@ -86,7 +83,7 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-inactive" :scheduled-hours="getHours"/>
+            <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
             <h1 class="class-legend"> {{legendDescription}} </h1>
@@ -100,6 +97,8 @@ export default defineComponent({
 
 .class-legend{
     margin: 10vh 0 3vh 0;
+    font-size: 4vh;
+    text-align: center;
 }
 
 .container{

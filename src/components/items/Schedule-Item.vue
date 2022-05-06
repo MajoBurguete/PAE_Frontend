@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { store, useStore } from '../../../../store'
+import { store, useStore } from '../../store'
 
 export default defineComponent({
     setup () {
@@ -37,7 +37,8 @@ export default defineComponent({
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
 
-        const dates = document.getElementsByClassName("date") as HTMLCollection;;
+        const dates = document.getElementsByClassName("date") as HTMLCollection;
+
         if (this.showDate == "active"){
             for(var i = 0; i < 5; i++){
                 dates[i].style.display = "";
@@ -55,7 +56,7 @@ export default defineComponent({
             this.lockedSchedule(clearButton); 
             this.checkLockedSchedule(squares);
             
-        }
+        } 
     },
     updated() {
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
@@ -220,7 +221,15 @@ export default defineComponent({
 
             if(this.fromSignupT == "true"){
                 this.selectedHoursTC = square.id;
-                console.log(this.selectedHoursTC)
+
+                var hoursSelect = []
+
+
+                for(var i=0; i<this.selectedHoursTC.length; i++){
+                    hoursSelect.push(this.selectedHoursTC[i]);
+                }
+
+                sessionStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
             }
             else{
                 if(this.lockSchedule == "home-active"){
@@ -235,13 +244,9 @@ export default defineComponent({
 
                     square.className = "selected";
 
-                    localStorage.setItem("sessionSelected", square.id);
+                    sessionStorage.setItem("sessionSelected", square.id);
                 }
             }
-
-
-            /* this.$store.commit('setSessionSelected', square.id);  
-            console.log(store.state.sessionSelected) */
         }  
     }
 })

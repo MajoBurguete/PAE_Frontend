@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { store, useStore } from '../../store/index'
 import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
@@ -9,9 +8,6 @@ const subjects = ref([]);
 const sessions = ref([]);
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
     mounted() {
         axios
         .get(api + 'subjects/')
@@ -105,15 +101,24 @@ export default defineComponent({
 
             if(this.paletteColor == "blue"){
                 this.selectedClassC = classSelected.value;
-                console.log(this.selectedClassC)
+
+                var classesSelect = []
+
+
+                for(var i=0; i<this.selectedClassC.length; i++){
+                    console.log(this.selectedClassC[i])
+                    classesSelect.push(this.selectedClassC[i]);
+                }
+
+                sessionStorage.setItem("classesSelected", JSON.stringify(classesSelect));
+
             }
             else{
                 var sk = []
-                localStorage.setItem("classId", classSelected.value);
-                localStorage.setItem("className", classSelected.id);
-                store.commit('setClassName', classSelected.value);
+                sessionStorage.setItem("classId", classSelected.value);
+                sessionStorage.setItem("className", classSelected.id);
 
-                let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
+                let response = await axios.get(api + 'available_sessions/?subject='+ sessionStorage.getItem("classId"))
                 this.sessions = response.data
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 for(var i=0; i<this.sessions.length; i++) {
@@ -127,7 +132,7 @@ export default defineComponent({
                     this.$emit('hours-available')
                 }
 
-                store.commit('setHoursAvailable', sk);
+                sessionStorage.setItem("hoursAvailable", JSON.stringify(sk));
             }
         },
     }
