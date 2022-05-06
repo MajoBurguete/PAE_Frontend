@@ -40,7 +40,7 @@ export default defineComponent({
                         Asesoria Agendada
                     </div>
                 </div>
-                <ScheduleItem base-color="#365295" lock-schedule="home-inactive" :scheduledHours="hours"/>
+                <ScheduleItem base-color="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
             </div>
             <div class="card-container">
                     <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
