@@ -104,6 +104,7 @@
 
             },
             login() {
+                const errorMess = document.getElementById('login-error') as HTMLInputElement;
                 axios
                 .post('http://localhost:8000/auth/', {
                     username: this.username,
@@ -118,6 +119,7 @@
                 .catch(error => {
                     console.log(error)
                     localStorage.removeItem('user-token')
+                    errorMess.style.visibility = "visible"
                 })
             },
             toLogin() {
@@ -214,7 +216,7 @@
                 router.push('http://localhost:3000/student-signup')
             },
             checkForm(){
-                'use strict'
+/*                 'use strict'
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
                 const forms = document.querySelectorAll('.needs-validation')
 
@@ -229,7 +231,7 @@
 
                         form.classList.add('was-validated')
                     }, false)
-                })
+                }) */
             }
         }
     })
@@ -297,6 +299,7 @@
                                         </span>
                                     </div>
                                 </div>
+                                <h3 class="error-message" id="login-error"> Tu usuario o tu contraseña es incorrecto </h3>
                             </div>
                             <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>
@@ -335,7 +338,12 @@ button {
     font-size: 5vh;
     padding: 2vh 2vw;
 }
-
+.error-message{
+        color: rgb(221, 31, 31);
+        visibility: hidden;
+        font-family: "Catamaran";
+        font-weight: lighter;
+    }
 img{
     width: 35%;
     height: 35%;

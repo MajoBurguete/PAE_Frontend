@@ -57,13 +57,12 @@ export default defineComponent({
             // Loop over them and prevent submission
             Array.prototype.slice.call(forms)
                 .forEach(function (form) {
+                form.classList.add('was-validated')
                 form.addEventListener('submit', function (event: Event) {
                     if (!form.checkValidity()) {
                         event.preventDefault()
                         event.stopPropagation()
                     }
-
-                    form.classList.add('was-validated')
 
                 }, false)
             })
@@ -97,9 +96,6 @@ export default defineComponent({
             .catch(error => {
                 console.log(error);
             })
-
-
-
         },
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
@@ -190,7 +186,7 @@ export default defineComponent({
                                 Máximo 100 caracteres, sin números ni caracteres especiales.
                             </div>
                         </div>
-                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" required>
+                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" minlength="1" maxlength="100" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -202,7 +198,7 @@ export default defineComponent({
                                 Correo válido dentro del dominio “@tec” o “@itesm”.
                             </div>
                         </div>
-                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" required >
+                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required >
                     </div>
                 </div>
             </div>
@@ -217,7 +213,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -230,7 +226,7 @@ export default defineComponent({
                     <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" required>
+                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append" id="pass-hide">
                                 <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
@@ -250,14 +246,14 @@ export default defineComponent({
                                 Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
-                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" required>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
                         <select v-model="semester" class="form-select" required>
-                            <option disabled selected value>Semestre</option>
+                            <!-- <option disabled selected value>Semestre</option> -->
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
@@ -272,7 +268,7 @@ export default defineComponent({
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
                         <select v-model="userCareer" class="form-select" required>
-                            <option disabled selected value>Carrera</option>
+                            <!-- <option disabled selected value>Carrera</option> -->
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>

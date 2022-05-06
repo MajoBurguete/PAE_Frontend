@@ -16,7 +16,7 @@
         <ClassFilter/>
         <div class="button-container">
             <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close"> Cancelar </button>
-            <button id="save-button"> Guardar cambios </button>
+            <button id="save-button" data-bs-dismiss="modal" aria-label="Close"> Guardar cambios </button>
         </div>
     </body>
 </template>
