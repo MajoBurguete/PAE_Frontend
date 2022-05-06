@@ -47,7 +47,7 @@ export default defineComponent({
                 <ScheduleItem base-color="#365295" lock-schedule="home-inactive" :scheduledHours="hours"/>
             </div>
             <div class="card-container">
-                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
+                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" showAllButtons="inactive" status="En revisión" />
                     <a href="date-and-class"> Agendar nueva asesoría </a>
             </div>
         </div>
