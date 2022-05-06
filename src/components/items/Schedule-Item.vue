@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { store, useStore } from '../../store'
+import { store, useStore } from '../../../../store'
 
 export default defineComponent({
     setup () {
@@ -17,7 +17,7 @@ export default defineComponent({
         },
         lockSchedule: {
             type: String,
-            default: "active"
+            default: "inactive"
         },
         showDate: {
             type: String,
@@ -26,6 +26,10 @@ export default defineComponent({
         scheduledHours:{
             type: Array,
             default: []
+        },
+        fromSignupT:{
+            type: String,
+            default: "false"
         }
     },
     mounted() {
@@ -45,7 +49,7 @@ export default defineComponent({
             }
         }
 
-        if(this.lockSchedule == "active") {
+        if(this.lockSchedule == "inactive") {
             clearButton.style.visibility = "visible"
         } else {
             this.lockedSchedule(clearButton); 
@@ -58,6 +62,26 @@ export default defineComponent({
         this.checkLockedSchedule(squares);
         
     },
+    data(){
+        return{
+            selectedHoursT: []
+        }
+    },
+    computed: {
+        selectedHoursTC: {
+            get() {
+                return this.selectedHoursT;
+            },
+            set(val){
+                const found = this.selectedHoursT.indexOf(val);
+                if(found == -1) {
+                    this.selectedHoursT.push(val);
+                } else {
+                    this.selectedHoursT.splice(found, 1);
+                }
+            }
+        }
+    },  
     methods:{
         checkLockedSchedule(squares: HTMLCollection){
 
@@ -71,10 +95,7 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
-                        this.scheduledHours.shift(); 
-                        if(this.lockSchedule == "home-inactive"){ 
-                            squares[n].addEventListener("click", this.saveHourSelected); 
-                        }
+                        this.scheduledHours.shift();
                         squares[n].className = "active";
                         break;
                     }
@@ -86,7 +107,7 @@ export default defineComponent({
         },
         //Function to change the div color when it's been selected or unselected
         changeBackgroundColor(event: Event) {
-            if(this.lockSchedule == "active"){
+            if(this.lockSchedule == "inactive"){
                 const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
                 if((square.className) == "inactive"){
                     square.className = "active";
@@ -95,6 +116,7 @@ export default defineComponent({
                     square.className = "inactive";
                 }
             }
+            this.saveHourSelected(event);
         },
         currentDateTime(day: number) {
             const current = new Date();
@@ -188,6 +210,7 @@ export default defineComponent({
             clearButton.style.visibility = "hidden";
         }, 
         saveHourSelected(event: Event){
+            
             const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
             const squares = document.getElementsByClassName("active") as HTMLCollection;
             const squaresSelect = document.getElementsByClassName("selected") as HTMLCollection;
@@ -195,22 +218,30 @@ export default defineComponent({
             let lengthS = squares.length;
             let lengthSel = squaresSelect.length;
 
+            if(this.fromSignupT == "true"){
+                this.selectedHoursTC = square.id;
+                console.log(this.selectedHoursTC)
+            }
+            else{
+                if(this.lockSchedule == "home-active"){
+                    for(var i=0; i<lengthS; i ++){
+                        squares[i].className = "active";
+                    }
 
-            for(var i=0; i<lengthS; i ++){
-                squares[i].className = "active";
+                    for(var i=0; i<lengthSel; i ++){
+                        squaresSelect[i].className = "active";
+                    }
+
+
+                    square.className = "selected";
+
+                    localStorage.setItem("sessionSelected", square.id);
+                }
             }
 
-            for(var i=0; i<lengthSel; i ++){
-                squaresSelect[i].className = "active";
-            }
 
-
-            square.className = "selected";
-
-            localStorage.setItem("sessionSelected", square.id);
-
-            this.$store.commit('setSessionSelected', square.id);  
-            console.log(store.state.sessionSelected)
+            /* this.$store.commit('setSessionSelected', square.id);  
+            console.log(store.state.sessionSelected) */
         }  
     }
 })

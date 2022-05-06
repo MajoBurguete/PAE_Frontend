@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { store, useStore } from '../../store'
+import { store, useStore } from '../../store/index'
 import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
@@ -42,13 +42,11 @@ export default defineComponent({
         const checkL = check.length;
         if(this.paletteColor == "blue"){
             for(var i=0; i<checkL; i++){
-                console.log(i)
-                console.log(check[i])
                 check[i].type = "checkbox";
             }
         }
         else {
-           for(var i=0; i<checkL; i++){
+            for(var i=0; i<checkL; i++){
                 check[i].type = "radio";
             } 
         }
@@ -56,10 +54,25 @@ export default defineComponent({
     },
     data() {
         return {
-            subjectList: subjects
+            subjectList: subjects,
+            selectedClass: []
         }
     },
-
+    computed: {
+        selectedClassC: {
+            get() {
+                return this.selectedClass;
+            },
+            set(val){
+                const found = this.selectedClass.indexOf(val);
+                if(found == -1) {
+                    this.selectedClass.push(val);
+                } else {
+                    this.selectedClass.splice(found, 1);
+                }
+            }
+        }
+    },
     props: {
         paletteColor: {
             type: String,
@@ -88,27 +101,34 @@ export default defineComponent({
         },
 
         async changeCheck(event: Event) {
-            var sk = []
-            const className = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            localStorage.setItem("classId", className.value);
-            localStorage.setItem("className", className.id);
-            store.commit('setClassName', className.value);
+            const classSelected = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
 
-            let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
-            this.sessions = response.data
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-            for(var i=0; i<this.sessions.length; i++) {
-                sk.push(this.sessions[i].id_tutor__schedule__day_hour)
-            }
-
-            if(sk.length == 0){
-                this.$emit('empty-list')
+            if(this.paletteColor == "blue"){
+                this.selectedClassC = classSelected.value;
+                console.log(this.selectedClassC)
             }
             else{
-                this.$emit('hours-available')
-            }
+                var sk = []
+                localStorage.setItem("classId", classSelected.value);
+                localStorage.setItem("className", classSelected.id);
+                store.commit('setClassName', classSelected.value);
 
-            store.commit('setHoursAvailable', sk);
+                let response = await axios.get(api + 'available_sessions/?subject='+ store.state.selectedClass)
+                this.sessions = response.data
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                for(var i=0; i<this.sessions.length; i++) {
+                    sk.push(this.sessions[i].id_tutor__schedule__day_hour)
+                } 
+
+                if(sk.length == 0){
+                    this.$emit('empty-list')
+                }
+                else{
+                    this.$emit('hours-available')
+                }
+
+                store.commit('setHoursAvailable', sk);
+            }
         },
     }
 })

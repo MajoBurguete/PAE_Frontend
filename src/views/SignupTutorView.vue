@@ -32,24 +32,21 @@ export default defineComponent({
     },
     data() {
         return{
-            showModal:false,
-            careerList: careers
+            careerList: careers,
+            username: null,
+            userpassword: null,
+            userId: "",
+            userMail: "",
+            semester: 0,
+            userCareer: "",
+            tutorSubjects: [],
+            tutorSchedule: []
         }
     },
     methods: {
         backButton() {
             localStorage.setItem("fromSignupForm", "true")
             router.push('http://localhost:3000/')
-        },
-        showClasses(){
-
-            var myModal = document.getElementById('class-modal') as HTMLInputElement;
-            var myInput = document.getElementById('register-uf') as HTMLInputElement;
-            
-
-            myModal.addEventListener('shown.bs.modal', function () {
-                myInput.focus()
-            });
         },
         checkForm(){
             'use strict'
@@ -68,6 +65,40 @@ export default defineComponent({
                     form.classList.add('was-validated')
                 }, false)
             })
+
+            this.createUser();
+        },
+        async createUser(){
+            let postUser = await axios
+            .post(api + "users/", {
+                username: this.userId,
+                password: this.userpassword,
+                email: this.userMail,
+                first_name: this.username
+            })
+
+            const userNumId = postUser.data.id
+
+            axios
+            .post(api + "pae_users/", {
+                id: userNumId,
+                semester: this.semester,
+                career: this.userCareer,
+                user_type: 1,
+                status: 0
+            })
+
+
+            .then(result => {
+                console.log(result.data);
+                router.push("/")
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+
+
         },
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
@@ -158,7 +189,7 @@ export default defineComponent({
                                 Máximo 100 caracteres, sin números ni caracteres especiales.
                             </div>
                         </div>
-                        <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" required>
+                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -170,7 +201,7 @@ export default defineComponent({
                                 Correo válido dentro del dominio “@tec” o “@itesm”.
                             </div>
                         </div>
-                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" required @input="checkForm">
+                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" required @input="checkForm">
                     </div>
                 </div>
             </div>
@@ -185,7 +216,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
+                            <input type="password" v-model="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -218,13 +249,13 @@ export default defineComponent({
                                 Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
-                        <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" required>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
-                        <select class="form-select" required>
+                        <select v-model="semester" class="form-select" required>
                             <option disabled selected value>Semestre</option>
                             <option value="1">1º</option>
                             <option value="2">2º</option>
@@ -239,9 +270,9 @@ export default defineComponent({
                     </div>
                     <div class="input-group">
                         <label class="dropdown-text-career" required>Carrera</label>
-                        <select class="form-select">
+                        <select v-model="userCareer" class="form-select">
                             <option disabled selected value>Carrera</option>
-                            <option v-for="(career, i) in careerList" :key="i" value="{{ career.id }}">{{ career.id }}</option>
+                            <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>
                 </div>
@@ -252,7 +283,7 @@ export default defineComponent({
                         <label class="section-title"> Horario </label>
                         <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
                     </div>
-                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive"/>
+                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true"/>
 
                 </div>
                 <div class="uf-container">
@@ -360,7 +391,7 @@ export default defineComponent({
     }
 
     .schedule-info{
-        margin: 0 0 0 -2vw;
+        margin: 0 0 0 0vw;
     }
 
     .schedule-instructions{
