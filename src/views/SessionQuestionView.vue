@@ -4,9 +4,8 @@ import { store, useStore } from '../store'
 import { mapGetters } from 'vuex'
 import router from "../router"
 import axios from "axios";
-
+import NavBar from "../components/Navbar.vue"
 const now = new Date();
-
 const api = 'http://localhost:8000/api/'
 var id_subject = ref ("")
 var description = ref ("")
@@ -19,9 +18,10 @@ const spot = ref (null)
 const request_time = ref (now.toISOString())
 const verify_time = ref (null)
 const id_admin_verify = ref (null)
-
-
 export default defineComponent({
+    components: {
+        NavBar
+    },
     setup () {
         const store = useStore()
     },
@@ -224,7 +224,6 @@ export default defineComponent({
         postSession(){
             id_subject.value = this.classId;
             description.value = this.questionVal;
-
             var session = {'description': description.value, 'date': date.value, 'file': file.value, 'status': status.value, 'spot': spot.value, 'request_time': request_time.value, 'verify_time': verify_time.value, 'id_subject': id_subject.value, 'id_tutor': id_tutor.value, 'id_student': id_student.value, 'id_admin_verify': id_admin_verify.value}
             /* var newSession = {'description': session.value.description, 'date': session.value.date, 'file': session.value.file, 'status': session.value.status, 'spot': session.value.spot, 'request_time': session.value.request_time, 'verify_time': session.value.verify_time, 'id_subject': session.value.id_subject, 'id_tutor': session.value.id_tutor, 'id_student': session.value.id_student, 'id_admin_verify': session.value.id_admin_verify} */
             axios
@@ -235,7 +234,6 @@ export default defineComponent({
             .catch(error => {
                 console.log(error)
             })
-
             router.push("/home")
         }
     }
@@ -244,6 +242,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <body>
         <div class="container">
             <div class="left">
@@ -281,7 +282,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
     .container{
         display: flex;
         flex-direction: row;
@@ -289,35 +289,28 @@ export default defineComponent({
         padding: 0 2vw;
         
     }
-
     .left{
         margin-right: 10vw;
     }
-
-
     h1{
         color: #6F9492;
         font-family: "Montserrat";
         font-weight: bolder;
     }
-
     h2{
         font-family: "Montserrat";
         font-weight: normal;
         color: #96BECC;
         font-size: 3vh;
     }
-
     img{
         width: 30%;
         height: 50%;
         margin: -7.5vh 0 0 0;
     }
-
     button{
         border: transparent;
     }
-
     textarea{
         width: 45vw;
         height: 25vh;
@@ -325,19 +318,15 @@ export default defineComponent({
         border: transparent;
         box-shadow: 0px 0px 0px 10px #DAF4EA;
     }
-
     a{
         text-decoration: none;
         font-family: "Ubuntu";
         font-weight: normal;
     }
-
     .file-container{
         margin-bottom: 5vh;
     }
-
     /*Button to come back*/
-
     #back-button{
         font-size: 8vh;
         background-color: #6F9492;
@@ -346,16 +335,13 @@ export default defineComponent({
         height: 6vh;
         padding: 0vh 0;
     }
-
     #plus-icon{
         width: 10%;
         height: 10%;
         margin: 3vh 0 0 0;
         cursor: pointer;
     }
-
     /* Button to send request */
-
     #send-button{
         text-decoration: none;
         font-family: "Ubuntu";
@@ -366,35 +352,28 @@ export default defineComponent({
         padding: 1vh 7vw;
         border-radius: 10px;
     }
-
     /* Modal */
-
     .modal-content{
         padding: 2vh 0.5vw 2vh 1vw;
     }
-
     .className,
     .sessionSel,
     .questionVal{
         color: black;
         font-family: "Catamaran";
     }
-
     .className{
         font-size: 5vh;
         font-weight: bold;
     }
-
     .sessionSel{
         font-weight: medium;
         font-size: 3vh;
     }
-
     .questionVal{
         font-weight: lighter;
         font-size: 3vh;
     }
-
     #confirm-button{
         background-color: #365295;
         font-family: "Ubuntu";
@@ -405,9 +384,7 @@ export default defineComponent({
         border-radius: 7px;
         padding: 0.5vh 2vw;
     }
-
-
-
-
-
+    header {
+        margin-bottom: 9vh;
+    }
 </style>

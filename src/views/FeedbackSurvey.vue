@@ -1,4 +1,17 @@
+<script lang="ts">
+import NavBar from "../components/Navbar.vue"
+import { defineComponent} from "vue";
+export default defineComponent({
+    components: {
+        NavBar
+    }
+})
+</script>
+
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container">
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
@@ -158,5 +171,7 @@ a {
     margin: 3vh;
     text-decoration: none;
 }
-
+header {
+    margin-bottom: 7vh;
+}
 </style>

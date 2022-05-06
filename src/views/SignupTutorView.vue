@@ -395,7 +395,7 @@ export default defineComponent({
     }
 
     .schedule-info{
-        margin: 0 0 0 -2vw;
+        margin: 0 0 0 0;
     }
 
     .schedule-instructions{

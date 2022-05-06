@@ -2,11 +2,12 @@
 import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
-
+import NavBar from "../components/Navbar.vue"
 export default defineComponent({
     components: {
         ScheduleItem,
-        SessionCard
+        SessionCard,
+        NavBar
     },
     data() {
         return{
@@ -27,6 +28,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <body>
         <div class="container">
             <div class="schedule-container">
@@ -56,7 +60,6 @@ export default defineComponent({
         font-weight: bolder;
         font-size: 4vh;
     }
-
     img{
         width: 2vw;
         height: auto;
@@ -71,7 +74,6 @@ export default defineComponent({
         overflow-y: visible;
         width: 11.7vw;
     }
-
     a{
         font-family: "Ubuntu";
         font-weight: normal;
@@ -84,12 +86,10 @@ export default defineComponent({
         margin-top: 3vh;
         text-decoration: none;
     }
-
     .container {
         display: flex;
         gap:5vw;
     }
-
     .title-container{
         display: flex;
         gap: 1vw;
@@ -97,14 +97,12 @@ export default defineComponent({
         justify-content: center;
         margin: 1vh;
     }
-
     .card-container{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
     }
-
     #selected{
         height: 2vh;
         width: auto;
@@ -114,7 +112,8 @@ export default defineComponent({
         height: 2vh;
         width: auto;
         filter: invert(58%) sepia(44%) saturate(287%) hue-rotate(167deg) brightness(93%) contrast(89%);
-
     }
-
+    header {
+        margin-bottom: 7vh;
+    }
 </style>
