@@ -4,6 +4,7 @@ import { store, useStore } from '../store'
 import { mapGetters } from 'vuex'
 import router from "../router"
 import axios from "axios";
+import NavBar from "../components/Navbar.vue"
 
 const now = new Date();
 
@@ -22,6 +23,9 @@ const id_admin_verify = ref (null)
 
 
 export default defineComponent({
+    components: {
+        NavBar
+    },
     setup () {
         const store = useStore()
     },
@@ -244,6 +248,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <body>
         <div class="container">
             <div class="left">
@@ -404,6 +411,9 @@ export default defineComponent({
         width: fit-content;
         border-radius: 7px;
         padding: 0.5vh 2vw;
+    }
+    header {
+        margin-bottom: 9vh;
     }
 
 

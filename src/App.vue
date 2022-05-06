@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { defineComponent } from "vue";
-import { RouterLink, RouterView } from "vue-router";
-import NavBar from "@/components/Navbar.vue"
-
+  import { defineComponent } from "vue";
+  import { RouterLink, RouterView } from "vue-router";
 </script>
 
 <template>
-  <header>
-    <NavBar></NavBar>
-  </header>
-
   <RouterView class="router-view"/>
 </template>
 
 <style>
 
 .router-view{
-  padding: 8vh 0vw 0 0;
   min-width: 100vw;
 }
 
