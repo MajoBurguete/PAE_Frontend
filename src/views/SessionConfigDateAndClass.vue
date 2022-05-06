@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue";
 import ClassFilter from "../components/items/Class-Filter.vue";
-import { mapGetters } from 'vuex';
+import NavBar from "../components/Navbar.vue"
 
 export default defineComponent({
     mounted(){
@@ -48,7 +48,8 @@ export default defineComponent({
     },
     components: {
         ScheduleItem,
-        ClassFilter
+        ClassFilter,
+        NavBar
     },
     methods: {
         questionOnHover(){
@@ -71,6 +72,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container">
         <div class="container-side">
             <div class="container-title">
@@ -145,6 +149,9 @@ img{
     filter: invert(94%) sepia(14%) saturate(268%) hue-rotate(99deg) brightness(94%) contrast(87%);
     margin-left: 0vw;
 
+}
+header {
+    margin-bottom: 6vh;
 }
 
 </style>

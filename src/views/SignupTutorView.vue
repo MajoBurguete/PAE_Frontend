@@ -2,7 +2,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import ScheduleItem from '../components/items/Schedule-Item.vue'
-import SignupForm from '../components/items/Register-Form.vue'
 import ClassModal from '../components/items/Class-Modal.vue'
 import ClassFilter from "../components/items/Class-Filter.vue"
 import router from "../router";
@@ -14,7 +13,6 @@ const careers = ref([]);
 export default defineComponent({
     components: {
         ScheduleItem,
-        SignupForm,
         ClassFilter,
         ClassModal
     },
@@ -189,7 +187,7 @@ export default defineComponent({
                                 Máximo 100 caracteres, sin números ni caracteres especiales.
                             </div>
                         </div>
-                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" required>
+                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" minlength="1" maxlength="100" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -201,7 +199,7 @@ export default defineComponent({
                                 Correo válido dentro del dominio “@tec” o “@itesm”.
                             </div>
                         </div>
-                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" required @input="checkForm">
+                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required @input="checkForm">
                     </div>
                 </div>
             </div>
@@ -216,7 +214,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
+                            <input type="password" v-model="password" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -229,7 +227,7 @@ export default defineComponent({
                     <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" required>
+                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append" id="pass-hide">
                                 <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
@@ -249,7 +247,7 @@ export default defineComponent({
                                 Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
-                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" required>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">

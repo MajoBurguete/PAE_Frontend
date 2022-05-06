@@ -2,11 +2,14 @@
 import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
+import NavBar from "../components/Navbar.vue"
+
 
 export default defineComponent({
     components: {
         ScheduleItem,
-        SessionCard
+        SessionCard,
+        NavBar
     },
     data() {
         return{
@@ -27,6 +30,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <body>
         <div class="container">
             <div class="schedule-container">
@@ -115,6 +121,9 @@ export default defineComponent({
         width: auto;
         filter: invert(58%) sepia(44%) saturate(287%) hue-rotate(167deg) brightness(93%) contrast(89%);
 
+    }
+    header {
+        margin-bottom: 7vh;
     }
 
 </style>
