@@ -6,8 +6,8 @@ import NavBar from "../components/Navbar.vue"
 
 export default defineComponent({
     mounted(){
-        const subjectC = sessionStorage.getItem("className");
-        const hoursA = JSON.parse(sessionStorage.getItem("hoursAvailable"))
+        const subjectC = localStorage.getItem("className");
+        const hoursA = JSON.parse(localStorage.getItem("hoursAvailable"))
         if(subjectC != null){
             if(hoursA.length == 0){
                 this.legendDescription = "No hay horarios disponibles para esta materia"
@@ -23,17 +23,12 @@ export default defineComponent({
             classLegend: "Escoge la materia para tu asesoría"
         }
     },
-    updated(){
-        console.log(JSON.parse(sessionStorage.getItem("hoursAvailable")))
-        this.getHours = JSON.parse(sessionStorage.getItem("hoursAvailable"))
-    },
     computed: {
         getHours:{
             get(){
                 return this.hours;
             },
             set(val){
-                console.log("hours", JSON.parse(sessionStorage.getItem("hoursAvailable")))
                 this.hours = val;
             }
         },
@@ -66,6 +61,9 @@ export default defineComponent({
         changeLegend(){
             this.legendDescription = "Selecciona alguno de los horarios disponibles"
             this.getHours
+        },
+        updateHours(){
+            this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
         }
     }
 })
@@ -91,7 +89,7 @@ export default defineComponent({
         </div>
         <div class="container-side">
             <h1 class="class-legend"> {{legendDescription}} </h1>
-            <ClassFilter paletteColor="green" v-on:empty-list="emptyLegend" v-on:hours-available="changeLegend" />
+            <ClassFilter paletteColor="green" v-on:empty-list="emptyLegend" v-on:hours-available="changeLegend" v-on:checked-changed="updateHours" />
             <a href="/question"> Continuar </a>
         </div>
     </div>

@@ -26,9 +26,9 @@ export default defineComponent({
     },
     data(){
         return{
-            classIdS: sessionStorage.getItem("classId"),
-            classNameS: sessionStorage.getItem("className"),
-            sessionSel: this.getSessionDate(sessionStorage.getItem("sessionSelected")),
+            classIdS: localStorage.getItem("classId"),
+            classNameS: localStorage.getItem("className"),
+            sessionSel: this.getSessionDate(localStorage.getItem("sessionSelected")),
             questionVal: ""
         }
     },

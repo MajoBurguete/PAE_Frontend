@@ -96,12 +96,12 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
-                        this.scheduledHours.shift();
+                        this.scheduledHours.splice(j,1);
                         squares[n].className = "active";
                         break;
                     }
                     else if(j == this.scheduledHours.length-1){
-                        n++
+                        n++;
                     }
                 }
             }
@@ -117,6 +117,7 @@ export default defineComponent({
                     square.className = "inactive";
                 }
             }
+
             this.saveHourSelected(event);
         },
         currentDateTime(day: number) {
@@ -229,10 +230,10 @@ export default defineComponent({
                     hoursSelect.push(this.selectedHoursTC[i]);
                 }
 
-                sessionStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
+                localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
             }
             else{
-                if(this.lockSchedule == "home-active"){
+                if(this.lockSchedule == "home-active" && (((event.target as HTMLInputElement).className) == "active")){
                     for(var i=0; i<lengthS; i ++){
                         squares[i].className = "active";
                     }
@@ -244,7 +245,7 @@ export default defineComponent({
 
                     square.className = "selected";
 
-                    sessionStorage.setItem("sessionSelected", square.id);
+                    localStorage.setItem("sessionSelected", square.id);
                 }
             }
         }  
@@ -258,23 +259,23 @@ export default defineComponent({
             <div class="date-header">
                 <h2 class="col-sm-1"></h2>
                 <div class="day-date">
-                    <h2 class="col-sm-3" @click="changeBackgroundColor">Lunes</h2>
+                    <h2 class="col-sm-3">Lunes</h2>
                     <h2 class="date">{{currentDateTime(1)}}</h2>
                 </div>
                 <div class="day-date">
-                    <h2 class="col-sm-3" @click="changeBackgroundColor">Martes</h2>
+                    <h2 class="col-sm-3">Martes</h2>
                     <h2 class="date">{{currentDateTime(2)}}</h2>
                 </div>
                 <div class="day-date">
-                    <h2 class="col-sm-3" @click="changeBackgroundColor">Miercoles</h2>
+                    <h2 class="col-sm-3">Miercoles</h2>
                     <h2 class="date">{{currentDateTime(3)}}</h2>
                 </div>
                 <div class="day-date">
-                    <h2 class="col-sm-3" @click="changeBackgroundColor">Jueves</h2>
+                    <h2 class="col-sm-3">Jueves</h2>
                     <h2 class="date">{{currentDateTime(4)}}</h2>
                 </div>
                 <div class="day-date">
-                    <h2 class="col-sm-3" @click="changeBackgroundColor">Viernes</h2>
+                    <h2 class="col-sm-3">Viernes</h2>
                     <h2 class="date">{{currentDateTime(5)}}</h2>
                 </div>
             </div>

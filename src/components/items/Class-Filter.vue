@@ -106,19 +106,18 @@ export default defineComponent({
 
 
                 for(var i=0; i<this.selectedClassC.length; i++){
-                    console.log(this.selectedClassC[i])
                     classesSelect.push(this.selectedClassC[i]);
                 }
 
-                sessionStorage.setItem("classesSelected", JSON.stringify(classesSelect));
+                localStorage.setItem("classesSelected", JSON.stringify(classesSelect));
 
             }
             else{
                 var sk = []
-                sessionStorage.setItem("classId", classSelected.value);
-                sessionStorage.setItem("className", classSelected.id);
+                localStorage.setItem("classId", classSelected.value);
+                localStorage.setItem("className", classSelected.id);
 
-                let response = await axios.get(api + 'available_sessions/?subject='+ sessionStorage.getItem("classId"))
+                let response = await axios.get(api + 'available_sessions/?subject='+ localStorage.getItem("classId"))
                 this.sessions = response.data
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 for(var i=0; i<this.sessions.length; i++) {
@@ -132,7 +131,9 @@ export default defineComponent({
                     this.$emit('hours-available')
                 }
 
-                sessionStorage.setItem("hoursAvailable", JSON.stringify(sk));
+                localStorage.setItem("hoursAvailable", JSON.stringify(sk));
+
+                this.$emit('checked-changed');
             }
         },
     }
