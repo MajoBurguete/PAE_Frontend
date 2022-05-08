@@ -36,6 +36,7 @@ export default defineComponent({
     mounted(){
         const editButton = document.getElementById('edit-button') as HTMLInputElement;
         const confirmButton = document.getElementById('confirm-button') as HTMLInputElement;
+        const cancelButton  = document.getElementById('cancel-button') as HTMLInputElement;
         const statusContainer = document.getElementById('status-container') as HTMLInputElement;
 
 
@@ -43,13 +44,13 @@ export default defineComponent({
             editButton.style.display = ""
             confirmButton.style.display = ""
             statusContainer.style.display ="none"
-
-
         }
         else{
             editButton.style.display = "none"
             confirmButton.style.display = "none"
+            cancelButton.style.width = "9vw";
             statusContainer.style.display =""
+
 
 
         }
@@ -74,73 +75,98 @@ export default defineComponent({
             <h3 class="card-subtitle">{{place}}</h3>
             <div id="status-container">
                 <h2 class="card-title">Estatus</h2>
-                <h3 class="card-subtitle">{{status}}</h3>
+                <h3 class="card-subtitle" id="status">{{status}}</h3>
             </div>
-            <a href="#" class="btn btn-primary" id="confirm-button">Confirmar Asesor&iacute;a</a>
-            <a href="#" class="btn btn-primary" id="edit-button">Editar Asesor&iacute;a</a>
-            <a href="#" class="btn btn-primary" id="cancel-button">Cancelar Asesor&iacute;a</a>
+            <div class="button-container">
+                <a href="#" class="btn btn-primary" id="confirm-button">Confirmar Asesor&iacute;a</a>
+                <a href="#" class="btn btn-primary" id="edit-button">Editar Asesor&iacute;a</a>
+                <a href="#" class="btn btn-primary" id="cancel-button">Cancelar Asesor&iacute;a</a>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.card {
-    box-shadow: 0px 0px 0px 8px #769ABA;
-    width: 24.5vw;
-    padding: 0.2vh 0.2vw;
-    border-radius: 34px;
-    border-color: black;
-    border-width: 2px;
-    min-width: 290px;
-}
-h1 {
-    font-family: "Montserrat";
-    font-weight: bold;
-    font-size: 3.5vh;
-    margin-bottom: 2vh;
+    .card {
+        box-shadow: 0px 0px 0px 8px #769ABA;
+        width: 24.5vw;
+        padding: 0.2vh 0.2vw;
+        border-radius: 34px;
+        border-color: black;
+        border-width: 2px;
+        min-width: 290px;
+    }
 
-}
-h2 {
-    font-family: "Catamaran";
-    font-weight: bold;
-    font-size: 3.2vh;
-    margin-bottom: 1vh;
-    margin-top: 2vh;
-}
-h3 {
-    font-family: "Catamaran";
-    font-weight: regular;
-    font-size: 3vh;
-}
-h4 {
-    font-family: "Catamaran";
-    font-weight: regular;
-    font-size: 3vh;
-    color: #636262;
-}
-a {
-    font-family: "Ubuntu";
-    font-weight: normal;
-    color: white;
-    font-size: 1.8vh;
-    padding: 0.5vh 0.7vw;
-    border-radius: 15px;
-    border-color: transparent;
-    box-sizing: border-box;
-    width: 6vw;
-    margin: 4vh 0.3vw 0vh;
-    min-width: 80px;
-}
-a:hover{
-    border-color: transparent;
-}
-#confirm-button{
-    background-color: #26408B;
-}
-#edit-button{
-    background-color: #769ABA;
-}
-#cancel-button{
-    background-color: #F65E0B;
-}
-</style>
+    h1 {
+        font-family: "Montserrat";
+        font-weight: bold;
+        font-size: 3.5vh;
+        margin-bottom: 2vh;
+    }
+
+    h2 {
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 3.2vh;
+        margin-bottom: 1vh;
+        margin-top: 2vh;
+    }
+
+    h3 {
+        font-family: "Catamaran";
+        font-weight: regular;
+        font-size: 3vh;
+    }
+
+    h4 {
+        font-family: "Catamaran";
+        font-weight: regular;
+        font-size: 3vh;
+        color: #636262;
+    }
+
+    .button-container{
+        padding: 2vh 0 0 0;
+        min-width: 100%;
+        justify-content: center;
+        display: flex;
+        gap: 1vw;
+    }
+
+    a {
+        display: flex;
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 1.8vh;
+        padding: 0.5vh 0.7vw;
+        border-radius: 15px;
+        border-color: transparent;
+        box-sizing: border-box;
+        width: 6vw;
+        min-height: 5vh;
+        min-width: 3vw;
+        align-items: center;
+        justify-content: center;
+    }
+    a:hover{
+        border-color: transparent;
+    }
+
+    #confirm-button{
+        background-color: #26408B;
+    }
+
+    #edit-button{
+        background-color: #769ABA;
+    }
+
+    #cancel-button{
+        background-color: #F65E0B;
+    }
+
+    #status{
+        color: #F65E0B;
+    }
+    
+    </style>
