@@ -49,11 +49,11 @@ export default defineComponent({
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.display = "initial";
+            messageContainer.style.visibility = "visible";
         },
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.display = "none";
+            messageContainer.style.visibility = "hidden";
         },
         emptyLegend(){
             this.legendDescription = "No hay horarios disponibles para esta materia"
@@ -97,59 +97,77 @@ export default defineComponent({
 
 <style scoped>
 
-.class-legend{
-    margin: 10vh 0 3vh 0;
-    font-size: 4vh;
-    text-align: center;
-}
+    .class-legend{
+        margin: 10vh 0 3vh 0;
+        font-size: 4vh;
+        text-align: center;
+    }
 
-.container{
-    display: flex;
-    min-width: 100vw;
-    justify-content: center;
-}
-.container-side{
-    margin-top: 3vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.tooltip-style{
-    display: none;
-}
-.container-title{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-a{
-    font-family: "Ubuntu";
-    font-weight: normal;
-    background-color: #26408B;
-    color: white;
-    border-radius: 10px;
-    border: transparent;
-    font-size: 3vh;
-    padding: 1vh 8vw;
-    text-decoration: none;
-}
+    .container{
+        display: flex;
+        min-width: 100vw;
+        justify-content: center;
+    }
 
-img{
-    height: 3vh;
-    width: auto;
-    margin-left: 2vw;
-}
-#selected{
-    filter: invert(65%) sepia(7%) saturate(1097%) hue-rotate(128deg) brightness(85%) contrast(84%);
-    margin-left: 0vw;
-}
-#available{
-    filter: invert(94%) sepia(14%) saturate(268%) hue-rotate(99deg) brightness(94%) contrast(87%);
-    margin-left: 0vw;
+    .container-side{
+        margin-top: 3vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-}
-header {
-    margin-bottom: 6vh;
-}
+    .tooltip-style{
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 1.5vh;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        padding: 0.5vh 0.15vw;
+        visibility: hidden;
+        overflow-y: visible;
+        width: 11.7vw;
+        visibility: hidden;
+        margin: 0 -15vw 0 0;
+    }
+
+    .container-title{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1vw;
+    }
+
+    a{
+        font-family: "Ubuntu";
+        font-weight: normal;
+        background-color: #26408B;
+        color: white;
+        border-radius: 10px;
+        border: transparent;
+        font-size: 3vh;
+        padding: 1vh 8vw;
+        text-decoration: none;
+    }
+
+    .question{
+        height: 3.5vh;
+        width: auto;
+    }
+
+    img{
+        height: 1vw;
+        width: auto;
+    }
+    #selected{
+        filter: invert(65%) sepia(7%) saturate(1097%) hue-rotate(128deg) brightness(85%) contrast(84%);
+        margin-left: 0vw;
+    }
+    #available{
+        filter: invert(94%) sepia(14%) saturate(268%) hue-rotate(99deg) brightness(94%) contrast(87%);
+        margin-left: 0vw;
+
+    }
+    header {
+        margin-bottom: 6vh;
+    }
 
 </style>
