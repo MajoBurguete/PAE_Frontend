@@ -66,13 +66,16 @@ export default defineComponent({
 
             this.createUser();
         },
-        async createUser(){
+        async createUser() {
             let postUser = await axios
             .post(api + "users/", {
                 username: this.userId,
                 password: this.userpassword,
                 email: this.userMail,
                 first_name: this.username
+            })
+            .catch(error => {
+                console.log(error)
             })
 
             const userNumId = postUser.data.id
@@ -85,19 +88,44 @@ export default defineComponent({
                 user_type: 1,
                 status: 0
             })
-
-
-            .then(result => {
-                console.log(result.data);
-                router.push("/")
-            })
             .catch(error => {
                 console.log(error);
             })
 
+            const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
+            const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
 
+            for(var i = 0; i < tutorScheduleS.length; i++) {
+                axios
+                .post(api + 'schedules/', {
+                    id_user: userNumId,
+                    day_hour: tutorScheduleS[i],
+                    available: true
+                })
+                .then(result => {
+                    console.log(result.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
 
+            for(var i = 0; i < subjectsSelected.length; i++) {
+                axios
+                .post(api + 'tutor_subjects/', {
+                    id_tutor: userNumId,
+                    id_subject: subjectsSelected[i]
+                })
+                .then(result => {
+                    console.log(result.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+            router.push("/")
         },
+
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
             const userEmail = document.getElementById('user_email_signup') as HTMLInputElement;
@@ -158,13 +186,9 @@ export default defineComponent({
             if (password.type == "password") {
                 password.type = "text";
                 eye.src = "src/assets/img/no-visibility.png";
-                console.log(password.type);
-                console.log(eye.src);
             } else {
                 password.type = "password";
-                console.log(password.type);
                 eye.src = "src/assets/img/visibility.png";
-                console.log(eye.src);
 
             }
         }
@@ -214,7 +238,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="password" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
