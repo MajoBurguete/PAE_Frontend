@@ -15,6 +15,10 @@ export default defineComponent({
             type: String,
             default: "#263f8b85" 
         },
+        selectedColor:  {
+            type: String,
+            default: "transparent"
+        },
         lockSchedule: {
             type: String,
             default: "inactive"
@@ -59,13 +63,17 @@ export default defineComponent({
         } 
     },
     updated() {
-        const squares = document.getElementsByClassName("locked") as HTMLCollection;
-        this.checkLockedSchedule(squares);
+        if(this.lockSchedule == "active"){
+            const squares = document.getElementsByClassName("locked") as HTMLCollection;
+            this.checkLockedSchedule(squares);
+        }
         
     },
     data(){
         return{
-            selectedHoursT: []
+            selectedHoursT: [],
+            hourCount: 0,
+            errorMessage: "Has excedido las 5 horas permitidas por semana"
         }
     },
     computed: {
@@ -77,8 +85,36 @@ export default defineComponent({
                 const found = this.selectedHoursT.indexOf(val);
                 if(found == -1) {
                     this.selectedHoursT.push(val);
+                    this.hourCountC = "add";
                 } else {
                     this.selectedHoursT.splice(found, 1);
+                    this.hourCountC = "minus";
+                }
+            }
+        },
+        hourCountC: {
+            get(){
+                return this.hourCount;
+            },
+            set(val){
+                if(val == "add"){
+                    this.hourCount ++;
+                }
+                else{
+                    this.hourCount --;
+                }
+            }
+        },
+        errorMessageC: {
+            get(){
+                return this.errorMessage
+            },
+            set(val){
+                if(val ==  0){
+                    this.errorMessage = "Debes de cumplir con 5 horas a la semana";
+                }
+                else{
+                    this.errorMessage = "Has excedido las 5 horas permitidas por semana";
                 }
             }
         }
@@ -216,21 +252,35 @@ export default defineComponent({
             const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
             const squares = document.getElementsByClassName("active") as HTMLCollection;
             const squaresSelect = document.getElementsByClassName("selected") as HTMLCollection;
+            const messageError = document.getElementById("warning-message") as HTMLInputElement;
 
             let lengthS = squares.length;
             let lengthSel = squaresSelect.length;
 
             if(this.fromSignupT == "true"){
+
                 this.selectedHoursTC = square.id;
 
-                var hoursSelect = []
+                if(this.hourCountC < 6 && this.hourCountC !=  0){
+                    messageError.style.visibility = "hidden"
+
+                    var hoursSelect = []
 
 
-                for(var i=0; i<this.selectedHoursTC.length; i++){
-                    hoursSelect.push(this.selectedHoursTC[i]);
+                    for(var i=0; i<this.selectedHoursTC.length; i++){
+                        hoursSelect.push(this.selectedHoursTC[i]);
+                    }
+
+                    localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
                 }
-
-                localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
+                else if (this.hourCountC == 0){
+                    messageError.style.visibility = "visible"
+                    this.errorMessageC = 0;
+                }
+                else{
+                    messageError.style.visibility = "visible"
+                    this.errorMessageC = 1;
+                }
             }
             else{
                 if(this.lockSchedule == "home-active" && (((event.target as HTMLInputElement).className) == "active")){
@@ -254,7 +304,11 @@ export default defineComponent({
 </script>
 
 <template>
-    <body>
+    <body class="schedule-body">
+        <div class="warning-container" id="warning-message">
+            <img src="..\..\assets\img\warning.png"/>
+            <h2 id="error-message-h2">{{errorMessageC}}</h2>
+        </div>
         <div id="weekly-schedule">
             <div class="date-header">
                 <h2 class="col-sm-1"></h2>
@@ -376,106 +430,145 @@ export default defineComponent({
                 <div class="inactive" id="f19" @click="changeBackgroundColor"></div>
             </div>
         </div>
-        <button id="clear-button" @click="clearSchedule">Borrar selección</button>
+        <div class="button-container-schedule">
+            <button id="clear-button" @click="clearSchedule">Borrar selección</button>
+        </div>
     </body>
 </template>
 
 
 <style scoped>
 
-/* General styles */
+    /* General styles */
 
-body{
-    margin: 2vh 0.5vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-button {
-    font-family: "Ubuntu";
-    font-weight: normal;
-    color: white;
-    font-size: 2.5vh;
-    padding: 0.5vh 1.1vw;
-    border-radius: 15px;
-    border: 2.5px solid #00000000;
-    background-color: #26408B;
-    box-sizing: border-box;
-    margin-top: 4vh;
-}
-.date-header{
-    display: flex;
-    direction: column;
-    height: 6vh;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-}
-.day-date{
-    display: flex;
-    flex-flow: column wrap;
-    margin-right: 1.5vw;
-    margin-left: 1.5vw;
-}
-
-.row{
-    margin: 0;
-    padding: 0;
-}
-
-.col-sm-1{
-    width: 3vw;
-}
-
-.col-sm,
-.col-sm-2{
-    text-align: center;
-    padding: 1.5vh 0 0 0;
-}
-.col-sm-3{
-    text-align: center;
-    width: 5vw;
-    margin-bottom: 0.5vh;
-}
-.date{
-    color: gray;
-
-}
-h2 {
-    font-size: 2vh;
-    text-align: center;
+    .schedule-body{
+        margin: 2vh 0.5vw;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
-/* Class for when a div has been unselected */
 
-.inactive, 
-.active,
-.locked,
-.selected{
-    width: 7vw;
-    height: 4.5vh;
-    border: 2.5px solid #000000;
-    box-sizing: border-box;
-    border-radius: 12px;
-    margin: 0.5vh 0.5vw;
-}
+    button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 2.5vh;
+        padding: 0.5vh 1.1vw;
+        border-radius: 15px;
+        border: 2.5px solid transparent;
+        background-color: #26408B;
+        box-sizing: border-box;
+        margin-top: 4vh;
+    }
+    
+    .button-container-schedule{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 
-.selected{
-    background-color: #6F9492;
-}
+    .date-header{
+        display: flex;
+        direction: column;
+        height: 6vh;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+    }
 
-/* Class for when a div has been selected */
-.active {
-    background-color: v-bind(baseColor);
-}
+    .day-date{
+        display: flex;
+        flex-flow: column wrap;
+        margin-right: 1.5vw;
+        margin-left: 1.5vw;
+    }
 
+    .row{
+        margin: 0;
+        padding: 0;
+    }
 
-.locked:hover {
-    background-color: #00000000;
-}
-.inactive:hover{
-    background-color: v-bind(hoverColor);
-}
+    .col-sm-1{
+        width: 3vw;
+    }
+
+    .col-sm,
+    .col-sm-2{
+        text-align: center;
+        padding: 1.5vh 0 0 0;
+    }
+
+    .col-sm-3{
+        text-align: center;
+        width: 5vw;
+        margin-bottom: 0.5vh;
+    }
+
+    .date{
+        color: gray;
+
+    }
+
+    h2 {
+        font-size: 2vh;
+        text-align: center;
+    }
+
+    /* Error message container */
+
+    img{
+        width: 2.5%;
+        height: auto;
+    }
+
+    .warning-container{
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        height: fit-content;
+        width: 100%;
+        gap: 1vw;
+    }
+
+    #error-message-h2{
+        text-align: start;
+        width: fit-content;
+        color: rgb(221, 31, 31);
+        font-family: "Catamaran";
+        font-weight: lighter;
+        margin:0;
+    }
+
+    /* Class for when a div has been unselected */
+
+    .inactive, 
+    .active,
+    .locked,
+    .selected{
+        width: 7vw;
+        height: 4.5vh;
+        border: 2.5px solid #000000;
+        box-sizing: border-box;
+        border-radius: 12px;
+        margin: 0.5vh 0.5vw;
+    }
+
+    .selected{
+        background-color: v-bind(selectedColor);
+    }
+
+    /* Class for when a div has been selected */
+    .active {
+        background-color: v-bind(baseColor);
+    }
+
+    .locked:hover {
+        background-color: transparent;
+    }
+
+    .inactive:hover{
+        background-color: v-bind(hoverColor);
+    }
 
 
 </style>
