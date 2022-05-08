@@ -19,11 +19,11 @@ export default defineComponent({
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.display = "initial";
+            messageContainer.style.visibility = "visible";
         },
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
-            messageContainer.style.display = "none";
+            messageContainer.style.visibility = "hidden";
         }
     }
 })
@@ -35,6 +35,10 @@ export default defineComponent({
     </header>
     <body>
         <div class="container">
+            <div class="card-container">
+                <a href="date-and-class"> Agendar nueva asesoría </a>
+                <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
+            </div>
             <div class="schedule-container">
                 <div class="title-container">
                     <label>Asesorías pendientes</label>
@@ -48,15 +52,15 @@ export default defineComponent({
                 </div>
                 <ScheduleItem base-color="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
             </div>
-            <div class="card-container">
-                    <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
-                    <a href="date-and-class"> Agendar nueva asesoría </a>
-            </div>
         </div>
     </body>
 </template>
 
 <style scoped>
+    body{
+        overflow: hidden;
+    }
+
     label{
         font-family: "Montserrat";
         font-weight: bolder;
@@ -73,9 +77,10 @@ export default defineComponent({
         font-size: 1.5vh;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         padding: 0.5vh 0.15vw;
-        display: none;
+        visibility: hidden;
         overflow-y: visible;
         width: 11.7vw;
+        margin: 0 -16vw 0 0;
     }
 
     a{
@@ -87,12 +92,14 @@ export default defineComponent({
         border: transparent;
         font-size: 2.5vh;
         padding: 1vh 2vw;
-        margin-top: 3vh;
+        margin-bottom: 4vh;
         text-decoration: none;
     }
 
     .container {
         display: flex;
+        min-width: 100vw;
+        justify-content: center;
         gap:5vw;
     }
 
@@ -109,6 +116,11 @@ export default defineComponent({
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding: 0 0 7vh 0;
+    }
+
+    .schedule-container{
+        margin-top: 2vh;
     }
 
     #selected{
