@@ -37,7 +37,7 @@ export default defineComponent({
         <div class="container">
             <div class="card-container">
                 <a href="date-and-class"> Agendar nueva asesoría </a>
-                <SessionCard class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
+                <SessionCard showAllButtons="inactive" status="En revisión" class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
             </div>
             <div class="schedule-container">
                 <div class="title-container">
@@ -71,6 +71,7 @@ export default defineComponent({
         width: 2vw;
         height: auto;
     }
+
     .tooltip-style{
         font-family: "Catamaran";
         font-weight: bold;
@@ -92,7 +93,7 @@ export default defineComponent({
         border: transparent;
         font-size: 2.5vh;
         padding: 1vh 2vw;
-        margin-bottom: 4vh;
+        margin-bottom: 3vh;
         text-decoration: none;
     }
 
@@ -120,7 +121,7 @@ export default defineComponent({
     }
 
     .schedule-container{
-        margin-top: 2vh;
+        margin-top: 1vh;
     }
 
     #selected{
