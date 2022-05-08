@@ -414,10 +414,14 @@ export default defineComponent({
 
     .schedule-info{
         margin: 0 0 0 0vw;
+        display: flex;
+        flex-direction: column;
+        width: 55%;
     }
 
     .schedule-instructions{
         padding: 2vh 0 0 0vw;
+        width: fit-content;
     }
 
 

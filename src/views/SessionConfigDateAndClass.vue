@@ -85,7 +85,7 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#C6E1D7" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
+            <ScheduleItem base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
             <h1 class="class-legend"> {{legendDescription}} </h1>

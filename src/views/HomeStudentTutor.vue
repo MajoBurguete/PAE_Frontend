@@ -50,7 +50,7 @@ export default defineComponent({
                         Asesoria Agendada
                     </div>
                 </div>
-                <ScheduleItem base-color="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
+                <ScheduleItem base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
             </div>
         </div>
     </body>
