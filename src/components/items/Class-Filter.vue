@@ -82,7 +82,7 @@ export default defineComponent({
             input = document.getElementById('search-input') as HTMLInputElement;
             filter = input.value.toUpperCase();
             td = document.getElementsByClassName('table-data');
-            h1 = document.getElementsByTagName('h1');
+            h1 = document.getElementsByClassName("filter-h1");
 
             
             for(i = 0; i < h1.length; i++){
@@ -152,13 +152,13 @@ export default defineComponent({
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(subject, i) in subjectList" :key="i">
-                        <td class="table-data">
+                    <tr v-for="(subject, i) in subjectList" :key="i" class="table-data">
+                        <td>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="form-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
                                 <label class="form-check-label" for="check-input">
                                     <div class="text-container">
-                                        <h1>{{ subject.name }}</h1>
+                                        <h1 class="filter-h1">{{ subject.name }}</h1>
                                         <h2>{{ subject.id }} | {{ subject.id_career[0] }}</h2>
                                     </div>
                                 </label>
