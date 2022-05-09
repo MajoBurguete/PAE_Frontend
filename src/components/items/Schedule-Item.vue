@@ -34,6 +34,10 @@ export default defineComponent({
         fromSignupT:{
             type: String,
             default: "false"
+        },
+        alignItemsVal:{
+            type: String,
+            default: "center"
         }
     },
     mounted() {
@@ -63,7 +67,8 @@ export default defineComponent({
         } 
     },
     updated() {
-        if(this.lockSchedule == "active"){
+        /* It happens when the schedule is updated */
+        if(this.lockSchedule == "home-active" ){
             const squares = document.getElementsByClassName("locked") as HTMLCollection;
             this.checkLockedSchedule(squares);
         }
@@ -445,7 +450,7 @@ export default defineComponent({
         margin: 2vh 0.5vw;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: v-bind(alignItemsVal);
     }
 
     button {
