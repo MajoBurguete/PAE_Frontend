@@ -19,10 +19,14 @@ export default defineComponent({
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
+
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible";
         },
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
+
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden";
         }
     }

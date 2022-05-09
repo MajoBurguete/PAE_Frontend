@@ -23,7 +23,7 @@
 @font-face {
   font-family: "Catamaran";
   src: url('src/assets/fonts/Catamaran-Medium.ttf');
-  font-weight: medium;
+  font-weight: 100;
 }
 
 @font-face {

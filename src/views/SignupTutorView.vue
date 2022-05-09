@@ -143,41 +143,48 @@ export default defineComponent({
         questionNameOnHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionNameOutOfHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionEmailOnHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionEmailOutOfHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionPasswordOnHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionPasswordOutOfHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
-
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionMatOnHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionMatOutOfHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         showPassword(passwordID: string, imageID: string){
@@ -305,7 +312,7 @@ export default defineComponent({
                         <label class="section-title"> Horario </label>
                         <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
                     </div>
-                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true"/>
+                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true" alignItemsVal="flex-start"/>
 
                 </div>
                 <div class="uf-container">
