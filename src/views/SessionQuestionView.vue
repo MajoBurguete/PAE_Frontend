@@ -29,7 +29,27 @@ export default defineComponent({
             classIdS: localStorage.getItem("classId"),
             classNameS: localStorage.getItem("className"),
             sessionSel: this.getSessionDate(localStorage.getItem("sessionSelected")),
-            questionVal: ""
+            questionVal: "",
+            fileName: "",
+            fileUpdated: []
+        }
+    },
+    updated(){
+        if(this.fileName != ""){
+            this.updateFile()
+        }
+    },
+    computed: {
+        changeFileName(){
+            this.fileName = this.fileC;
+        },
+        fileC: {
+            get(){
+                return this.fileUpdated[0]
+            },
+            set(val){
+                this.fileUpdated = val;
+            }
         }
     },
     methods: {
@@ -231,6 +251,42 @@ export default defineComponent({
             })
 
             router.push("/home")
+        },
+        editSession(){
+            const file = document.getElementById("session-file") as HTMLInputElement;
+            console.log(file.files[0])
+        },
+        deleteFile(){
+            const fileCont = document.getElementById("file-container") as HTMLInputElement;
+            const fileAttach = document.getElementById("file-attach-preview") as HTMLInputElement;
+            const file = document.getElementById("session-file") as HTMLInputElement;
+            const modalFile = document.getElementById("file-attach-container") as HTMLInputElement;
+
+            modalFile.style.visibility = "hidden"
+
+            file.value = ""
+            this.fileC = ""
+
+            fileAttach.style.display = "none";
+            fileCont.style.display = "inline-block"; 
+        },
+        updateFile(){
+            const fileCont = document.getElementById("file-container") as HTMLInputElement;
+            const fileAttach = document.getElementById("file-attach-preview") as HTMLInputElement;
+            const modalFile = document.getElementById("file-attach-container") as HTMLInputElement;
+
+            modalFile.style.visibility = "visible"
+
+            fileCont.style.display = "none";
+            fileAttach.style.display = "flex";
+
+        },
+        saveFile(){
+            const file = document.getElementById("session-file") as HTMLInputElement;
+
+            this.fileC = [file.files[0].name];
+            this.changeFileName;
+            this.updateFile();
         }
     }
     
@@ -252,25 +308,44 @@ export default defineComponent({
             </div>
             <div class="right">
                 <h1>Tema específico a tratar</h1>
-                <textarea class="form-control" id="questionText" v-model="questionVal" placeholder="Escribe tu duda..." rows="3"></textarea>
+                <textarea class="form-control" id="questionText" v-model="questionVal" placeholder="Escribe tu duda..." rows="5"></textarea>
                 <h1>Archivos complementarios</h1>
                 <h2>Recuerda subir archivos menores a 2 MB</h2>
-                <div class="file-container">
-                    <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
+                <div class="file-attach-preview" id="file-attach-preview" @click="deleteFile">
+                    <img class="attach-file" src="..\assets\img\attach.png"/>
+                    <h3 class="file-name"> {{fileName}} </h3>
                 </div>
-                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" @click="sendReq">
+                <div class="file-container" id="file-container">
+                    <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
+                    <input class="form-control" type="file" v-on:change="saveFile" id="session-file">
+                </div>
+                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" @click="editSession">
                     Enviar
                 </button>               
             </div>
         </div>
 
         <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <h1 class="className">{{classNameS}}</h1>
-                    <h2 class="sessionSel">{{sessionSel}}</h2>
-                    <h3 class="questionVal">{{questionVal}}</h3>
-                    <button id="confirm-button" @click="postSession" data-bs-dismiss="modal" aria-label="Close">Confirmar</button>
+                    <h1 class="class-name">{{classNameS}}</h1>
+                    <h2 class="session-sel">{{sessionSel}}</h2>
+                    <div class="scrollbar" id="style-2">
+                        <h3 class="question-val">{{questionVal}}</h3>
+                    </div>
+                    <div class="flex-container">
+                        <div class="session-info-container">
+                            <div class="file-attach-container" id="file-attach-container">
+                                <img class="attach-file-modal" src="..\assets\img\attach.png"/>
+                                <h3 class="file-name"> {{fileName}} </h3>
+                            </div>
+                        </div>
+                        <div class="session-button-container">
+                            <h3 class="h3-quest-modal"> ¿Necesitas corregir la información? </h3>
+                            <button id="edit-button" data-bs-dismiss="modal" aria-label="Close">Editar</button>
+                            <button id="confirm-button" @click="postSession" data-bs-dismiss="modal" aria-label="Close">Confirmar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,8 +382,8 @@ export default defineComponent({
 
     img{
         width: 30%;
-        height: 50%;
-        margin: -7.5vh 0 0 0;
+        height: auto;
+        margin: -8vh 0 0 0;
     }
 
     button{
@@ -329,9 +404,39 @@ export default defineComponent({
         font-weight: normal;
     }
 
-    .file-container{
-        margin-bottom: 5vh;
+    /* File input container */
+
+    .file-attach-preview{
+        display: none;
+        margin: 3vh 0 0 0;
+        align-items: center;
+        flex-direction: column;
+        cursor: pointer;
     }
+
+    .file-container{
+        margin-bottom: 7vh;
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .file-container input[type=file] {
+        font-size: 25px;
+        width: 10%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+
+    #plus-icon{
+        width: 9%;
+        height: auto;
+        margin: 1vh 0 0 0;
+        cursor: pointer;
+    }
+
 
     /*Button to come back*/
 
@@ -342,13 +447,6 @@ export default defineComponent({
         width: 4vw;
         height: 6vh;
         padding: 0vh 0;
-    }
-
-    #plus-icon{
-        width: 10%;
-        height: 10%;
-        margin: 3vh 0 0 0;
-        cursor: pointer;
     }
 
     /* Button to send request */
@@ -362,46 +460,147 @@ export default defineComponent({
         font-size: 3vh;
         padding: 1vh 7vw;
         border-radius: 10px;
+        margin: 2vh 0 0 0;
     }
 
     /* Modal */
 
-    .modal-content{
-        padding: 2vh 0.5vw 2vh 1vw;
+    .modal-lg{
+        width: 40vw;
     }
 
-    .className,
-    .sessionSel,
-    .questionVal{
+    .modal-content{
+        padding: 2vh 2.5vw 2vh 2.5vw;
+        display: flex;
+        gap: 0.5vh;
+    }
+
+    .flex-container{
+        padding: 2vh 0 0 0;
+        display: flex;
+        flex-direction: row;
+        gap: 2vh;
+    }
+
+    .session-info-container{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5vh;
+    }
+
+    .attach-file{
+        width: 10%;
+        height: auto;
+        margin: 0;
+    }
+
+    .attach-file-modal{
+        width: 15%;
+        height: auto;
+        margin: 0;
+    }
+
+    .file-attach-container{
+        visibility: hidden;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5vh;
+        padding: 0vh 0 0 0;
+    }
+
+    .session-button-container{
+        padding: 0vh 0 2vh 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1vh;
+        align-items: center;
+    }
+
+    .h3-quest-modal{
+        font-size: 1vh;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .class-name,
+    .session-sel,
+    .question-val,
+    .file-name{
         color: black;
         font-family: "Catamaran";
     }
 
-    .className{
-        font-size: 5vh;
+    .class-name{
+        font-size: 3.5vh;
         font-weight: bold;
     }
 
-    .sessionSel{
-        font-weight: medium;
-        font-size: 3vh;
+    .session-sel{
+        font-weight: 100;
+        font-size: 2.8vh;
     }
 
-    .questionVal{
-        font-weight: lighter;
+    .question-val{
+        font-size: 2.8vh;
+        text-align: justify;
+    }
+
+    .scrollbar{
+        padding: 0.5vh 0.5vw 0 0;
+        float: left;
+        height: 18vh;
+        overflow-y: scroll;
+        margin-bottom: 2vh;
+    }
+
+    
+    #style-2::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #F5F5F5;
+    }
+
+    #style-2::-webkit-scrollbar
+    {
+        width: 12px;
+        background-color: #F5F5F5;
+    }
+
+    #style-2::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #26408B;
+    }
+
+    .file-name{
+        font-weight: normal;
+        font-size: 2.8vh;
+    }
+    
+
+    #confirm-button,
+    #edit-button{
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
         font-size: 3vh;
+        width: 90%;
+        border-radius: 7px;
+        padding: 0.5vh 2vw;
+        display: flex;
+        justify-content: center;
+    }
+
+    #edit-button{
+        background-color: #9EB2ED;
     }
 
     #confirm-button{
         background-color: #365295;
-        font-family: "Ubuntu";
-        font-weight: normal;
-        color: white;
-        font-size: 3.5vh;
-        width: fit-content;
-        border-radius: 7px;
-        padding: 0.5vh 2vw;
     }
+
     header {
         margin-bottom: 9vh;
     }
