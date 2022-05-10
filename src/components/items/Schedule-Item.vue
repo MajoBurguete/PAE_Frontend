@@ -250,7 +250,7 @@ export default defineComponent({
                 squares[0].className = "locked";
             }
 
-            clearButton.style.visibility = "hidden";
+            clearButton.style.display = "none";
         }, 
         saveHourSelected(event: Event){
             
@@ -267,7 +267,7 @@ export default defineComponent({
                 this.selectedHoursTC = square.id;
 
                 if(this.hourCountC < 6 && this.hourCountC !=  0){
-                    messageError.style.visibility = "hidden"
+                    messageError.style.display = "none"
 
                     var hoursSelect = []
 
@@ -279,11 +279,11 @@ export default defineComponent({
                     localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
                 }
                 else if (this.hourCountC == 0){
-                    messageError.style.visibility = "visible"
+                    messageError.style.display = "flex"
                     this.errorMessageC = 0;
                 }
                 else{
-                    messageError.style.visibility = "visible"
+                    messageError.style.display = "flex"
                     this.errorMessageC = 1;
                 }
             }
@@ -447,7 +447,8 @@ export default defineComponent({
     /* General styles */
 
     .schedule-body{
-        margin: 2vh 0.5vw;
+        margin: 0vh 0.5vw 0.5vh 0.5vw;
+        width: 46vw;
         display: flex;
         flex-direction: column;
         align-items: v-bind(alignItemsVal);
@@ -500,7 +501,7 @@ export default defineComponent({
     .col-sm,
     .col-sm-2{
         text-align: center;
-        padding: 1.5vh 0 0 0;
+        padding: 1vh 0 0 0;
     }
 
     .col-sm-3{
@@ -527,8 +528,7 @@ export default defineComponent({
     }
 
     .warning-container{
-        visibility: hidden;
-        display: flex;
+        display: none;
         align-items: center;
         height: fit-content;
         width: 100%;
