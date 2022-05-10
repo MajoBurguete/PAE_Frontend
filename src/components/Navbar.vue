@@ -32,7 +32,7 @@ export default defineComponent({
                                 <li><a class="dropdown-item" id= "lan" href="#">Español</a></li>
                             </ul>
                         </div>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="admin-home">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
                         </a>
                         <a class="nav-link" href="home" >
