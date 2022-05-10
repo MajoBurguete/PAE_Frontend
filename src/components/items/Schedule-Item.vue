@@ -558,6 +558,12 @@ export default defineComponent({
         margin: 0.5vh 0.5vw;
     }
 
+    .inactive,
+    .active,
+    .selected{
+        cursor: pointer;
+    }
+
     .selected{
         background-color: v-bind(selectedColor);
     }

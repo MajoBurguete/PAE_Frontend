@@ -82,6 +82,7 @@ export default defineComponent({
                 <a href="#" class="btn btn-primary" id="edit-button">Editar Asesor&iacute;a</a>
                 <a href="#" class="btn btn-primary" id="cancel-button">Cancelar Asesor&iacute;a</a>
             </div>
+            <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>
         </div>
     </div>
 </template>
@@ -123,6 +124,16 @@ export default defineComponent({
         font-weight: regular;
         font-size: 3vh;
         color: #636262;
+    }
+
+    .card-body {
+        padding: 0.8vh 0.8vw;
+    }
+
+    .legend{
+        padding: 0.5vh 0 0 0;
+        text-align: center;
+        font-size: 1.5vh;
     }
 
     .button-container{
