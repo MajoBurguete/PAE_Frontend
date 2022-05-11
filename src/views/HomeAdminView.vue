@@ -11,10 +11,54 @@
             NavBar,
             ScheduleItem
         },
+        data(){
+            return{
+                username: "",
+                career: "",
+                semester: "",
+                classList: [],
+                scheduledHours: [],
+                sessionHours: [],
+                recentTutorsList: [],
+                tab:"tutor",
+                tutorList: [
+                    "Pedro Díaz Sanchez",
+                    "Daniela Hernández",
+                    "Aarón Cortés García",
+                    "Andrea Díaz Sánchez",
+                    "Juan Díaz Sánchez",
+                    "Sandra Díaz Sánchez"
+                ],
+                studentList:[
+                    "Dorelay Margarita Euán",
+                    "Marco Flamenco Andrade",
+                    "María José Euán",
+                    "Mariana Perez",
+                    "Elena del Carmen Euán",
+                    "Jorge Zapata"
+                ]
+            }
+
+        },
+        computed: {
+            changeTabC:  {
+                get(){
+                    return this.tab;
+                },
+                set(val){
+                    this.tab = val;
+                }
+            }
+        },
         methods: {
             toStudentsTab(){
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
+                const input = document.getElementById('search-input') as HTMLInputElement;
+                const studentsListT = document.getElementById('students-list') as HTMLInputElement;
+                const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
+
+                input.placeholder = "Busca al estudiante.."
 
                 tutorsTab.style.backgroundColor = "#D9EFF4";
                 tutorsTab.style.color = "#7FA0A8";
@@ -22,16 +66,31 @@
                 studentTab.style.backgroundColor = "#9EC7D1";
                 studentTab.style.color = "white";
 
+                studentsListT.style.display = "initial"
+                tutorsListT.style.display = "none"
+
+                this.changeTabC = "student"
+
             },
             toTutorsTab(){
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
+                const input = document.getElementById('search-input') as HTMLInputElement;
+                const studentsListT = document.getElementById('students-list') as HTMLInputElement;
+                const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
+
+                input.placeholder = "Busca al asesor.."
 
                 studentTab.style.backgroundColor = "#D9EFF4";
                 studentTab.style.color = "#7FA0A8";
 
                 tutorsTab.style.backgroundColor = "#9EC7D1";
                 tutorsTab.style.color = "white";
+
+                tutorsListT.style.display = "initial"
+                studentsListT.style.display = "none"
+
+                this.changeTabC = "tutor"
 
             },
             questionOnHover(){
@@ -47,24 +106,43 @@
                 messageContainer.style.visibility = "hidden";
             },
             searchElements(){
-            var input, td, temp, h1, i, j, filter,  txtValue;
+                var input, td, temp, h1, i, j, filter,  txtValue;
 
-            input = document.getElementById('search-input') as HTMLInputElement;
-            filter = input.value.toUpperCase();
-            td = document.getElementsByClassName('table-data');
-            h1 = document.getElementsByClassName("filter-h1");
+                if(this.changeTabC == "tutor"){
+                    input = document.getElementById('search-input') as HTMLInputElement;
+                    filter = input.value.toUpperCase();
+                    td = document.getElementsByClassName('table-data-tutor');
+                    h1 = document.getElementsByClassName("filter-h1-tutor");
 
-            
-            for(i = 0; i < h1.length; i++){
-                txtValue = h1[i].textContent || h1[i].innerText;
-                if(txtValue.toUpperCase().indexOf(filter) > -1 ){
-                    td[i].style.display= "";
+                    
+                    for(i = 0; i < h1.length; i++){
+                        txtValue = h1[i].textContent || h1[i].innerText;
+                        if(txtValue.toUpperCase().indexOf(filter) > -1 ){
+                            td[i].style.display= "";
+                        }
+                        else {
+                            td[i].style.display = "none";
+                        }
+                    }
                 }
-                else {
-                    td[i].style.display = "none";
+                else{
+                    input = document.getElementById('search-input') as HTMLInputElement;
+                    filter = input.value.toUpperCase();
+                    td = document.getElementsByClassName('table-data-student');
+                    h1 = document.getElementsByClassName("filter-h1-student");
+
+                    
+                    for(i = 0; i < h1.length; i++){
+                        txtValue = h1[i].textContent || h1[i].innerText;
+                        if(txtValue.toUpperCase().indexOf(filter) > -1 ){
+                            td[i].style.display= "";
+                        }
+                        else {
+                            td[i].style.display = "none";
+                        }
+                    }
                 }
             }
-        }
         }
     })
 </script>
@@ -83,63 +161,29 @@
                     </div>
                     <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca al asesor..">
                 </div>
-                <div class="table-scroll">
+                <div class="table-scroll" id="students-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr class="table-data">
+                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student">
                                 <td> 
-                                    <h1 class="filter-h1"> Pedro Díaz Sanchez </h1>
+                                    <h1 class="filter-h1-student"> {{student}} </h1>
                                 </td>
                             </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Daniela Hernández </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Aarón Cortés García </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Andrea Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Juan Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Sandra Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Sandra Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Sandra Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Sandra Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-                            <tr class="table-data">
-                                <td>  
-                                    <h1 class="filter-h1"> Sandra Díaz Sánchez </h1>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
+                <div class="table-scroll" id="tutors-list">
+                    <table class="table table-bordered" id="table">
+                        <tbody class="style-2">
+                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list">
+                                <td> 
+                                    <h1 class="filter-h1-tutor"> {{tutor}} </h1>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="pending-session"> Asesorías pendientes </button>
             </div>
             <div class="user-information">
                 <div class="information">
@@ -229,8 +273,11 @@
         background-color: #EAF6F9;
         border: #D9EFF4;
         border-radius: 15px;
-        width: 18vw;
+        width: 20vw;
         padding: 1vh 0 1vh 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     #students-tab{
@@ -241,6 +288,10 @@
         border-radius: 8px 8px 0 0;
         background-color: #9EC7D1;
         color: white;
+    }
+
+    #students-list{
+        display: none;
     }
 
     /* User card information */
@@ -295,7 +346,8 @@
         gap: 1vh;
     }
 
-    .btn-cont{
+    .btn-cont,
+    #pending-session{
         font-size: 3vh;
         font-family: "Ubuntu";
         font-weight: normal;
@@ -303,6 +355,10 @@
         border-radius: 7px;
         background-color: #26408B;
         color: white;
+    }
+
+    #pending-session{
+        border-radius: 9px;
     }
 
     /* Schedule */
@@ -415,8 +471,8 @@
         font-weight: medium;
         border-radius: 8px;
         border-style: hidden;
-        width: 17vw;
-        margin: 0 0 0.5vh 0.5vw;
+        width: 18.5vw;
+        margin: 0 0 0 0;
         padding: 0.3vh 4vh;
         background-image: url('src/assets/img/search.png');
         background-position: 0.4vw 0.5vh; /* Position the search icon */
