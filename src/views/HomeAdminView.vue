@@ -11,31 +11,76 @@
             NavBar,
             ScheduleItem
         },
+        mounted(){
+            this.updateUserN = this.tutorList[0].name;
+            this.updateCareer = this.careerListTutor[0];
+            this.updateSemester = this.semesterListTutor[0];
+        },
         data(){
             return{
-                username: "",
-                career: "",
-                semester: "",
-                classList: [],
+                usernameP: "",
+                careerP: "",
+                semesterP: "",
+                classList: [
+                    "Estructuras de datos",
+                    "Bases de datos",
+                    "Gráficas computacionales",
+                    "Seguridad informática",
+                    "Estructuras de datos",
+                    "Bases de datos",
+                    "Gráficas computacionales"
+                ],
                 scheduledHours: [],
                 sessionHours: [],
                 recentTutorsList: [],
                 tab:"tutor",
                 tutorList: [
-                    "Pedro Díaz Sanchez",
-                    "Daniela Hernández",
-                    "Aarón Cortés García",
-                    "Andrea Díaz Sánchez",
-                    "Juan Díaz Sánchez",
-                    "Sandra Díaz Sánchez"
+                    {name: "Pedro Díaz Sanchez", id: 1},
+                    {name: "Daniela Hernández", id: 2},
+                    {name: "Aarón Cortés García", id: 3},
+                    {name: "Andrea Díaz Sánchez", id: 4},
+                    {name: "Juan Díaz Sánchez", id: 5},
+                    {name: "Sandra Díaz Sánchez", id: 6}
                 ],
                 studentList:[
-                    "Dorelay Margarita Euán",
-                    "Marco Flamenco Andrade",
-                    "María José Euán",
-                    "Mariana Perez",
-                    "Elena del Carmen Euán",
-                    "Jorge Zapata"
+                    {name: "Dorelay Margarita Euán", id: 1},
+                    {name: "Marco Flamenco Andrade", id: 2},
+                    {name: "María José Euán", id: 3},
+                    {name: "Mariana Perez", id: 4},
+                    {name: "Elena del Carmen Euán", id: 5},
+                    {name: "Jorge Zapata", id: 6}
+                ],
+                careerListTutor: [
+                    "ITC",
+                    "ITC",
+                    "ITC",
+                    "IDM",
+                    "IMT",
+                    "LAD"
+                ],
+                careerListStudent: [
+                    "LAD",
+                    "ITC",
+                    "ITC",
+                    "IDM",
+                    "LRI",
+                    "IMT"
+                ],
+                semesterListTutor: [
+                    "2",
+                    "6",
+                    "6",
+                    "4",
+                    "7",
+                    "3"
+                ],
+                semesterListStudent: [
+                    "8",
+                    "6",
+                    "6",
+                    "6",
+                    "8",
+                    "6"
                 ]
             }
 
@@ -47,6 +92,30 @@
                 },
                 set(val){
                     this.tab = val;
+                }
+            },
+            updateUserN: {
+                get(){
+                    return this.usernameP;
+                },
+                set(val){
+                    this.usernameP = val;
+                }
+            },
+            updateCareer: {
+                get(){
+                    return this.careerP;
+                },
+                set(val){
+                    this.careerP = val;
+                }
+            },
+            updateSemester: {
+                get(){
+                    return this.semesterP;
+                },
+                set(val){
+                    this.semesterP = val;
                 }
             }
         },
@@ -142,6 +211,18 @@
                         }
                     }
                 }
+            },
+            clickTutor(id: String, name: String){
+                const idN = Number(id);
+                this.updateUserN = name;
+                this.updateCareer = this.careerListTutor[idN-1];
+                this.updateSemester = this.semesterListTutor[idN-1];
+            },
+            clickStudent(id: String, name: String){
+                const idN = Number(id);
+                this.updateUserN = name;
+                this.updateCareer = this.careerListStudent[idN-1];
+                this.updateSemester = this.semesterListStudent[idN-1];
             }
         }
     })
@@ -164,9 +245,9 @@
                 <div class="table-scroll" id="students-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student">
+                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" @click="clickStudent(student.id, student.name)">
                                 <td> 
-                                    <h1 class="filter-h1-student"> {{student}} </h1>
+                                    <h1 class="filter-h1-student"> {{student.name}} </h1>
                                 </td>
                             </tr>
                         </tbody>
@@ -175,9 +256,9 @@
                 <div class="table-scroll" id="tutors-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list">
+                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list" @click="clickTutor(tutor.id, tutor.name)">
                                 <td> 
-                                    <h1 class="filter-h1-tutor"> {{tutor}} </h1>
+                                    <h1 class="filter-h1-tutor"> {{tutor.name}} </h1>
                                 </td>
                             </tr>
                         </tbody>
@@ -190,25 +271,24 @@
                     <div class="question-container-image">
                         <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
                         <div class="tooltip-style" id="popover">
-                            <img src="src/assets/img/circle.png" id="selected">
+                            <img src="src/assets/img/circle.png" id="scheduled">
                             Asesoría agendada <br>
                             <img src="src/assets/img/circle.png" id="available">
                             Hora disponible
                         </div>
                     </div>
                     <div class="user-info-container">
-                        <h1 class="cont-h1 user-name"> Daniela Hernandez </h1>
-                        <h1 class="cont-h1 user-career"> ITC | 6° semestre </h1>
+                        <h1 class="cont-h1 user-name"> {{usernameP}} </h1>
+                        <h1 class="cont-h1 user-career"> {{careerP}} | {{semesterP}}° semestre </h1>
                     </div>
                     <div class="uf-user-container">
                         <h1 class="cont-h1 uf-h1"> Unidades de formación </h1>
-                        <h2 class="uf-h2"> Estructuras de datos </h2>
-                        <h2 class="uf-h2"> Bases de datos</h2>
-                        <h2 class="uf-h2"> Gráficas computacionale </h2>
-                        <h2 class="uf-h2"> Seguridad informática </h2>
+                        <div class="uf-list-names  style-2">
+                            <h2 v-for="(classN, j) in classList" :key="k" class="uf-h2"> {{classN}} </h2>
+                        </div>
                     </div>
                     <div class="button-container">
-                        <button class="btn-cont"> Baja de tutor </button>
+                        <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"> Baja de tutor </button>
                         <button class="btn-cont"> Encuestas </button>
                     </div>
                 </div>
@@ -216,6 +296,19 @@
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
                         <ScheduleItem base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <h1> Eliminar a: </h1>
+                    <h1> {{usernameP}} </h1>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close"> No, regresar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close"> Si, eliminar </button>
                     </div>
                 </div>
             </div>
@@ -311,7 +404,7 @@
     }
 
     .cont-h1{
-        font-size: 4vh;
+        font-size: 3.5vh;
         text-align: start;
         color: black;
         font-weight: bolder;
@@ -319,6 +412,7 @@
 
     .user-name{
         font-family: "Montserrat";
+        width: 24vw;
     }
 
     .user-career{
@@ -336,6 +430,11 @@
         font-family: "Catamaran";
         font-weight: normal;
         font-size: 2.8vh;
+    }
+
+    .uf-list-names{
+        height: 18vh;
+        overflow-y: scroll;
     }
 
     /* Button container */
@@ -400,6 +499,14 @@
         margin: 0 -16vw 0 0;
     }
 
+    #scheduled{
+        filter: invert(45%) sepia(42%) saturate(345%) hue-rotate(150deg) brightness(97%) contrast(90%);
+    }
+
+    #available{
+        filter: invert(81%) sepia(31%) saturate(264%) hue-rotate(150deg) brightness(87%) contrast(86%);
+    }
+
     .question-container-image{
         display: flex;
         gap: 1vw;
@@ -436,6 +543,11 @@
         width: 17vw;
     }
 
+    .table-data-tutor,
+    .table-data-student{
+        cursor: pointer;
+    }
+
     tr{
         min-width: 100%;
     }
@@ -447,7 +559,6 @@
     
     .style-2::-webkit-scrollbar-track
     {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 10px;
         background-color: #F5F5F5;
     }
@@ -461,7 +572,6 @@
     .style-2::-webkit-scrollbar-thumb
     {
         border-radius: 10px;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
         background-color: #6F9492;
     }
     
