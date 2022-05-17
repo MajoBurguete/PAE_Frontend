@@ -5,6 +5,7 @@
     import NavBar from "../components/Navbar.vue";
     import ScheduleItem from "../components/items/Schedule-Item.vue";
 
+    const api = 'http://localhost:8000/api/'
 
     export default defineComponent({
         components: {
@@ -12,9 +13,23 @@
             ScheduleItem
         },
         mounted(){
-            this.updateUserN = this.tutorList[0].name;
-            this.updateCareer = this.careerListTutor[0];
-            this.updateSemester = this.semesterListTutor[0];
+            axios
+            .get(api + 'students')
+            .then(result => {
+                this.updateStudentList = result.data;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+            axios
+            .get(api + 'tutors')
+            .then(result => {
+                this.updateTutorList = result.data;
+            })
+            .catch(error => {
+                console.log(error);
+            })
         },
         data(){
             return{
@@ -34,22 +49,8 @@
                 sessionHours: [],
                 recentTutorsList: [],
                 tab:"tutor",
-                tutorList: [
-                    {name: "Pedro Díaz Sanchez", id: 1},
-                    {name: "Daniela Hernández", id: 2},
-                    {name: "Aarón Cortés García", id: 3},
-                    {name: "Andrea Díaz Sánchez", id: 4},
-                    {name: "Juan Díaz Sánchez", id: 5},
-                    {name: "Sandra Díaz Sánchez", id: 6}
-                ],
-                studentList:[
-                    {name: "Dorelay Margarita Euán", id: 1},
-                    {name: "Marco Flamenco Andrade", id: 2},
-                    {name: "María José Euán", id: 3},
-                    {name: "Mariana Perez", id: 4},
-                    {name: "Elena del Carmen Euán", id: 5},
-                    {name: "Jorge Zapata", id: 6}
-                ],
+                tutorList: [],
+                studentList:[],
                 careerListTutor: [
                     "ITC",
                     "ITC",
@@ -116,6 +117,22 @@
                 },
                 set(val){
                     this.semesterP = val;
+                }
+            },
+            updateStudentList: {
+                get(){
+                    return this.studentList;
+                },
+                set(val){
+                    this.studentList = val;
+                }
+            },
+            updateTutorList: {
+                get(){
+                    return this.tutorList;
+                },
+                set(val){
+                    this.tutorList = val;
                 }
             }
         },
@@ -212,17 +229,16 @@
                     }
                 }
             },
-            clickTutor(id: String, name: String){
-                const idN = Number(id);
-                this.updateUserN = name;
-                this.updateCareer = this.careerListTutor[idN-1];
-                this.updateSemester = this.semesterListTutor[idN-1];
+            clickTutor(i: number){
+                this.updateUserN = this.updateTutorList[i].id__first_name;
+                this.updateCareer = this.updateTutorList[i].career;;
+                this.updateSemester = this.updateTutorList[i].semester;;
             },
-            clickStudent(id: String, name: String){
-                const idN = Number(id);
-                this.updateUserN = name;
-                this.updateCareer = this.careerListStudent[idN-1];
-                this.updateSemester = this.semesterListStudent[idN-1];
+            clickStudent(i: number){
+                console.log(i);
+                this.updateUserN = this.updateStudentList[i].id__first_name;
+                this.updateCareer = this.updateStudentList[i].career;
+                this.updateSemester = this.updateStudentList[i].semester;
             }
         }
     })
@@ -245,9 +261,9 @@
                 <div class="table-scroll" id="students-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" @click="clickStudent(student.id, student.name)">
+                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" @click="clickStudent(i)">
                                 <td> 
-                                    <h1 class="filter-h1-student"> {{student.name}} </h1>
+                                    <h1 class="filter-h1-student"> {{student.id__first_name}} </h1>
                                 </td>
                             </tr>
                         </tbody>
@@ -256,9 +272,9 @@
                 <div class="table-scroll" id="tutors-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list" @click="clickTutor(tutor.id, tutor.name)">
+                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list" @click="clickTutor(j)">
                                 <td> 
-                                    <h1 class="filter-h1-tutor"> {{tutor.name}} </h1>
+                                    <h1 class="filter-h1-tutor"> {{tutor.id__first_name}} </h1>
                                 </td>
                             </tr>
                         </tbody>
