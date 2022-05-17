@@ -262,7 +262,6 @@ export default defineComponent({
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
                         <select v-model="semester" class="form-select" required>
-                            <option disabled selected value>Semestre</option>
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
@@ -277,7 +276,6 @@ export default defineComponent({
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
                         <select v-model="userCareer" class="form-select" required>
-                            <option disabled selected value>Carrera</option>
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>

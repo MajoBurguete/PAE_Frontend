@@ -112,7 +112,7 @@
                     password: this.password
                 })
                 .then(result => {
-                    errorMess.style.visibility = "hidden";
+                    errorMess.style.display = "none";
                     this.token = result.data.token
                     console.log(this.token)
                     localStorage.setItem('user-token', result.data.token)
@@ -122,7 +122,7 @@
                     console.log(error)
                     localStorage.removeItem('user-token')
 
-                    errorMess.style.visibility = "visible"
+                    errorMess.style.display = "flex"
 
                 })
             },
@@ -486,7 +486,7 @@
 
     .error-message{
         color: rgb(221, 31, 31);
-        visibility: hidden;
+        display: none;
         font-family: "Catamaran";
         font-weight: lighter;
     }
