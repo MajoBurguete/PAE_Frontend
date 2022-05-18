@@ -1,3 +1,15 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+import SessionRecord from "../components/items/Session-Record.vue";
+
+
+export default defineComponent({
+    components: {
+        SessionRecord
+    }
+})
+</script>
+
 <template>
     <div class="container">
         <div class="container-head">
@@ -10,9 +22,10 @@
                     <h2> Semestre</h2>
                 </div>
             </div>
-        <a href="/">Eliminar<br>Perfil</a>
+            <a href="/">Eliminar<br>Perfil</a>
         </div>
         <div class="container-table-info">
+            <SessionRecord/>
         </div>
     </div>
 </template>
