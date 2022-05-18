@@ -28,6 +28,11 @@ const router = createRouter({
       path: "/feedback-survey",
       name: "feedbackSurvey",
       component: () => import('../views/FeedbackSurvey.vue')
+    },
+    {
+      path: "/tutor-session-record",
+      name: "TutorSessionRecord",
+      component: () => import('../views/TutorSessionRecordView.vue')
     }
   ],
 });
