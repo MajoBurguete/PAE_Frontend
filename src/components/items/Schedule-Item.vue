@@ -19,6 +19,10 @@ export default defineComponent({
             type: String,
             default: "transparent"
         },
+        unavailableColor: {
+            type: String,
+            default: "#568495"
+        },
         lockSchedule: {
             type: String,
             default: "inactive"
@@ -31,7 +35,15 @@ export default defineComponent({
             type: Array,
             default: []
         },
+        userScheduledHours: {
+            type: Array,
+            default: []
+        },
         fromSignupT:{
+            type: String,
+            default: "false"
+        },
+        fromHomeAdmin:{
             type: String,
             default: "false"
         },
@@ -70,6 +82,7 @@ export default defineComponent({
         /* It happens when the schedule is updated */
         if(this.lockSchedule == "home-active" ){
             const squares = document.getElementsByClassName("locked") as HTMLCollection;
+            this.clearLockedSchedule();
             this.checkLockedSchedule(squares);
         }
         
@@ -127,22 +140,42 @@ export default defineComponent({
     methods:{
         checkLockedSchedule(squares: HTMLCollection){
 
-            var i, j, n;
+            var i, j, k, n;
 
             n=0;
 
             const listL = squares.length;
-            this.clearLockedSchedule();
 
-            for(i = 0; i < listL; i++){
-                for(j = 0; j < this.scheduledHours.length; j++){
-                    if(squares[n].id == this.scheduledHours[j]){
-                        this.scheduledHours.splice(j,1);
-                        squares[n].className = "active";
-                        break;
+            if(this.fromHomeAdmin == "true"){
+                for(i = 0; i < listL; i++){
+                    for(j = 0; j < this.userScheduledHours.length; j++){
+                        if(squares[n].id == this.userScheduledHours[j].day_hour){
+                            if (this.userScheduledHours[j].available){
+                                squares[n].className = "available";
+                            }
+                            else{
+                                squares[n].className = "unavailable";
+                            }
+                            this.userScheduledHours.splice(j,1);
+                            break;
+                        }
+                        else if(j == this.userScheduledHours.length-1){
+                            n++;
+                        }
                     }
-                    else if(j == this.scheduledHours.length-1){
-                        n++;
+                }
+            }
+            else{
+                for(i = 0; i < listL; i++){
+                    for(j = 0; j < this.scheduledHours.length; j++){
+                        if(squares[n].id == this.scheduledHours[j]){
+                            this.scheduledHours.splice(j,1);
+                            squares[n].className = "active";
+                            break;
+                        }
+                        else if(j == this.scheduledHours.length-1){
+                            n++;
+                        }
                     }
                 }
             }
@@ -228,13 +261,19 @@ export default defineComponent({
         },
         clearLockedSchedule(){
             const squares = document.getElementsByClassName("active");
+            const availableS = document.getElementsByClassName("available");
             const squaresSelect = document.getElementsByClassName("selected");
 
             let lengthS = squares.length;
+            let lengthA = availableS.length;
             let lengthSel = squaresSelect.length;
 
             for (var _i = 0; _i < lengthS; _i++) {
                 squares[0].className = "locked";
+            } 
+
+            for (var _i = 0; _i < lengthA; _i++) {
+                availableS[0].className = "locked";
             } 
 
             for (var _i = 0; _i < lengthSel; _i++) {
@@ -549,7 +588,9 @@ export default defineComponent({
     .inactive, 
     .active,
     .locked,
-    .selected{
+    .selected,
+    .unavailable,
+    .available{
         width: 7vw;
         height: 4.5vh;
         border: 2.5px solid #000000;
@@ -573,6 +614,14 @@ export default defineComponent({
         background-color: v-bind(baseColor);
     }
 
+    .available{
+        background-color: v-bind(baseColor);
+    }
+
+    .unavailable{
+        background-color: v-bind(unavailableColor);
+    }
+
     .locked:hover {
         background-color: transparent;
     }
@@ -580,6 +629,7 @@ export default defineComponent({
     .inactive:hover{
         background-color: v-bind(hoverColor);
     }
+
 
 
 </style>
