@@ -13,76 +13,21 @@
             ScheduleItem
         },
         mounted(){
-            axios
-            .get(api + 'students')
-            .then(result => {
-                this.updateStudentList = result.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            this.getTutorListB();
+            this.getStudentListB();
 
-            axios
-            .get(api + 'tutors')
-            .then(result => {
-                this.updateTutorList = result.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
         },
         data(){
             return{
                 usernameP: "",
                 careerP: "",
                 semesterP: "",
-                classList: [
-                    "Estructuras de datos",
-                    "Bases de datos",
-                    "Gráficas computacionales",
-                    "Seguridad informática",
-                    "Estructuras de datos",
-                    "Bases de datos",
-                    "Gráficas computacionales"
-                ],
-                scheduledHours: [],
-                sessionHours: [],
+                classList: [],
                 recentTutorsList: [],
+                scheduledHours: [],
                 tab:"tutor",
                 tutorList: [],
-                studentList:[],
-                careerListTutor: [
-                    "ITC",
-                    "ITC",
-                    "ITC",
-                    "IDM",
-                    "IMT",
-                    "LAD"
-                ],
-                careerListStudent: [
-                    "LAD",
-                    "ITC",
-                    "ITC",
-                    "IDM",
-                    "LRI",
-                    "IMT"
-                ],
-                semesterListTutor: [
-                    "2",
-                    "6",
-                    "6",
-                    "4",
-                    "7",
-                    "3"
-                ],
-                semesterListStudent: [
-                    "8",
-                    "6",
-                    "6",
-                    "6",
-                    "8",
-                    "6"
-                ]
+                studentList:[]
             }
 
         },
@@ -134,15 +79,46 @@
                 set(val){
                     this.tutorList = val;
                 }
+            },
+            updateClassList: {
+                get(){
+                    return this.classList; 
+                },
+                set(val){
+                    this.classList = val;
+                }
+            },
+            updateRecentTutorsList: {
+                get(){
+                    return this.recentTutorsList; 
+                },
+                set(val){
+                    this.recentTutorsList = val;
+                }
+            },
+            updateScheduledHours: {
+                get(){
+                    return this.scheduledHours;
+                },
+                set(val){
+                    this.scheduledHours = val;
+                }
             }
         },
         methods: {
-            toStudentsTab(){
+            toStudentsTab() {
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
                 const input = document.getElementById('search-input') as HTMLInputElement;
                 const studentsListT = document.getElementById('students-list') as HTMLInputElement;
                 const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
+                const title = document.getElementById('uf-tutors-title') as HTMLInputElement;
+                const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
+                const ufList = document.getElementById('uf-list');
+                const recentTutorsL = document.getElementById('recent-tutors-list');
+
+                ufList.style.display = "none";
+                recentTutorsL.style.display = "flex";
 
                 input.placeholder = "Busca al estudiante.."
 
@@ -155,15 +131,28 @@
                 studentsListT.style.display = "initial"
                 tutorsListT.style.display = "none"
 
+                title.textContent = "Asesores previos"
+
+                deleteButton.textContent = "Baja de alumno"
+
                 this.changeTabC = "student"
 
+                this.clickStudent(0);
+
             },
-            toTutorsTab(){
+            toTutorsTab() {
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
                 const input = document.getElementById('search-input') as HTMLInputElement;
                 const studentsListT = document.getElementById('students-list') as HTMLInputElement;
                 const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
+                const title = document.getElementById('uf-tutors-title') as HTMLInputElement;
+                const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
+                const ufList = document.getElementById('uf-list');
+                const recentTutorsL = document.getElementById('recent-tutors-list');
+
+                ufList.style.display = "";
+                recentTutorsL.style.display = "none";
 
                 input.placeholder = "Busca al asesor.."
 
@@ -176,7 +165,12 @@
                 tutorsListT.style.display = "initial"
                 studentsListT.style.display = "none"
 
+                title.textContent = "Unidades de formación"
+
+                deleteButton.textContent = "Baja de tutor"
+
                 this.changeTabC = "tutor"
+                this.clickTutor(0);
 
             },
             questionOnHover(){
@@ -229,16 +223,78 @@
                     }
                 }
             },
-            clickTutor(i: number){
-                this.updateUserN = this.updateTutorList[i].id__first_name;
-                this.updateCareer = this.updateTutorList[i].career;;
-                this.updateSemester = this.updateTutorList[i].semester;;
+            async getTutorListB(){
+                await axios
+                .get(api + 'tutors')
+                .then(result => {
+                    this.updateTutorList = result.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                
             },
-            clickStudent(i: number){
-                console.log(i);
-                this.updateUserN = this.updateStudentList[i].id__first_name;
-                this.updateCareer = this.updateStudentList[i].career;
-                this.updateSemester = this.updateStudentList[i].semester;
+            async getStudentListB(){
+                await axios
+                .get(api + 'students')
+                .then(result => {
+                    this.updateStudentList = result.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                this.clickTutor(0);
+            },
+            async getClassListByTutor(tutorS: string) {
+                await axios
+                .get(api + 'subjects_by_tutor/?tutor=' + tutorS)
+                .then(result => {
+                    this.updateClassList = result.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
+            async getScheduledHoursByTutor(tutorS: string) {
+                await axios
+                .get(api + 'schedule_by_tutor/?tutor=' + tutorS)
+                .then(result => {
+                    console.log(result.data);
+                    this.updateScheduledHours = result.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
+            async getRecentTutors(studentS: string) {
+                await axios
+                .get(api + 'recent_tutors_of_student/?student=' + studentS)
+                .then(result => {
+                    console.log(result.data);
+                    this.updateRecentTutorsList = result.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
+            clickTutor(i: number) {
+                const tutorS = this.updateTutorList[i];
+                this.updateUserN = tutorS.id__first_name;
+                this.updateCareer = tutorS.career;
+                this.updateSemester = tutorS.semester;
+
+                this.getClassListByTutor(tutorS.id);
+                this.getScheduledHoursByTutor(tutorS.id);
+                
+            },
+            clickStudent(i: number) {
+                const studentS = this.updateStudentList[i];
+
+                this.updateUserN = studentS.id__first_name;
+                this.updateCareer = studentS.career;
+                this.updateSemester = studentS.semester;
+                this.getRecentTutors(studentS.id);
+                this.updateScheduledHours = [];
             }
         }
     })
@@ -253,7 +309,7 @@
             <div class="student-tutor-table">
                 <div class="tabs-search-input">
                     <div class="table-tabs">
-                        <button id="students-tab" @click="toStudentsTab"> Estudiantes </button>
+                        <button id="students-tab" @click="toStudentsTab"> Alumnos </button>
                         <button id="tutors-tab" @click="toTutorsTab"> Asesores </button>
                     </div>
                     <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca al asesor..">
@@ -298,20 +354,23 @@
                         <h1 class="cont-h1 user-career"> {{careerP}} | {{semesterP}}° semestre </h1>
                     </div>
                     <div class="uf-user-container">
-                        <h1 class="cont-h1 uf-h1"> Unidades de formación </h1>
-                        <div class="uf-list-names  style-2">
-                            <h2 v-for="(classN, j) in classList" :key="k" class="uf-h2"> {{classN}} </h2>
+                        <h1 class="cont-h1 uf-h1" id="uf-tutors-title"> Unidades de formación </h1>
+                        <div class="uf-list  style-2" id="uf-list">
+                            <h2 v-for="(classTutor, k) in classList" :key="k" class="uf-h2"> {{classTutor.id_subject__name}} </h2>
+                        </div>
+                        <div class="recent-tutors-list  style-2" id="recent-tutors-list">
+                            <h2 v-for="(recentT, l) in recentTutorsList" :key="l" class="uf-h2"> {{recentT.id_tutor__id__first_name}} </h2>
                         </div>
                     </div>
                     <div class="button-container">
-                        <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"> Baja de tutor </button>
+                        <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"  id="delete-user"> Baja de tutor </button>
                         <button class="btn-cont"> Encuestas </button>
                     </div>
                 </div>
                 <div class="user-schedule">
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
-                        <ScheduleItem base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
+                        <ScheduleItem :userScheduledHours="updateScheduledHours" fromHomeAdmin="true" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
                     </div>
                 </div>
             </div>
@@ -445,12 +504,19 @@
     .uf-h2{
         font-family: "Catamaran";
         font-weight: normal;
-        font-size: 2.8vh;
+        font-size: 2.4vh;
     }
 
-    .uf-list-names{
+    .uf-list,
+    .recent-tutors-list{
         height: 18vh;
+        width: 23vw;
         overflow-y: scroll;
+    }
+
+    .recent-tutors-list{
+        display: none;
+        flex-direction: column;
     }
 
     /* Button container */
@@ -466,7 +532,7 @@
         font-size: 3vh;
         font-family: "Ubuntu";
         font-weight: normal;
-        width: 11vw;
+        width: 12vw;
         border-radius: 7px;
         background-color: #26408B;
         color: white;
@@ -605,6 +671,8 @@
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 7%;
     }
+
+    /* Modal */
     
 
 </style>
