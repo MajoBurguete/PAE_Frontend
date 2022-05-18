@@ -121,6 +121,7 @@ export default defineComponent({
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin: 2vh 0 0 0;
         padding: 0 0 7vh 0;
     }
 
