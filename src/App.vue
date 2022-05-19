@@ -53,7 +53,7 @@
 @font-face {
   font-family: "Montserrat";
   src: url('src/assets/fonts/Montserrat-Medium.ttf');
-  font-weight: medium;
+  font-weight: 50;
 }
 
 @font-face {

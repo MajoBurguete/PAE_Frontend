@@ -89,6 +89,7 @@ export default defineComponent({
             })
             .then(result => {
                 console.log(result.data);
+                localStorage.setItem("displayToast", "signupStudent");
                 router.push("/")
             })
             .catch(error => {

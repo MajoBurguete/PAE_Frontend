@@ -2,21 +2,41 @@
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
+    import $ from "jquery";
     import router from "../router";
-
     /* const user = ref({
         username: '',
         password: ''
     }) */
 
     const api = 'http://localhost:8000/api/'
+    declare var bootstrap: any;
 
     export default defineComponent({
         data() {
             return {
                 username: '',
                 password: '',
-                token: localStorage.getItem('user-token') || null
+                token: localStorage.getItem('user-token') || null,
+                modalMessage: "Tu cuenta ha sido creada con éxito"
+            }
+        },
+        mounted(){
+            let messToast = localStorage.getItem("displayToast");
+            var myModal = new bootstrap.Modal(document.getElementById('feedback-modal'))
+            
+            if(messToast == "signupStudent"){
+                myModal.show()
+            }
+        },
+        computed: {
+            updateModalMess: {
+                get(){
+                    return this.modalMessage;
+                },
+                set(val){
+                    this.modalMessage = val;
+                }
             }
         },
         methods:{
@@ -335,11 +355,21 @@
                 </form>
             </div>
         </div>
+
+        <div class="modal fade" id="feedback-modal" tabindex="-1" aria-labelledby="feedbackModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <h1 class="h1-modal"> {{modalMessage}} </h1>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" id="close-fmodal-btn"> Regresar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </template>
 
 <style scoped>
-
     /* General styles */
     h1 {
         color: white;
@@ -604,9 +634,39 @@
     .login-button {
         margin: 5vh 0 0 0;
     }
+
     #visibility_password_image_login{
         width: 2.5vw;
         height: auto;
+    }
+
+    /* Modal */
+    
+    .modal-content{
+        background-color: #E1F0EA;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 3vh 2vw;
+        border-radius: 10px;
+    }
+    .modal-lg{
+        width: 40vw;
+    }
+
+    .h1-modal{
+        font-size: 5vh;
+        text-align: center;
+        font-weight: 50;
+        color: #6F9492;
+    }
+
+    #close-fmodal-btn{
+        background-color: #96CCC9;
+        font-size: 3vh;
+        width: 20vw;
+        padding: 1vh 2vw;
+        color: white;
     }
 
 </style> 
