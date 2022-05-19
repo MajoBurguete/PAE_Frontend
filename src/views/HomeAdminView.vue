@@ -379,11 +379,11 @@
         <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <h1> Eliminar a: </h1>
-                    <h1> {{usernameP}} </h1>
+                    <h1 class="h1-modal"> Eliminar a: </h1>
+                    <h1 class="user-h1-modal"> {{usernameP}} </h1>
                     <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close"> No, regresar </button>
-                        <button data-bs-dismiss="modal" aria-label="Close"> Si, eliminar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" id="cancel-action-btn"> No, regresar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn"> Si, eliminar </button>
                     </div>
                 </div>
             </div>
@@ -392,7 +392,6 @@
 </template>
 
 <style scoped>
-
     header {
         margin-bottom: 9vh;
     }
@@ -673,6 +672,55 @@
     }
 
     /* Modal */
+    
+    .modal-content{
+        align-items: center;
+        gap: 1.5vh;
+        padding: 4vh 2.5vw;
+        background-color: #E1F0EA;
+        border-radius: 10px;
+        border-color: #96BECC;
+    }
+
+    .modal-lg{
+        width: 35vw;
+    }
+
+    .h1-modal,
+    .user-h1-modal{
+        font-size: 4.5vh;
+        margin: 0 0 1.5vh 0;
+    }
+
+    .user-h1-modal{
+        font-weight: bold;
+        color: #57716F;
+    }
+
+    .modal-button-container{
+        display: flex;
+        gap: 1.5vw;
+    }
+
+    #cancel-action-btn,
+    #delete-action-btn{
+        font-family: "Ubuntu";
+        font-weight: normal;
+        font-size: 3vh;
+        color: white;
+        border-radius: 8px;
+        width: 12vw;
+    }
+
+    #cancel-action-btn{
+        background-color: #96CCC9;
+    }
+
+    #delete-action-btn{
+        background-color: #F65E0B;
+    }
+
+
     
 
 </style>
