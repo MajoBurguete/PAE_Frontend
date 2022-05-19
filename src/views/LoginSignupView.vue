@@ -9,6 +9,8 @@
         password: ''
     }) */
 
+    const api = 'http://localhost:8000/api/'
+
     export default defineComponent({
         data() {
             return {
@@ -18,6 +20,26 @@
             }
         },
         methods:{
+            async detectUserType(){
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.username)
+                .then( result => {
+                    console.log(result.data[0])
+                    localStorage.setItem("userID", result.data[0].id);
+                    localStorage.setItem("userType", result.data[0].user_type);
+
+                    if(localStorage.getItem("userType") == "2"){
+                        console.log(localStorage.getItem("userType"));
+                        router.push('http://localhost:3000/admin-home');
+                    }
+                    else{
+                        router.push('http://localhost:3000/home')
+                    }
+                })
+                .catch( error => {
+                    console.log(error);
+                })
+            },
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
                 const eye = document.getElementById("visibility_password_image_login") as HTMLImageElement;
@@ -116,7 +138,8 @@
                     this.token = result.data.token
                     console.log(this.token)
                     localStorage.setItem('user-token', result.data.token)
-                    router.push('http://localhost:3000/home')
+
+                    this.detectUserType();
                 })
                 .catch(error => {
                     console.log(error)
