@@ -93,6 +93,10 @@ export default defineComponent({
     border-width: 2px;
     min-width: 290px;
 }
+#status-container{
+    display: none;
+    flex-direction: column;
+}
 h1 {
     font-family: "Montserrat";
     font-weight: bold;
