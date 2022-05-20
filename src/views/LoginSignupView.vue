@@ -27,6 +27,7 @@
             
             if(messToast == "signupStudent"){
                 myModal.show()
+                localStorage.setItem("displayToast", "empty")
             }
         },
         computed: {
