@@ -5,6 +5,7 @@ import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
 const careers = ref([]);
+let dsb = true;
 
 export default defineComponent({
     mounted() {
@@ -19,6 +20,7 @@ export default defineComponent({
         .catch(error => {
             console.log(error)
         })
+
     },
 
     data() {
@@ -26,47 +28,50 @@ export default defineComponent({
             careerList: careers,
             username: null,
             userpassword: null,
+            userConfirmPassword: "",
             userId: "",
             userMail: "",
             semester: 0,
-            userCareer: ""
+            userCareer: "",
+            disabledV: true,
+            focusPass: false,
+            focusConfPass: false
         }
     },
-    computed: {
-        isDisabled(){
-            /* if(this.checkForm()){
-                return true;
+    updated(){
+        const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+        errorMess.style.display = "none"
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            if (!form.checkValidity()) {
+                dsb = true
+            } else {
+                dsb = false;
             }
-            return false; */
+
+            form.classList.add('was-validated')
+        })
+
+        this.isDisabled = dsb;
+    },
+    computed: {
+        isDisabled: {
+            get(){
+                return this.disabledV;
+            },
+            set(val){
+                this.disabledV = val;
+            }
         }
+
     },
     methods: {
         backButton() {
             localStorage.setItem("fromSignupForm", "true")
             router.push('http://localhost:3000/')
-        },
-        checkForm(){
-            'use strict'
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-            const password1 =document.getElementById('user_password_signup');
-            const password2 =document.getElementById('user_confirm_password_signup');
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                form.addEventListener('submit', function (event: Event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-
-                }, false)
-            })
-
-            this.createUser();
-
         },
         async createUser(){
             let postUser = await axios
@@ -76,27 +81,39 @@ export default defineComponent({
                 email: this.userMail,
                 first_name: this.username
             })
+            .then( result => {
+                const userNumId = result.data.id
 
-            const userNumId = postUser.data.id
-
-            axios
-            .post(api + "pae_users/", {
-                id: userNumId,
-                semester: this.semester,
-                career: this.userCareer,
-                user_type: 0,
-                status: 0
-            })
-            .then(result => {
-                console.log(result.data);
-                localStorage.setItem("displayToast", "signupStudent");
-                router.push("/")
+                axios
+                .post(api + "pae_users/", {
+                    id: userNumId,
+                    semester: this.semester,
+                    career: this.userCareer,
+                    user_type: 0,
+                    status: 0
+                })
+                .then(result => {
+                    console.log(result.data);
+                    localStorage.setItem("displayToast", "signupStudent");
+                    router.push("/")
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             })
             .catch(error => {
-                console.log(error);
+                console.log(error.response.data)
+                const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+                const useridInp = document.getElementById("user_id_signup") as HTMLInputElement;
+
+                if(error.response.data.username[0] == "A user with that username already exists."){
+                    errorMess.style.display = "flex";
+                    useridInp.value = "";
+                }
+                else{
+                    errorMess.style.display = "none"
+                }
             })
-
-
 
         },
         cleanInputs(){
@@ -185,7 +202,7 @@ export default defineComponent({
 <template>
     <body>
         <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-        <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+        <form class="needs-validation" novalidate  @submit.prevent="checkForm" id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
@@ -223,7 +240,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onchange="if(this.checkValidity()) form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -236,7 +253,7 @@ export default defineComponent({
                     <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                             <div class="input-group-append" id="pass-hide">
                                 <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
@@ -282,10 +299,11 @@ export default defineComponent({
                     </div>
                 </div>
             </div>
+            <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
             <div class="button-container">
                 <div>
                     <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
-                    <button class="bigger-buttons" id="signup-button" type="submit" :disabled="isDisabled"> Registrarse </button>
+                    <button class="bigger-buttons" id="signup-button" @click="createUser" :disabled="isDisabled"> Registrarse </button>
                 </div>
             </div>
         </form>
@@ -340,6 +358,11 @@ export default defineComponent({
     #signup-button{
         background-color: #26408B;
         margin-inline-start: 1vw;
+    }
+
+    #signup-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
     }
 
 /* Signup form */
@@ -434,6 +457,15 @@ export default defineComponent({
     .row {
         gap: 0.5vw;
         margin-top: 2vh;
+    }
+
+    /* Error message */
+    .error-message{
+        display: none;
+        color: rgb(221, 31, 31);
+        font-family: "Catamaran";
+        font-weight: lighter;
+        font-size: 3vh;
     }
 
 </style> 
