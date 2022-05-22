@@ -110,6 +110,9 @@ export default defineComponent({
                 }
             }
         },
+        clearSelectedHours(){
+            this.selectedHoursT = [];
+        },
         hourCountC: {
             get(){
                 return this.hourCount;
@@ -117,6 +120,9 @@ export default defineComponent({
             set(val){
                 if(val == "add"){
                     this.hourCount ++;
+                }
+                else if(val == "0"){
+                    this.hourCount = 0;
                 }
                 else{
                     this.hourCount --;
@@ -256,8 +262,10 @@ export default defineComponent({
 
             for (var _i = 0; _i < lengthS2; _i++) {
                 squares2[0].className = "inactive";
-            } 
-            
+            }
+
+            this.hourCountC = "0";
+            this.clearSelectedHours;
         },
         clearLockedSchedule(){
             const squares = document.getElementsByClassName("active");
@@ -305,25 +313,32 @@ export default defineComponent({
 
                 this.selectedHoursTC = square.id;
 
-                if(this.hourCountC < 6 && this.hourCountC !=  0){
+                if(this.hourCountC < 6 && this.hourCountC !=  0 ){
                     messageError.style.display = "none"
 
                     var hoursSelect = []
-
 
                     for(var i=0; i<this.selectedHoursTC.length; i++){
                         hoursSelect.push(this.selectedHoursTC[i]);
                     }
 
-                    localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
+                    if(this.hourCountC == 5){
+                        localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
+                        this.$emit("scheduleComplete")
+                    }
+                    else{
+                        this.$emit("scheduleIncomplete")
+                    }
                 }
                 else if (this.hourCountC == 0){
                     messageError.style.display = "flex"
                     this.errorMessageC = 0;
+                    this.$emit("scheduleIncomplete")
                 }
                 else{
                     messageError.style.display = "flex"
                     this.errorMessageC = 1;
+                    this.$emit("scheduleIncomplete")
                 }
             }
             else{
