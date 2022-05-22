@@ -31,30 +31,100 @@ export default defineComponent({
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
         }
+
+        localStorage.setItem("classesSelected", JSON.stringify([]))
         
     },
-    updated(){
-        const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
-        const checkL = check.length;
-        if(this.paletteColor == "blue"){
-            for(var i=0; i<checkL; i++){
-                check[i].type = "checkbox";
-            }
+    props: {
+        paletteColor: {
+            type: String,
+            default: "blue" 
+        },
+        cancelClick: {
+            type: Boolean,
+            default: false
+        },
+        saveClick: {
+            type: Boolean,
+            default: false
+        },
+        callForceUpdate:{
+            type: Boolean,
+            default: false
         }
-        else {
-            for(var i=0; i<checkL; i++){
-                check[i].type = "radio";
-            } 
-        }
-
     },
     data() {
         return {
             subjectList: subjects,
-            selectedClass: []
+            selectedClass: [],
+            firstMount: true,
+            updateFC: this.callForceUpdate,
+            propCancelC: this.cancelClick,
+            propSaveC: this.saveClick
         }
     },
+    updated(){
+        if(this.passFirstM){
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+            const checkL = check.length;
+            if(this.paletteColor == "blue"){
+                for(var i=0; i<checkL; i++){
+                    check[i].type = "checkbox";
+                }
+            }
+            else {
+                for(var i=0; i<checkL; i++){
+                    check[i].type = "radio";
+                } 
+            }
+
+            this.passFirstM = false
+        }
+
+        this.propCancelC = this.cancelClick;
+        if(this.onCancelClick){
+            this.returnToOriginalState();
+            this.$emit("cancel-btn");
+            this.cleanChecks();
+        }
+
+        this.propSaveC = this.saveClick;
+        if(this.onSaveClick){
+            this.saveChanges();
+        }
+
+        this.updateFC = this.callForceUpdate;
+        if(this.updateFC){
+            this.fillChecks();
+            this.$emit("update-made");
+            this.restartForceUpdate;
+        }
+
+        if(this.selectedClassC.length == 0){
+            this.$emit("disable-btn")
+        }
+        else{
+            console.log("arrayMatch: " + this.arraysMatch())
+            if(this.arraysMatch()){
+                this.$emit("disable-btn")
+            }
+            else{
+                this.$emit("enable-btn")
+            }
+        }
+
+        console.log("------------------------")
+
+    },
     computed: {
+        passFirstM: {
+            get(){
+                return this.firstMount;
+            },
+            set(val){
+                this.firstMount = false;
+            }
+        },
         selectedClassC: {
             get() {
                 return this.selectedClass;
@@ -67,12 +137,33 @@ export default defineComponent({
                     this.selectedClass.splice(found, 1);
                 }
             }
-        }
-    },
-    props: {
-        paletteColor: {
-            type: String,
-            default: "blue" 
+        },
+        onCancelClick: {
+            get(){
+                return this.propCancelC;
+            },
+            set(val){
+                this.propCancelC = val;
+            }
+        },
+        onSaveClick: {
+            get(){
+                return this.propSaveC;
+            },
+            set(val){
+                this.propSaveC = val;
+            }
+        },
+        setSelectedClass: {
+            get(){
+                return this.selectedClass;
+            },
+            set(val){
+                this.selectedClass = val
+            }
+        },
+        restartForceUpdate() {
+            this.updateFC = false;
         }
     },
     methods: {
@@ -95,21 +186,47 @@ export default defineComponent({
                 }
             }
         },
+        arraysMatch(){
+            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
+            if(lcSelectedClass.length == this.selectedClassC.length){
+                return true;
+            }
+            return false;
+        },
+        cleanChecks(){
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
 
+            for( var i=0; i<check.length; i++){
+                check[i].checked = false;
+            }
+
+        },
+        fillChecks(){
+            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
+            console.log(lcSelectedClass);
+            console.log(this.selectedClassC)
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+            const h2 = document.getElementsByClassName("filter-h2-id");
+            var txtValue, i, j;
+
+            for( i=0; i<lcSelectedClass.length; i++){
+                for( j=0; j<check.length; j++){
+                    txtValue = h2[j].textContent || h2[j].innerText;
+                    if(txtValue == lcSelectedClass[i]){ 
+                        console.log(txtValue)
+                        check[j].checked = true;
+                        break;
+                    }
+                }
+            }
+
+        },
         async changeCheck(event: Event) {
             const classSelected = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
 
             if(this.paletteColor == "blue"){
                 this.selectedClassC = classSelected.value;
-
-                var classesSelect = []
-
-
-                for(var i=0; i<this.selectedClassC.length; i++){
-                    classesSelect.push(this.selectedClassC[i]);
-                }
-
-                localStorage.setItem("classesSelected", JSON.stringify(classesSelect));
+                this.$forceUpdate();
 
             }
             else{
@@ -136,6 +253,24 @@ export default defineComponent({
                 this.$emit('checked-changed');
             }
         },
+        returnToOriginalState(){
+            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
+            this.onCancelClick = false;
+        },
+        saveChanges(){
+            var classesSelect = []
+
+            console.log(this.selectedClassC)
+            for(var i=0; i<this.selectedClassC.length; i++){
+                classesSelect.push(this.selectedClassC[i]);
+            }
+
+            localStorage.setItem("classesSelected", JSON.stringify(classesSelect));
+
+            this.onSaveClick = false
+
+            this.$emit("save-btn");
+        }
     }
 })
 </script>
@@ -159,7 +294,11 @@ export default defineComponent({
                                 <label class="form-check-label" for="check-input">
                                     <div class="text-container">
                                         <h1 class="filter-h1">{{ subject.name }}</h1>
-                                        <h2>{{ subject.id }} | {{ subject.id_career[0] }}</h2>
+                                        <div class="id-container">
+                                            <h2 class="filter-h2-id">{{ subject.id }}</h2>
+                                            <h2>&nbsp;|&nbsp;</h2>
+                                            <h2 class="filter-h2-career">{{ subject.id_career[0] }}</h2>
+                                        </div>
                                     </div>
                                 </label>
                             </div>
@@ -212,6 +351,7 @@ export default defineComponent({
     .form-check-input:checked{
         background-color: white;
     }
+
     /* Table styles */
 
     .table-scroll{
@@ -258,7 +398,11 @@ export default defineComponent({
         background-size: 3.5%;
     }
 
-    
+    /* Id container */
+
+    .id-container{
+        display: flex;
+    }
     
 
 </style>
