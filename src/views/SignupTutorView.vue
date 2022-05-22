@@ -9,6 +9,7 @@ import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
 const careers = ref([]);
+let dsb = true;
 
 export default defineComponent({
     components: {
@@ -33,38 +34,107 @@ export default defineComponent({
             careerList: careers,
             username: null,
             userpassword: null,
+            userConfirmPassword: "",
             userId: "",
             userMail: "",
             semester: 0,
             userCareer: "",
             tutorSubjects: [],
-            tutorSchedule: []
+            tutorSchedule: [],
+            disabledV: true,
+            updateModal: false,
+            scheduleComplete: false,
+            classesComplete: false
         }
+    },
+    updated(){
+        const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+        errorMess.style.display = "none"
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            if (!form.checkValidity()) {
+                dsb = true
+            } else {
+                dsb = false;
+            }
+
+            form.classList.add('was-validated')
+        })
+
+        if(this.scheduleComplete && this.classesComplete && !dsb){
+            this.isDisabled = false;
+        }
+        else{
+            this.isDisabled = true;
+        }
+
+    },
+    computed: {
+        isDisabled: {
+            get(){
+                return this.disabledV;
+            },
+            set(val){
+                this.disabledV = val;
+            }
+        },
+        changeUpdateModal: {
+            get(){
+                return this.updateModal;
+            },
+            set(val){
+                this.updateModal = val;
+            }
+        },
+        changeScheduleStatus: {
+            get(){
+                return this.scheduleComplete;
+            },
+            set(val){
+                this.scheduleComplete = val;
+            }
+        },
+        changeClassFiltStatus: {
+            get(){
+                return this.classesComplete;
+            },
+            set(val){
+                this.classesComplete = val;
+            }
+        }
+
     },
     methods: {
         backButton() {
             localStorage.setItem("fromSignupForm", "true")
             router.push('http://localhost:3000/')
         },
-        checkForm(){
-            'use strict'
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                form.addEventListener('submit', function (event: Event) {
-                    if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-
-            this.createUser();
+        scheduleCompleteOnChange(){
+            this.changeScheduleStatus = true;
+            this.$forceUpdate();
+        },
+        scheduleIncompleteOnChange(){
+            this.changeScheduleStatus = false;
+            this.$forceUpdate();
+        },
+        classFilterCompleteOnChange(){
+            this.changeClassFiltStatus = true;
+            this.$forceUpdate();
+        },
+        classFilterIncompleteOnChange(){
+            this.changeClassFiltStatus = false;
+            this.$forceUpdate();
+        },
+        sendUpdateModal(){
+            this.changeUpdateModal = true;
+            this.$forceUpdate();
+        },
+        receivedUpdateModal(){
+            this.changeUpdateModal = false;
+            this.$forceUpdate();
         },
         async createUser() {
             let postUser = await axios
@@ -74,56 +144,67 @@ export default defineComponent({
                 email: this.userMail,
                 first_name: this.username
             })
-            .catch(error => {
-                console.log(error)
-            })
+            .then( result => {
+                const userNumId = result.data.id
 
-            const userNumId = postUser.data.id
-
-            axios
-            .post(api + "pae_users/", {
-                id: userNumId,
-                semester: this.semester,
-                career: this.userCareer,
-                user_type: 1,
-                status: 0
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
-            const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
-            const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
-
-            for(var i = 0; i < tutorScheduleS.length; i++) {
                 axios
-                .post(api + 'schedules/', {
-                    id_user: userNumId,
-                    day_hour: tutorScheduleS[i],
-                    available: true
-                })
-                .then(result => {
-                    console.log(result.data);
+                .post(api + "pae_users/", {
+                    id: userNumId,
+                    semester: this.semester,
+                    career: this.userCareer,
+                    user_type: 1,
+                    status: 2
                 })
                 .catch(error => {
                     console.log(error);
                 })
-            }
 
-            for(var i = 0; i < subjectsSelected.length; i++) {
-                axios
-                .post(api + 'tutor_subjects/', {
-                    id_tutor: userNumId,
-                    id_subject: subjectsSelected[i]
-                })
-                .then(result => {
-                    console.log(result.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-            }
-            router.push("/")
+                const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
+                const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
+
+                for(var i = 0; i < tutorScheduleS.length; i++) {
+                    axios
+                    .post(api + 'schedules/', {
+                        id_user: userNumId,
+                        day_hour: tutorScheduleS[i],
+                        available: true
+                    })
+                    .then(result => {
+                        console.log(result.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                }
+
+                for(var i = 0; i < subjectsSelected.length; i++) {
+                    axios
+                    .post(api + 'tutor_subjects/', {
+                        id_tutor: userNumId,
+                        id_subject: subjectsSelected[i]
+                    })
+                    .then(result => {
+                        console.log(result.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                }
+                router.push("/")
+            })
+            .catch(error => {
+                console.log(error.response.data)
+                const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+                const useridInp = document.getElementById("user_id_signup") as HTMLInputElement;
+
+                if(error.response.data.username[0] == "A user with that username already exists."){
+                    errorMess.style.display = "flex";
+                    useridInp.value = "";
+                }
+                else{
+                    errorMess.style.display = "none"
+                }
+            })
         },
 
         cleanInputs(){
@@ -245,7 +326,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onchange="if(this.checkValidity()) form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -254,21 +335,6 @@ export default defineComponent({
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-md">
-                    <div class="mb-3">
-                        <label class="form-label">Confirma tu contraseña</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
-                            <div class="input-group-append" id="pass-hide">
-                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
                         <div class="with-icon">
@@ -281,8 +347,23 @@ export default defineComponent({
                         <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
+            </div>
+            <div class = "row">
                 <div class="col-6 col-md">
-                    <div class="input-group">
+                    <div class="mb-3">
+                        <label class="form-label">Confirma tu contraseña</label>
+                        <div class="input-group">
+                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <div class="input-group-append" id="pass-hide">
+                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="input-group" id="semester-IG">
                         <label class="dropdown-text-semester">Semestre</label>
                         <select v-model="semester" class="form-select" required>
                             <option value="1">1º</option>
@@ -296,7 +377,7 @@ export default defineComponent({
                             <option value="9">9º</option>
                         </select>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group" id="career-IG">
                         <label class="dropdown-text-career">Carrera</label>
                         <select v-model="userCareer" class="form-select" required>
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
@@ -304,35 +385,36 @@ export default defineComponent({
                     </div>
                 </div>
             </div>
+            <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
             <div class="tutor-elections">
                 <div class="schedule-info">
                     <div class="schedule-instructions">
                         <label class="section-title"> Horario </label>
-                        <h2>Selecciona las horas que tengas libres para dar asesorias</h2>
+                        <h2>Selecciona 5 horas que tengas libres para dar asesorias</h2>
                     </div>
-                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true" alignItemsVal="flex-start"/>
+                    <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true" alignItemsVal="flex-start" v-on:schedule-complete = "scheduleCompleteOnChange" v-on:schedule-incomplete = "scheduleIncompleteOnChange"/>
 
                 </div>
                 <div class="uf-container">
                     <div class="center">
                         <label class="section-title">Unidades de formación</label>
                         <h2>Escoge las unidades de formación que asesorarás.</h2>
-                        <button type="button" id="register-uf" data-bs-toggle="modal" data-bs-target="#class-modal">Registrar UFs</button>
+                        <button type="button" id="register-uf" data-bs-toggle="modal" data-bs-target="#class-modal" @click="sendUpdateModal">Registrar UFs</button>
                     </div>
                 </div>
             </div>
             <div class="button-container">
                 <div>
                     <button class="bigger-buttons"  id="back-button" @click="backButton"> Regresar </button>
-                    <button class="bigger-buttons" type="submit" id="signup-button" > Registrarse </button>
+                    <button class="bigger-buttons" @click="createUser" id="signup-button" :disabled="isDisabled"> Registrarse </button>
                 </div>
             </div>
         </form>
 
-        <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+        <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <ClassModal/>
+                    <ClassModal v-on:disable-classes="classFilterIncompleteOnChange" v-on:enable-classes="classFilterCompleteOnChange" v-on:modal-update="receivedUpdateModal" :callUpdate="changeUpdateModal"/>
                 </div>
             </div>
         </div>
@@ -340,6 +422,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+    /* Class modal */
+    .modal-content{
+        border-radius: 10px;
+    }
 
     body{
         display: flex;
@@ -452,6 +539,11 @@ export default defineComponent({
         margin-inline-start: 1vw;
     }
 
+    #signup-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+
     /* Modal styles */
         
     .modal-lg{
@@ -505,8 +597,12 @@ export default defineComponent({
     .input-group {
         display: flex;
         flex-wrap: nowrap;
-        margin: 1.3vh 0 0 0;
         width: 35vw;
+    }
+
+    #semester-IG,
+    #career-IG{
+        margin: 1.3vh 0 0 0;
     }
 
     .dropdown-text-semester{
@@ -541,14 +637,18 @@ export default defineComponent({
         width: 11.7vw;
     }
 
-    #user_confirm_password_signup,
-    #pass-hide{
-        margin: 0.75vh 0 0 0;
-    }
-
     .row {
         gap: 0.5vw;
         margin-top: 2vh;
+    }
+
+    /* Error message */
+    .error-message{
+        display: none;
+        color: rgb(221, 31, 31);
+        font-family: "Catamaran";
+        font-weight: lighter;
+        font-size: 3vh;
     }
 
 
