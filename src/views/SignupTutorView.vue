@@ -190,6 +190,8 @@ export default defineComponent({
                         console.log(error);
                     })
                 }
+
+                localStorage.setItem("displayToast", "signupTutor");
                 router.push("/")
             })
             .catch(error => {

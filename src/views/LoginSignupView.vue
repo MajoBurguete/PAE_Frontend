@@ -2,7 +2,6 @@
     import { defineComponent, ref } from "vue";
     import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
-    import $ from "jquery";
     import router from "../router";
     /* const user = ref({
         username: '',
@@ -26,6 +25,11 @@
             var myModal = new bootstrap.Modal(document.getElementById('feedback-modal'))
             
             if(messToast == "signupStudent"){
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
+            else if(messToast == "signupTutor"){
+                this.updateModalMess = "Te has registrado correctamente, te llegará un correo una vez que tu cuenta haya sido revisada."
                 myModal.show()
                 localStorage.setItem("displayToast", "empty")
             }
