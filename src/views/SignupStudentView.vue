@@ -254,6 +254,21 @@ export default defineComponent({
                 </div>
                 <div class="col-6 col-md">
                     <div class="mb-3">
+                        <div class="with-icon">
+                            <label class="form-label">Matrícula</label>
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
+                            <div class="tooltip-style" id="popover-mat">
+                                Debe comenzar con 'A' y seguida de 8 números.
+                            </div>
+                        </div>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
+                    </div>
+                    <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
                             <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" onkeyup="this.pattern = form.user_password_signup.value;" required>
@@ -263,20 +278,6 @@ export default defineComponent({
                                 </span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class="col-6 col-md">
-                    <div class="mb-3">
-                        <div class="with-icon">
-                            <label class="form-label">Matrícula</label>
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
-                            <div class="tooltip-style" id="popover-mat">
-                                Debe comenzar con 'A' y seguida de 8 números.
-                            </div>
-                        </div>
-                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -302,7 +303,6 @@ export default defineComponent({
                     </div>
                 </div>
             </div>
-            <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
             <div class="button-container">
                 <div>
                     <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
