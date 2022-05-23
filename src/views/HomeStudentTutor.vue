@@ -57,6 +57,24 @@ export default defineComponent({
                 <ScheduleItem base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
             </div>
         </div>
+
+        <div class="modal fade" id="information-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="scrollbar" id="style-2">
+                        <h3 class="question-val">{{questionVal}}</h3>
+                    </div>
+                    <div class="flex-container">
+                        <div class="session-info-container">
+                            <div class="file-attach-container" id="file-attach-container">
+                                <img class="attach-file-modal" src="..\assets\img\attach.png"/>
+                                <h3 class="file-name"> {{fileName}} </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </template>
 
@@ -97,8 +115,14 @@ export default defineComponent({
         border: transparent;
         font-size: 2.5vh;
         padding: 1vh 2vw;
-        margin-bottom: 3vh;
+        margin: 2vh 0 3vh 0;
         text-decoration: none;
+    }
+
+    a:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
     }
 
     .container {
@@ -140,6 +164,146 @@ export default defineComponent({
         filter: invert(58%) sepia(44%) saturate(287%) hue-rotate(167deg) brightness(93%) contrast(89%);
 
     }
+
+
+    /* Modal */
+
+    .modal-lg{
+        width: 40vw;
+    }
+
+    .modal-content{
+        padding: 2vh 2.5vw 2vh 2.5vw;
+        display: flex;
+        gap: 0.5vh;
+    }
+
+    .flex-container{
+        padding: 2vh 0 0 0;
+        display: flex;
+        flex-direction: row;
+        gap: 2vh;
+    }
+
+    .session-info-container{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5vh;
+    }
+
+    .attach-file{
+        width: 10%;
+        height: auto;
+        margin: 0;
+    }
+
+    .attach-file-modal{
+        width: 15%;
+        height: auto;
+        margin: 0;
+    }
+
+    .file-attach-container{
+        visibility: hidden;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5vh;
+        padding: 0vh 0 0 0;
+    }
+
+    .session-button-container{
+        padding: 0vh 0 2vh 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1vh;
+        align-items: center;
+    }
+
+    .h3-quest-modal{
+        font-size: 1vh;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .class-name,
+    .session-sel,
+    .question-val,
+    .file-name{
+        color: black;
+        font-family: "Catamaran";
+    }
+
+    .class-name{
+        font-size: 3.5vh;
+        font-weight: bold;
+    }
+
+    .session-sel{
+        font-weight: 100;
+        font-size: 2.8vh;
+    }
+
+    .question-val{
+        font-size: 2.8vh;
+        text-align: justify;
+    }
+
+    .scrollbar{
+        padding: 0.5vh 0.5vw 0 0;
+        float: left;
+        height: 18vh;
+        overflow-y: scroll;
+        margin-bottom: 2vh;
+    }
+
+    
+    #style-2::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #F5F5F5;
+    }
+
+    #style-2::-webkit-scrollbar
+    {
+        width: 12px;
+        background-color: #F5F5F5;
+    }
+
+    #style-2::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #26408B;
+    }
+
+    .file-name{
+        font-weight: normal;
+        font-size: 2.8vh;
+    }
+    
+
+    #confirm-button-modal,
+    #edit-button-modal{
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 3vh;
+        width: 90%;
+        border-radius: 7px;
+        padding: 0.5vh 2vw;
+        display: flex;
+        justify-content: center;
+    }
+
+    #edit-button-modal{
+        background-color: #9EB2ED;
+    }
+
+    #confirm-button-modal{
+        background-color: #365295;
+    }
+
     header {
         margin-bottom: 7vh;
     }
