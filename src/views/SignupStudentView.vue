@@ -46,10 +46,13 @@ export default defineComponent({
         // Loop over them and prevent submission
         Array.prototype.slice.call(forms)
         .forEach(function (form) {
-            if (!form.checkValidity()) {
+            let password = form.user_password_signup
+            let confirmPassword = form.user_confirm_password_signup
+            if ((form.user_name_signup.checkValidity() && form.user_email_signup.checkValidity() && form.user_id_signup.checkValidity() && form.user_semester_signup.checkValidity() && form.user_career_signup.checkValidity() && password.checkValidity() && password.value == confirmPassword.value)) {
+                dsb = false
+            }
+            else {
                 dsb = true
-            } else {
-                dsb = false;
             }
 
             form.classList.add('was-validated')
@@ -240,7 +243,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onchange="if(this.checkValidity()) form.user_confirm_password_signup.pattern = this.value;" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -253,7 +256,7 @@ export default defineComponent({
                     <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
-                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" onkeyup="this.pattern = form.user_password_signup.value;" required>
                             <div class="input-group-append" id="pass-hide">
                                 <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
@@ -279,7 +282,7 @@ export default defineComponent({
                 <div class="col-6 col-md">
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
-                        <select v-model="semester" class="form-select" required>
+                        <select v-model="semester" class="form-select" id="user_semester_signup" required>
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
@@ -293,7 +296,7 @@ export default defineComponent({
                     </div>
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
-                        <select v-model="userCareer" class="form-select" required>
+                        <select v-model="userCareer" class="form-select" id="user_career_signup" required>
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>
