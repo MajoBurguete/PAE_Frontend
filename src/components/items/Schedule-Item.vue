@@ -266,6 +266,7 @@ export default defineComponent({
 
             this.hourCountC = "0";
             this.clearSelectedHours;
+            this.$emit("scheduleIncomplete")
         },
         clearLockedSchedule(){
             const squares = document.getElementsByClassName("active");

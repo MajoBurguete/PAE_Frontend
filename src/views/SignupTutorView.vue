@@ -205,6 +205,7 @@ export default defineComponent({
                 if(error.response.data.username[0] == "A user with that username already exists."){
                     errorMess.style.display = "flex";
                     useridInp.value = "";
+                    window.scrollTo(0,0)
                 }
                 else{
                     errorMess.style.display = "none"
@@ -351,6 +352,7 @@ export default defineComponent({
                         </div>
                         <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
+                    <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
                 </div>
             </div>
             <div class = "row">
@@ -390,7 +392,6 @@ export default defineComponent({
                     </div>
                 </div>
             </div>
-            <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
             <div class="tutor-elections">
                 <div class="schedule-info">
                     <div class="schedule-instructions">
