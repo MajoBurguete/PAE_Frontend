@@ -1,3 +1,16 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    methods: {
+        logout(){
+            localStorage.removeItem("user-token");
+            localStorage.clear();
+        }
+    }
+})
+</script>
+
 <template>
     <body>
         <nav class="navbar navbar-expand-lg fixed-top">
@@ -19,13 +32,13 @@
                                 <li><a class="dropdown-item" id= "lan" href="#">Español</a></li>
                             </ul>
                         </div>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="admin-home">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
                         </a>
                         <a class="nav-link" href="home" >
                             <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
                         </a>
-                        <a class="nav-link" href="/"> Cerrar Sesi&oacute;n</a>
+                        <a class="nav-link" href="/" @click="logout"> Cerrar Sesi&oacute;n</a>
                     </div>
                 </div>
             </div>
