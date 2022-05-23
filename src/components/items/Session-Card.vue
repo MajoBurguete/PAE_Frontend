@@ -204,6 +204,5 @@ export default defineComponent({
 
     #status{
         color: #F65E0B;
-    }
-    
-    </style>
+    } 
+</style>

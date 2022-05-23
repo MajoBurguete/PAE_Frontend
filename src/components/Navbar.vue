@@ -13,7 +13,7 @@ export default defineComponent({
 
 <template>
     <body>
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" >
                     <img src="src/assets/img/PAE-black.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
