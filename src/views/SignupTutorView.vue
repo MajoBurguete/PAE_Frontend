@@ -158,44 +158,45 @@ export default defineComponent({
                     user_type: 1,
                     status: 2
                 })
+                .then(result => {
+                    const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
+                    const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
+    
+                    for(var i = 0; i < tutorScheduleS.length; i++) {
+                        axios
+                        .post(api + 'schedules/', {
+                            id_user: userNumId,
+                            day_hour: tutorScheduleS[i],
+                            available: true
+                        })
+                        .then(result => {
+                            console.log(result.data);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                    }
+    
+                    for(var i = 0; i < subjectsSelected.length; i++) {
+                        axios
+                        .post(api + 'tutor_subjects/', {
+                            id_tutor: userNumId,
+                            id_subject: subjectsSelected[i]
+                        })
+                        .then(result => {
+                            console.log(result.data);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                    }
+    
+                    localStorage.setItem("displayToast", "signupTutor");
+                    router.push("/")
+                })
                 .catch(error => {
                     console.log(error);
                 })
-
-                const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
-                const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
-
-                for(var i = 0; i < tutorScheduleS.length; i++) {
-                    axios
-                    .post(api + 'schedules/', {
-                        id_user: userNumId,
-                        day_hour: tutorScheduleS[i],
-                        available: true
-                    })
-                    .then(result => {
-                        console.log(result.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
-                }
-
-                for(var i = 0; i < subjectsSelected.length; i++) {
-                    axios
-                    .post(api + 'tutor_subjects/', {
-                        id_tutor: userNumId,
-                        id_subject: subjectsSelected[i]
-                    })
-                    .then(result => {
-                        console.log(result.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
-                }
-
-                localStorage.setItem("displayToast", "signupTutor");
-                router.push("/")
             })
             .catch(error => {
                 console.log(error.response.data)
