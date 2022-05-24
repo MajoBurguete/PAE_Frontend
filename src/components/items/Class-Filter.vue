@@ -189,6 +189,11 @@ export default defineComponent({
         arraysMatch(){
             const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
             if(lcSelectedClass.length == this.selectedClassC.length){
+                for(var i = 0; i < lcSelectedClass.length; i ++){
+                    if (lcSelectedClass.indexOf(this.selectedClassC[i]) == -1) {
+                        return false;
+                    }
+                }
                 return true;
             }
             return false;
