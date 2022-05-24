@@ -75,6 +75,7 @@ export default defineComponent({
             else {
                 for(var i=0; i<checkL; i++){
                     check[i].type = "radio";
+                    check[i].classList.add("form-check-input-green")
                 } 
             }
 
@@ -351,6 +352,11 @@ export default defineComponent({
     .form-check-input:checked{
         background-color: white;
     }
+
+    .form-check-input-green:checked{
+        background-color: #6F9492;
+    }
+
 
     /* Table styles */
 
