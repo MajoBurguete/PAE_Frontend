@@ -113,7 +113,7 @@ export default defineComponent({
     methods: {
         backButton() {
             localStorage.setItem("fromSignupForm", "true")
-            router.push('http://localhost:3000/')
+            router.push('/')
         },
         scheduleCompleteOnChange(){
             this.changeScheduleStatus = true;
@@ -541,9 +541,21 @@ export default defineComponent({
         margin-inline-end: 1vw;
     }
 
+    #back-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #ADBCE5;
+        transition: all 0.3s ease 0s;
+    }
+
     #signup-button{
         background-color: #26408B;
         margin-inline-start: 1vw;
+    }
+
+    #signup-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
     }
 
     #signup-button:disabled{

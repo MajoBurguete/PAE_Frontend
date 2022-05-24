@@ -401,6 +401,12 @@
         padding: 2vh 2vw;
     }
 
+    button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #ffffffb5;
+        transition: all 0.3s ease 0s;
+    }
+
     img{
         width: 35%;
         height: 35%;
@@ -520,6 +526,12 @@
         color: white;
         padding: 1vh 4vw;
         margin: 3vh 0 0 0;
+    }
+
+    #signin-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
     }
 
     .login-h3,
