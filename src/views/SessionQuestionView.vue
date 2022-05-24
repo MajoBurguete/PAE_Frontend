@@ -39,7 +39,7 @@ export default defineComponent({
         if(this.fileName != ""){
             this.updateFile()
         }
-        
+
         if(this.questionVal.length != 0){
             this.isDisabled = false;
         }
@@ -490,6 +490,12 @@ export default defineComponent({
     #send-button:disabled{
         background-color: #3b4f8a9f;
         color: rgba(255, 255, 255, 0.677);
+    }
+
+    #send-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
     }
 
     /* Modal */

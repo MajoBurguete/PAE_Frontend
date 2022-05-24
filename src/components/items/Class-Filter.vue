@@ -340,21 +340,25 @@ export default defineComponent({
         border-color: white;
         min-width: 1.2vw;
     }
-    .form-check-input-green{
-        background-color: transparent;
-        border-color: green;
-        min-width: 1.2vw;
-    }
-    .form-check-input-green:checked{
-        background-color: green;
-    }
 
     .form-check-input:checked{
         background-color: white;
     }
 
+    .form-check-input:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px rgba(255, 255, 255, 0.686);
+        transition: all 0.3s ease 0s;
+    }
+
     .form-check-input-green:checked{
         background-color: #6F9492;
+    }
+
+    .form-check-input-green:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #9ec2c0;
+        transition: all 0.3s ease 0s;
     }
 
 

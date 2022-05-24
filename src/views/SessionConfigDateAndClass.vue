@@ -179,6 +179,12 @@ export default defineComponent({
         color: rgba(255, 255, 255, 0.677);
     }
 
+    button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
     .question{
         height: 3.5vh;
         width: auto;
@@ -188,10 +194,12 @@ export default defineComponent({
         height: 1vw;
         width: auto;
     }
+
     #selected{
         filter: invert(65%) sepia(7%) saturate(1097%) hue-rotate(128deg) brightness(85%) contrast(84%);
         margin-left: 0vw;
     }
+    
     #available{
         filter: invert(94%) sepia(14%) saturate(268%) hue-rotate(99deg) brightness(94%) contrast(87%);
         margin-left: 0vw;
