@@ -277,8 +277,28 @@
                     console.log(error);
                 })
             },
+            clearTutorsSelectedH1(){
+                const tutorsListT = document.getElementById('tutors-list').getElementsByTagName("h1") as HTMLCollection;
+
+                for(var i=0; i<tutorsListT.length; i++){
+                    tutorsListT[i].style.fontWeight = "normal"
+                }
+            },
+            clearStudentsSelectedH1(){
+                const studentsListT = document.getElementById('students-list').getElementsByTagName("h1") as HTMLCollection;
+
+                for(var i=0; i<studentsListT.length; i++){
+                    studentsListT[i].style.fontWeight = "normal"
+                }
+            },
             clickTutor(i: number) {
                 const tutorS = this.updateTutorList[i];
+
+                this.clearTutorsSelectedH1();
+                
+                const elementS = document.getElementById(tutorS.id).getElementsByTagName("h1") as HTMLCollection;
+                elementS[0].style.fontWeight = "bold"
+                
                 this.updateUserN = tutorS.id__first_name;
                 this.updateCareer = tutorS.career;
                 this.updateSemester = tutorS.semester;
@@ -289,6 +309,11 @@
             },
             clickStudent(i: number) {
                 const studentS = this.updateStudentList[i];
+
+                this.clearStudentsSelectedH1();
+
+                const elementS = document.getElementById(studentS.id).getElementsByTagName("h1") as HTMLCollection;
+                elementS[0].style.fontWeight = "bold"
 
                 this.updateUserN = studentS.id__first_name;
                 this.updateCareer = studentS.career;
@@ -317,7 +342,7 @@
                 <div class="table-scroll" id="students-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" @click="clickStudent(i)">
+                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" :id=student.id @click="clickStudent(i)">
                                 <td> 
                                     <h1 class="filter-h1-student"> {{student.id__first_name}} </h1>
                                 </td>
@@ -328,7 +353,7 @@
                 <div class="table-scroll" id="tutors-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" id="tutors-list" @click="clickTutor(j)">
+                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" :id=tutor.id @click="clickTutor(j)">
                                 <td> 
                                     <h1 class="filter-h1-tutor"> {{tutor.id__first_name}} </h1>
                                 </td>
@@ -398,7 +423,7 @@
 
     h1{
         font-family: "Montserrat";
-        font-weight: medium;
+        font-weight: normal;
         font-size: 2.5vh;
         margin: 0;
         text-align: center;
@@ -541,6 +566,13 @@
         border-radius: 9px;
     }
 
+    .btn-cont:hover,
+    #pending-session:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
     /* Schedule */
 
     .schedule-item{
@@ -622,6 +654,10 @@
 
     td{
         width: 17vw;
+    }
+
+    td h1:hover{
+        color: #26408B;
     }
 
     .table-data-tutor,
