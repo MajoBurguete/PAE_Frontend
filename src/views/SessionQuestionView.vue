@@ -31,12 +31,20 @@ export default defineComponent({
             sessionSel: this.getSessionDate(localStorage.getItem("sessionSelected")),
             questionVal: "",
             fileName: "",
-            fileUpdated: []
+            fileUpdated: [],
+            dsb: true
         }
     },
     updated(){
         if(this.fileName != ""){
             this.updateFile()
+        }
+
+        if(this.questionVal.length != 0){
+            this.isDisabled = false;
+        }
+        else{
+            this.isDisabled = true
         }
     },
     computed: {
@@ -49,6 +57,14 @@ export default defineComponent({
             },
             set(val){
                 this.fileUpdated = val;
+            }
+        },
+        isDisabled:{
+            get(){
+                return this.dsb;
+            },
+            set(val){
+                this.dsb = val;
             }
         }
     },
@@ -287,6 +303,14 @@ export default defineComponent({
             this.fileC = [file.files[0].name];
             this.changeFileName;
             this.updateFile();
+        },
+        disableNextBtn(){
+            this.isDisabled = true;
+            this.$forceUpdate();
+        },
+        enableNextBtn(){
+            this.isDisabled = false;
+            this.$forceUpdate();
         }
     }
     
@@ -308,7 +332,7 @@ export default defineComponent({
             </div>
             <div class="right">
                 <h1>Tema específico a tratar</h1>
-                <textarea class="form-control" id="questionText" v-model="questionVal" placeholder="Escribe tu duda..." rows="5"></textarea>
+                <textarea class="form-control" id="question-text" v-model="questionVal" placeholder="Escribe tu duda..." rows="5"></textarea>
                 <h1>Archivos complementarios</h1>
                 <h2>Recuerda subir archivos menores a 2 MB</h2>
                 <div class="file-attach-preview" id="file-attach-preview" @click="deleteFile">
@@ -319,7 +343,7 @@ export default defineComponent({
                     <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
                     <input class="form-control" type="file" v-on:change="saveFile" id="session-file">
                 </div>
-                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" @click="editSession">
+                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" @click="editSession" :disabled="isDisabled">
                     Enviar
                 </button>               
             </div>
@@ -461,6 +485,17 @@ export default defineComponent({
         padding: 1vh 7vw;
         border-radius: 10px;
         margin: 2vh 0 0 0;
+    }
+
+    #send-button:disabled{
+        background-color: #3b4f8a9f;
+        color: rgba(255, 255, 255, 0.677);
+    }
+
+    #send-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
     }
 
     /* Modal */

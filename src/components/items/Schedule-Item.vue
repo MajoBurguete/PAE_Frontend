@@ -352,8 +352,9 @@ export default defineComponent({
                         squaresSelect[i].className = "active";
                     }
 
-
                     square.className = "selected";
+
+                    this.$emit("session-enable-btn")
 
                     localStorage.setItem("sessionSelected", square.id);
                 }

@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue";
 import ClassFilter from "../components/items/Class-Filter.vue";
 import NavBar from "../components/Navbar.vue"
+import router from "../router";
 
 export default defineComponent({
     mounted(){
@@ -20,7 +21,8 @@ export default defineComponent({
     data() {
         return{
             hours: [],
-            classLegend: "Escoge la materia para tu asesoría"
+            classLegend: "Escoge la materia para tu asesoría",
+            dsb: true
         }
     },
     computed: {
@@ -38,6 +40,14 @@ export default defineComponent({
             },
             set(val) {
                 this.classLegend = val;
+            }
+        },
+        isDisabled: {
+            get(){
+                return this.dsb;
+            },
+            set(val){
+                this.dsb = val;
             }
         }
     },
@@ -68,6 +78,18 @@ export default defineComponent({
         },
         updateHours(){
             this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
+            this.disableNextBtn();
+        },
+        nextButtonOnClick(){
+            router.push("/question")
+        },
+        disableNextBtn(){
+            this.isDisabled = true;
+            this.$forceUpdate();
+        },
+        enableNextBtn(){
+            this.isDisabled = false;
+            this.$forceUpdate();
         }
     }
 })
@@ -89,12 +111,12 @@ export default defineComponent({
                         Horario Disponible
                     </div>
             </div>
-            <ScheduleItem base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
+            <ScheduleItem v-on:session-enable-btn="enableNextBtn" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
         </div>
         <div class="container-side">
             <h1 class="class-legend"> {{legendDescription}} </h1>
             <ClassFilter paletteColor="green" v-on:empty-list="emptyLegend" v-on:hours-available="changeLegend" v-on:checked-changed="updateHours" />
-            <a href="/question"> Continuar </a>
+            <button @click="nextButtonOnClick" :disabled="isDisabled"> Continuar </button>
         </div>
     </div>
 </template>
@@ -140,7 +162,7 @@ export default defineComponent({
         gap: 1vw;
     }
 
-    a{
+    button{
         font-family: "Ubuntu";
         font-weight: normal;
         background-color: #26408B;
@@ -152,6 +174,17 @@ export default defineComponent({
         text-decoration: none;
     }
 
+    button:disabled{
+        background-color: #3b4f8a9f;
+        color: rgba(255, 255, 255, 0.677);
+    }
+
+    button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
     .question{
         height: 3.5vh;
         width: auto;
@@ -161,10 +194,12 @@ export default defineComponent({
         height: 1vw;
         width: auto;
     }
+
     #selected{
         filter: invert(65%) sepia(7%) saturate(1097%) hue-rotate(128deg) brightness(85%) contrast(84%);
         margin-left: 0vw;
     }
+    
     #available{
         filter: invert(94%) sepia(14%) saturate(268%) hue-rotate(99deg) brightness(94%) contrast(87%);
         margin-left: 0vw;
