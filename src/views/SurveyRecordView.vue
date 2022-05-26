@@ -207,6 +207,10 @@ export default defineComponent({
     background-color: white;
     border-radius: 20px;
 }
+.form-check-input:checked {
+    background-color: #57716F;
+    border-color: #57716F;
+}
 .dropdown-item {
     font-family: "Catamaran";
     font-weight: medium;
