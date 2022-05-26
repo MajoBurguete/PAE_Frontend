@@ -20,26 +20,44 @@ export default defineComponent({
     data() {
         return{
             surveyList: [
-                {question: "Pregunta Abierta", type: "0", id: "1"},
-                {question: "Pregunta Cerrada Multiple", type: "1", id: "2"},
-                {question: "Pregunta Escala", type: "2", id: "4"},
-                {question: "Pregunta", type: "3", id: "3"},
+                {question: "Pregunta Abierta", type: "0"},
+                {question: "Pregunta Cerrada Multiple", type: "1"},
+                {question: "Pregunta Escala", type: "2"},
+                {question: "Pregunta", type: "3"},
             ],
             tutorList: [
-                {question: "Tiempo de la asesoría", type: "1", id: "5"},
-                {question: "Foto de Asesoría", type: "3", id: "6"},
-                {question: "Cuentanos mas de tu experiencia", type: "0", id: "7"},
+                {question: "Tiempo de la asesoría", type: "1"},
+                {question: "Foto de Asesoría", type: "3"},
+                {question: "Cuentanos mas de tu experiencia", type: "0",},
             ],
             studentList: [
-                {question: "Comentarios ", type: "0", id: "1"},
-                {question: "Tiempo de la asesoría ", type: "1", id: "2"},
-                {question: "Claridad de explicación ", type: "2", id: "4"},
-                {question: "Foto de Asesoría ", type: "3", id: "3"},
+                {question: "Comentarios ", type: "0"},
+                {question: "Tiempo de la asesoría ", type: "1"},
+                {question: "Claridad de explicación ", type: "2"},
+                {question: "Foto de Asesoría ", type: "3"},
             ],
             tab: "student"
         }
     },
     methods: {
+        checkForm(){
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                form.addEventListener('submit', function (event: Event) {
+                    if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        },
         toStudentsTab() {
             const studentTab = document.getElementById("students-tab") as HTMLInputElement;
             const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
@@ -67,6 +85,12 @@ export default defineComponent({
             else{
                 this.surveyList = this.tutorList;
             }
+        },
+        addQuestion(type: string){
+            this.surveyList.push({question: "Pregunta", type: type})
+        },
+        deleteQuestion(place: number){
+            this.surveyList.splice(place,1)
         }
     },
 })
@@ -87,11 +111,12 @@ export default defineComponent({
             <form>
                 <div class="survey-container" v-for="(subject, i) in surveyList" :key="i">
                     <div class="question-container" v-if="subject.type == '0'">
-                        <label for="openQuestion" class="form-label">{{subject.question}}</label>
+                        <input type="text" for="openQuestion" class="question-input" :value="subject.question" required @input="checkForm">
                         <textarea type="form-control" class="form-control" id="comments" rows="3" disabled></textarea>
+                        <button class="delete-button" @click="deleteQuestion(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '1'">
-                        <label for="closedQuestion" class="form-label">{{subject.question}}</label><br>
+                        <input type="text" for="closedQuestion" class="question-input" :value="subject.question" required @input="checkForm"><br>
                         <div class="answer-container">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1" disabled>
@@ -118,9 +143,10 @@ export default defineComponent({
                                 </label>
                             </div>   
                         </div>
+                        <button class="delete-button" @click="deleteQuestion(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '2'">
-                        <label for="scaleQuestion" class="form-label">{{subject.question}}</label><br>
+                        <input type="text" for="scaleQuestion" class="question-input" :value="subject.question" required @input="checkForm"><br>
                         <div class="scale-container">
                             <label for="scaleQuestion" class="form-step">1</label>
                             <label for="scaleQuestion" class="form-step">2</label>
@@ -143,17 +169,46 @@ export default defineComponent({
                                 </label>
                             </div>
                         </div>
+                        <button class="delete-button" @click="deleteQuestion(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '3'">
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label">{{subject.question}}</label>
-                            <input class="form-control" type="file" id="formFile" disabled>
-                        </div>
+                        <input type="text" for="formFile" class="question-input" :value="subject.question" required @input="checkForm"><br>
+                        <input class="form-control" type="file" id="formFile" disabled>
+                        <button class="delete-button" @click="deleteQuestion(i)"></button>
                     </div>
                 </div>
             </form>
         </div>
-       <a href="home">Enviar</a>
+       <a href="home" @click="checkForm">Guardar Cambios</a>
+       <div class="add-question-container">
+           <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#class-modal"></button>
+           <h1>añadir pregunta</h1>
+       </div>
+       <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <h2> ¿Qué tipo de pregunta deseas agregar? </h2>
+                    <div class="add-button-container">
+                        <div class="button-label-container">
+                            <button class="add-button" id="open-button" @click="addQuestion('0')"></button>
+                            <h1>Abierta</h1>
+                        </div>
+                        <div class="button-label-container">
+                            <button class="add-button" id="multiple-button" @click="addQuestion('1')"></button>
+                            <h1>Multiple</h1>
+                        </div>
+                        <div class="button-label-container">
+                            <button class="add-button" id="scale-button" @click="addQuestion('2')"></button>
+                            <h1>Escala</h1>
+                        </div>
+                        <div class="button-label-container">
+                            <button class="add-button" id="file-button" @click="addQuestion('3')"></button>
+                            <h1>Archivo</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
     </div>
 </template>
 
@@ -190,6 +245,7 @@ export default defineComponent({
     border-radius: 15px;
     padding: 3vh 2vw;
     margin-top: 2vh;
+    padding-bottom: 0;
     width: 55vw;
 }
 .answer-container{
@@ -250,6 +306,29 @@ export default defineComponent({
     margin: 1vh 1.5vw;
     font-size: 3vh;
 }
+.delete-button {
+    border-style: hidden;
+    background-color: #26408B;
+    border-radius: 100%;
+    height: 5vh;
+    width: 5vh;
+    background-image: url('src/assets/img/delete-white.png');
+    background-position: 0.56vw 0.58vh;
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    background-size: 70%;
+    margin: 2vh 0 0 95%;
+}
+.add-question-button {
+    border-style: hidden;
+    background-color: #26408B;
+    border-radius: 100%;
+    height: 8vh;
+    width: 8vh;
+    background-image: url('src/assets/img/plus-icon.png');
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    background-size: 100%;
+}
+
 .form-check-input:disabled~.form-check-label, .form-check-input[disabled]~.form-check-label {
     opacity: 1;
 }
@@ -266,5 +345,73 @@ a {
     margin: 3vh;
     text-decoration: none;
 }
-
+.question-input {
+    font-family: "Catamaran";
+    font-weight: medium;
+    font-size: 3vh;
+    color: #616161;
+    border-radius: 15px;
+    border-style: hidden;
+    padding: 1vh 1vw;
+    margin-bottom: 1vh;
+    width: 100%;
+}
+.add-question-container {
+    display: flex;
+    bottom: 4vh;
+    right: 4vh;
+    position: fixed;
+    width: 8vw;
+    align-items: center;
+    gap: 1vh;
+    flex-direction: column;
+}
+h1 {
+    font-family: "Ubuntu";
+    font-weight: normal;
+    font-size: 2.5vh;
+    color: #365295;
+    text-align: center;
+}
+.modal-content {
+    display: flex;
+    align-items: center;
+    padding: 3vh;
+    gap: 2vh;
+}
+h2 {
+    font-family: "Catamaran";
+    font-weight: bolder;
+    color: #6F9492;
+    font-size: 5vh;
+}
+.add-button-container {
+    display: flex;
+    gap: 4vw;
+}
+.add-button {
+    border-style: hidden;
+    background-color: #26408B;
+    border-radius: 100%;
+    height: 10vh;
+    width: 10vh;
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    background-size: 70%;
+}
+#open-button {
+    background-image: url('src/assets/img/open-question.png');
+    background-position: 0.8vw 1.5vh;
+}
+#multiple-button {
+    background-image: url('src/assets/img/multiple-question.png');
+    background-position: 0.8vw 1.3vh;
+}
+#scale-button {
+    background-image: url('src/assets/img/scale-question.png');
+    background-position: 0.8vw 1.3vh;
+}
+#file-button {
+    background-image: url('src/assets/img/file-question.png');
+    background-position: 1.3vw 1.3vh;
+}
 </style>
