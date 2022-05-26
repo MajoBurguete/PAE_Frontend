@@ -162,7 +162,9 @@
                     errorMess.style.display = "none";
                     this.token = result.data.token
                     console.log(this.token)
-                    localStorage.setItem('user-token', result.data.token)
+                    localStorage.setItem('user-token', result.data.token);
+                    localStorage.removeItem("hoursSelectedT");
+                    localStorage.removeItem("classesSelected");
 
                     this.detectUserType();
                 })
