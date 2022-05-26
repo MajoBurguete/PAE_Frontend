@@ -40,7 +40,7 @@ export default defineComponent({
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
         let hoursStore = JSON.parse(localStorage.getItem("hoursAvailable"))
-        if(hoursStore.length != 0){
+        if(hoursStore != null && hoursStore.length != 0){
             this.scheduledHours = hoursStore;
             this.checkLockedSchedule(squares);
         }

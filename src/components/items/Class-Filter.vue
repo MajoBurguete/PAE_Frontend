@@ -81,7 +81,7 @@ export default defineComponent({
 
             let classNameId = localStorage.getItem("className");
 
-            if(classNameId.length != 0){
+            if(classNameId != null && classNameId.length != 0){
                 const inputCheck = document.getElementById(classNameId);
 
                 inputCheck.checked = true;
