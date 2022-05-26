@@ -40,6 +40,11 @@ const router = createRouter({
       component: () => import('../views/TutorConfigView.vue')
     },
     {
+      path: "/admin-settings",
+      name: "adminSettings",
+      component: () => import('../views/AdminConfigView.vue')
+    },
+    {
       path: "/question",
       name: "sessionQuestion",
       component: () => import('../views/SessionQuestionView.vue')
