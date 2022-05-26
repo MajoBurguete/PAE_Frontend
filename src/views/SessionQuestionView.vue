@@ -5,13 +5,14 @@ import axios from "axios";
 import NavBar from "../components/Navbar.vue"
 
 const now = new Date();
+const scheduleR = ref()
 
 const api = 'http://localhost:8000/api/'
 var id_subject = ref ("")
 var description = ref ("")
 const date = ref ("2022-05-05 14:00")
-const id_tutor = ref (4)
-const id_student = ref (2)
+const id_tutor = ref (localStorage.getItem("tutorSesId"))
+const id_student = ref (localStorage.getItem("userID"))
 const file = ref (null)
 const status = ref (0)
 const spot = ref (null)
@@ -24,12 +25,23 @@ export default defineComponent({
     components: {
         NavBar
     },
+    mounted(){
+        let txt = localStorage.getItem("questionText");
+
+        console.log(txt.length)
+
+        if(txt.length != 0){
+            console.log("ams")
+            this.questionVal = txt;
+            this.$forceUpdate();
+        }
+    },
     data(){
         return{
             classIdS: localStorage.getItem("classId"),
             classNameS: localStorage.getItem("className"),
             sessionSel: this.getSessionDate(localStorage.getItem("sessionSelected")),
-            questionVal: "",
+            questionValData: "",
             fileName: "",
             fileUpdated: [],
             dsb: true
@@ -65,6 +77,14 @@ export default defineComponent({
             },
             set(val){
                 this.dsb = val;
+            }
+        },
+        questionVal: {
+            get(){
+                return this.questionValData;
+            },
+            set(val){
+                this.questionValData = val;
             }
         }
     },
@@ -255,22 +275,75 @@ export default defineComponent({
             id_subject.value = this.classId;
             description.value = this.questionVal;
 
+            const fileI = document.getElementById("session-file") as HTMLInputElement;
+            let fileFD;
+            let formData = new FormData();
+            if(fileI.files.length != 0){
+                fileFD = fileI.files[0];
+                formData.append('file', fileFD)
+            }
+
+            formData.append('description', description.value);
+            formData.append('date', date.value);
+            formData.append('status', status.value.toString());
+            formData.append('spot', spot.value);
+            formData.append('request_time', request_time.value);
+            formData.append('verify_time', verify_time.value);
+            formData.append('id_subject',id_subject.value);
+            formData.append('id_tutor', id_tutor.value);
+            formData.append('id_student', id_student.value);
+            formData.append('id_admin_verify', id_admin_verify.value);
+
             var session = {'description': description.value, 'date': date.value, 'file': file.value, 'status': status.value, 'spot': spot.value, 'request_time': request_time.value, 'verify_time': verify_time.value, 'id_subject': id_subject.value, 'id_tutor': id_tutor.value, 'id_student': id_student.value, 'id_admin_verify': id_admin_verify.value}
             /* var newSession = {'description': session.value.description, 'date': session.value.date, 'file': session.value.file, 'status': session.value.status, 'spot': session.value.spot, 'request_time': session.value.request_time, 'verify_time': session.value.verify_time, 'id_subject': session.value.id_subject, 'id_tutor': session.value.id_tutor, 'id_student': session.value.id_student, 'id_admin_verify': session.value.id_admin_verify} */
             axios
             .post('http://localhost:8000/api/sessions/', session)
             .then(result => {
                 console.log(result.data)
+
+                console.log(localStorage.getItem("sessionSelected"))
+                axios
+                .get(api + "schedule_by_tutor_and_day_hour/?tutor=" + localStorage.getItem("tutorSesId") + "&dayHour=" + localStorage.getItem("sessionSelected"))
+                .then(resultR => {
+                    console.log(resultR.data[0])
+                    scheduleR.value = resultR.data[0]
+
+                    var info = {
+                        'id': scheduleR.value.id,
+                        'day_hour': scheduleR.value.day_hour,
+                        'available': false,
+                        'id_user': scheduleR.value.id_user
+                    }
+
+
+                    axios
+                    .put(api + "schedules/" + scheduleR.value.id + "/", info)
+                    .then(resultS => {
+                        console.log(resultS.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
             })
             .catch(error => {
                 console.log(error)
             })
-
+            
+            localStorage.removeItem("className")
+            localStorage.removeItem("classId")
+            localStorage.removeItem("tutorSesId")
+            localStorage.removeItem("questionText")
+            localStorage.removeItem("sessionSelected")
+            localStorage.removeItem("hoursAvailable")
             router.push("/home")
         },
         editSession(){
-            const file = document.getElementById("session-file") as HTMLInputElement;
-            console.log(file.files[0])
+            router.push("/date-and-class")
         },
         deleteFile(){
             const fileCont = document.getElementById("file-container") as HTMLInputElement;
@@ -311,6 +384,9 @@ export default defineComponent({
         enableNextBtn(){
             this.isDisabled = false;
             this.$forceUpdate();
+        },
+        saveQuestionTxt(){
+            localStorage.setItem("questionText", this.questionVal)
         }
     }
     
@@ -332,7 +408,7 @@ export default defineComponent({
             </div>
             <div class="right">
                 <h1>Tema específico a tratar</h1>
-                <textarea class="form-control" id="question-text" v-model="questionVal" placeholder="Escribe tu duda..." rows="5"></textarea>
+                <textarea class="form-control" id="question-text" v-model="questionVal" @change="saveQuestionTxt" placeholder="Escribe tu duda..." rows="5"></textarea>
                 <h1>Archivos complementarios</h1>
                 <h2>Recuerda subir archivos menores a 2 MB</h2>
                 <div class="file-attach-preview" id="file-attach-preview" @click="deleteFile">
