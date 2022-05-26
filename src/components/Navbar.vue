@@ -1,11 +1,51 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import router from "../router";
 
 export default defineComponent({
     methods: {
         logout(){
             localStorage.removeItem("user-token");
-            localStorage.clear();
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("hoursSelectedT");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classesSelected");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("tutorSesId");
+            localStorage.removeItem("userType");
+            localStorage.removeItem("hoursAvailable");
+            localStorage.removeItem("userID");
+
+            router.push('/');
+        },
+        cleanSessionInfo(){
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("hoursAvailable");
+        },
+        homeBtn(){
+            if(localStorage.getItem("userType") == "2"){
+                console.log(localStorage.getItem("userType"));
+                router.push('http://localhost:3000/admin-home');
+            }
+            else{
+                router.push('http://localhost:3000/home')
+            }
+        },
+        settingsBtn(){
+            if(localStorage.getItem("userType") == "2"){
+                console.log(localStorage.getItem("userType"));
+                router.push('http://localhost:3000/admin-settings');
+            }
+            else if(localStorage.getItem("userType") == "0"){
+                router.push('http://localhost:3000/student-settings');
+            }
+            else{
+                router.push('http://localhost:3000/tutor-settings');
+            }
         }
     }
 })
@@ -32,13 +72,13 @@ export default defineComponent({
                                 <li><a class="dropdown-item" id= "lan" href="#">Español</a></li>
                             </ul>
                         </div>
-                        <a class="nav-link" href="admin-home">
+                        <button class="nav-link" @click="settingBtn">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
-                        </a>
-                        <a class="nav-link" href="home" >
+                        </button>
+                        <button class="nav-link" @click="homeBtn" >
                             <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
-                        </a>
-                        <a class="nav-link" href="/" @click="logout"> Cerrar Sesi&oacute;n</a>
+                        </button>
+                        <button class="nav-link" @click="logout"> Cerrar Sesi&oacute;n</button>
                     </div>
                 </div>
             </div>
@@ -49,7 +89,7 @@ export default defineComponent({
 
 <style scoped>
     /* Estilos generales de la barra de navegacion */
-     .navbar{
+    .navbar{
         position: fixed;
         top: 0;
         width: 100vw;
@@ -62,9 +102,16 @@ export default defineComponent({
     
 
     /* Color de hover en elementos */
+    button:hover,
     a:hover {
         color: #A0BCFF;
     }
+
+    button{
+        background-color: transparent;
+        border-color: transparent;
+    }
+
     /* Control de tamaño y curso en titulo de navbar */
     .navbar-brand {
         width: 60%;
@@ -91,7 +138,8 @@ export default defineComponent({
         pointer-events: none;
     }
 
-    a{
+    a,
+    button{
         color: white;
         font-size: 2vw;
         font-family: "Ubuntu";
