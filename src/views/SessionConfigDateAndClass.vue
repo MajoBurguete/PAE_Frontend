@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ScheduleItem from "../components/items/Schedule-Item.vue";
+import ScheduleItem from "../components/items/Session-Schedule-Item.vue";
 import ClassFilter from "../components/items/Class-Filter.vue";
 import NavBar from "../components/Navbar.vue"
 import router from "../router";
+import axios from "axios";
+
+const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
     mounted(){
@@ -22,7 +25,11 @@ export default defineComponent({
         return{
             hours: [],
             classLegend: "Escoge la materia para tu asesoría",
-            dsb: true
+            dsb: true,
+            weekSelected: "Semana actual",
+            weekList:["Semana actual", "Semana proxima"],
+            weekL: "0",
+            activeLockWeek: false
         }
     },
     computed: {
@@ -48,6 +55,30 @@ export default defineComponent({
             },
             set(val){
                 this.dsb = val;
+            }
+        },
+        updateWeek: {
+            get(){
+                return this.weekSelected;
+            },
+            set(val){
+                this.weekSelected = val;
+            }
+        },
+        updateWeekLock: {
+            get(){
+                return this.weekL;
+            },
+            set(val){
+                this.weekL = val;
+            }
+        },
+        changeLockWeekStatus: {
+            get(){
+                return this.activeLockWeek;
+            },
+            set(val){
+                this.activeLockWeek = val;
             }
         }
     },
@@ -78,9 +109,11 @@ export default defineComponent({
         },
         updateHours(){
             this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
+            console.log(this.getHours)
             this.disableNextBtn();
         },
         nextButtonOnClick(){
+            this.getSessionTutor();
             router.push("/question")
         },
         disableNextBtn(){
@@ -89,6 +122,29 @@ export default defineComponent({
         },
         enableNextBtn(){
             this.isDisabled = false;
+            this.$forceUpdate();
+        },
+        getSessionTutor(){
+            const idSubject = localStorage.getItem("classId");
+            const dayHour = localStorage.getItem("sessionSelected");
+            axios
+            .get(api + "ordered_tutors_for_session/?subject=" + idSubject + "&dayHour=" + dayHour)
+            .then(result => {
+                console.log(result.data[0])
+                localStorage.setItem("tutorSesId", result.data[0].id_tutor__id);
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+        deactiveLockWeek(){
+            this.changeLockWeekStatus = false;
+        },
+        showWeek(index: number){
+            this.updateWeek = this.weekList[index];
+            this.updateWeekLock = index.toString();
+            this.changeLockWeekStatus = true;
+            this.updateHours();
             this.$forceUpdate();
         }
     }
@@ -108,15 +164,27 @@ export default defineComponent({
                         <img src="src/assets/img/circle.png" id="selected">
                         Horario Seleccionado <br>
                         <img src="src/assets/img/circle.png" id="available">
-                        Horario Disponible
+                        Horario Disponible <br>
+                        <img src="src/assets/img/circle.png" id="unavailable">
+                        Horario No Disponible
                     </div>
             </div>
-            <ScheduleItem v-on:session-enable-btn="enableNextBtn" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" :scheduled-hours="getHours"/>
+            <div class="dropdown-center">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{weekSelected}}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownCenterBtn">
+                    <li v-for="(weekObj, i) in weekList" :key="i">
+                        <button class="dropdown-item" type="button" @click="showWeek(i)"> {{weekObj}} </button>
+                    </li>
+                </ul>
+            </div>
+            <ScheduleItem v-on:session-enable-btn="enableNextBtn" v-on:deactive-lock="deactiveLockWeek" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" :scheduledHoursProp="getHours" :weekLock="updateWeekLock" :activeLockWeek="changeLockWeekStatus"/>
         </div>
         <div class="container-side">
             <h1 class="class-legend"> {{legendDescription}} </h1>
             <ClassFilter paletteColor="green" v-on:empty-list="emptyLegend" v-on:hours-available="changeLegend" v-on:checked-changed="updateHours" />
-            <button @click="nextButtonOnClick" :disabled="isDisabled"> Continuar </button>
+            <button @click="nextButtonOnClick" :disabled="isDisabled" id="next-btn"> Continuar </button>
         </div>
     </div>
 </template>
@@ -128,6 +196,8 @@ export default defineComponent({
         font-size: 4vh;
         text-align: center;
     }
+
+    /* Containers */
 
     .container{
         display: flex;
@@ -141,6 +211,8 @@ export default defineComponent({
         flex-direction: column;
         align-items: center;
     }
+
+    /* Simbology popover */
 
     .tooltip-style{
         font-family: "Catamaran";
@@ -162,7 +234,7 @@ export default defineComponent({
         gap: 1vw;
     }
 
-    button{
+    #next-btn{
         font-family: "Ubuntu";
         font-weight: normal;
         background-color: #26408B;
@@ -174,14 +246,20 @@ export default defineComponent({
         text-decoration: none;
     }
 
-    button:disabled{
-        background-color: #3b4f8a9f;
+    #next-btn:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
+    #next-btn:disabled{
+        background-color: #394b819f;
         color: rgba(255, 255, 255, 0.677);
     }
 
-    button:hover{
+    #next-btn:disabled:hover{
         border-color: transparent;
-        box-shadow: 0px 0px 0px 4px #7690CE;
+        box-shadow: none;
         transition: all 0.3s ease 0s;
     }
 
@@ -195,6 +273,8 @@ export default defineComponent({
         width: auto;
     }
 
+    /* Simbology colors */
+
     #selected{
         filter: invert(65%) sepia(7%) saturate(1097%) hue-rotate(128deg) brightness(85%) contrast(84%);
         margin-left: 0vw;
@@ -205,6 +285,57 @@ export default defineComponent({
         margin-left: 0vw;
 
     }
+
+    #unavailable{
+        filter: invert(65%) sepia(77%) saturate(0%) hue-rotate(61deg) brightness(98%) contrast(92%);
+        margin-left: 0vw;
+    }
+
+    /* Dropdown style */
+
+    .dropdown-center{
+        display: flex;
+        padding: 1vh 0 1vh;
+        justify-content: center;
+    }
+
+    .dropdown-toggle{
+        align-items: center;
+    }
+
+    .btn{
+        font-family: "Catamaran";
+        font-weight: medium;
+        display: flex;
+        justify-content: space-between;
+        width: 10vw;
+        height: 7vh;
+        color: black;
+        background-color: white;
+        border-radius: 20px;
+    }
+
+    .btn:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #E1F0EA;
+        transition: all 0.3s ease 0s;
+    }
+
+    .dropdown-item {
+        font-family: "Catamaran";
+        font-weight: medium;
+    }
+
+    .dropdown-item:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
+    #nextWeek{
+        display: none;
+    }
+
     header {
         margin-bottom: 6vh;
     }
