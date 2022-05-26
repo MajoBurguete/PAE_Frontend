@@ -28,9 +28,7 @@ export default defineComponent({
     mounted(){
         let txt = localStorage.getItem("questionText");
 
-        console.log(txt.length)
-
-        if(txt.length != 0){
+        if(txt != null && txt.length != 0){
             console.log("ams")
             this.questionVal = txt;
             this.$forceUpdate();
@@ -417,9 +415,9 @@ export default defineComponent({
                 </div>
                 <div class="file-container" id="file-container">
                     <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
-                    <input class="form-control" type="file" v-on:change="saveFile" id="session-file">
+                    <input class="form-control" type="file" @change="saveFile" id="session-file">
                 </div>
-                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" @click="editSession" :disabled="isDisabled">
+                <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" :disabled="isDisabled">
                     Enviar
                 </button>               
             </div>
@@ -442,7 +440,7 @@ export default defineComponent({
                         </div>
                         <div class="session-button-container">
                             <h3 class="h3-quest-modal"> ¿Necesitas corregir la información? </h3>
-                            <button id="edit-button" data-bs-dismiss="modal" aria-label="Close">Editar</button>
+                            <button id="edit-button" data-bs-dismiss="modal" aria-label="Close" @click="editSession">Editar</button>
                             <button id="confirm-button" @click="postSession" data-bs-dismiss="modal" aria-label="Close">Confirmar</button>
                         </div>
                     </div>
