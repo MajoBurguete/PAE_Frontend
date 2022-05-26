@@ -303,9 +303,4 @@ export default defineComponent({
     #confirm-button-modal{
         background-color: #365295;
     }
-
-    header {
-        margin-bottom: 7vh;
-    }
-
 </style>

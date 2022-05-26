@@ -417,9 +417,6 @@
 </template>
 
 <style scoped>
-    header {
-        margin-bottom: 9vh;
-    }
 
     h1{
         font-family: "Montserrat";
@@ -673,7 +670,7 @@
         border-bottom: 0;
     }
 
-    
+    /* Scrollbar styles */
     .style-2::-webkit-scrollbar-track
     {
         border-radius: 10px;

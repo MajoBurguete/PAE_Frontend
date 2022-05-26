@@ -108,7 +108,12 @@ export default defineComponent({
             this.getHours
         },
         updateHours(){
-            this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
+            if(JSON.parse(localStorage.getItem("hoursAvailable")) != null){
+                this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
+            }
+            else{
+                this.getHours = [];
+            }
             console.log(this.getHours)
             this.disableNextBtn();
         },
@@ -334,10 +339,6 @@ export default defineComponent({
 
     #nextWeek{
         display: none;
-    }
-
-    header {
-        margin-bottom: 6vh;
     }
 
 </style>

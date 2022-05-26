@@ -27,24 +27,26 @@ export default defineComponent({
             localStorage.removeItem("hoursAvailable");
         },
         homeBtn(){
+            this.cleanSessionInfo();
             if(localStorage.getItem("userType") == "2"){
                 console.log(localStorage.getItem("userType"));
-                router.push('http://localhost:3000/admin-home');
+                router.push('/admin-home');
             }
             else{
-                router.push('http://localhost:3000/home')
+                router.push('/home')
             }
         },
         settingsBtn(){
+            this.cleanSessionInfo();
             if(localStorage.getItem("userType") == "2"){
                 console.log(localStorage.getItem("userType"));
-                router.push('http://localhost:3000/admin-settings');
+                router.push('/admin-settings');
             }
             else if(localStorage.getItem("userType") == "0"){
-                router.push('http://localhost:3000/student-settings');
+                router.push('/student-settings');
             }
             else{
-                router.push('http://localhost:3000/tutor-settings');
+                router.push('/tutor-settings');
             }
         }
     }
@@ -72,7 +74,7 @@ export default defineComponent({
                                 <li><a class="dropdown-item" id= "lan" href="#">Español</a></li>
                             </ul>
                         </div>
-                        <button class="nav-link" @click="settingBtn">
+                        <button class="nav-link" @click="settingsBtn">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
                         </button>
                         <button class="nav-link" @click="homeBtn" >
@@ -88,6 +90,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+    body{
+        margin: 0 0 9vh 0;
+    }
+
     /* Estilos generales de la barra de navegacion */
     .navbar{
         position: fixed;

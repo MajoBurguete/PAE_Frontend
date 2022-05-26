@@ -14,11 +14,13 @@ export default defineComponent({
                 {tutorName: "Daniela Hernandez", semester: "6", career: "ITC"},
                 {tutorName: "Daniela Hernandez", semester: "7", career: "ITC"}
             ],
-            firstHalf: [{tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
-                        {tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
+            firstHalf:  [
+                            {tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
+                            {tutorName: "Nombre Apellido", semester: "#", career: "AAA"}
                         ],
-            secondHalf: [{tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
-                         {tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
+            secondHalf: [
+                            {tutorName: "Nombre Apellido", semester: "#", career: "AAA"},
+                            {tutorName: "Nombre Apellido", semester: "#", career: "AAA"}
                         ],
         }
         //<SessionCard v-for="(subject, i) in subjectList" :key="i" :class-name="subject.className" :date="subject.date" :place="subject.place" :tutor-name="subject.tutorName" :tutor-id="subject.tutorId" :student-name="subject.studentName" :student-id="subject.studentId" ></SessionCard>
