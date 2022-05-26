@@ -1,22 +1,16 @@
 <script setup lang="ts">
-import { defineComponent } from "vue";
-import { RouterLink, RouterView } from "vue-router";
-import NavBar from "@/components/Navbar.vue"
+  import { defineComponent } from "vue";
+  import { RouterLink, RouterView } from "vue-router";
 
 </script>
 
 <template>
-  <header>
-    <NavBar></NavBar>
-  </header>
-
   <RouterView class="router-view"/>
 </template>
 
 <style>
 
 .router-view{
-  padding: 8vh 0vw 0 0;
   min-width: 100vw;
 }
 
@@ -29,7 +23,7 @@ import NavBar from "@/components/Navbar.vue"
 @font-face {
   font-family: "Catamaran";
   src: url('src/assets/fonts/Catamaran-Medium.ttf');
-  font-weight: medium;
+  font-weight: 100;
 }
 
 @font-face {
@@ -59,7 +53,7 @@ import NavBar from "@/components/Navbar.vue"
 @font-face {
   font-family: "Montserrat";
   src: url('src/assets/fonts/Montserrat-Medium.ttf');
-  font-weight: medium;
+  font-weight: 50;
 }
 
 @font-face {
