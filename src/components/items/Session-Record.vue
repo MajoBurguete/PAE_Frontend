@@ -46,7 +46,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
+.container{
+    padding: 0;
+}
 .table-container{
     padding: 0;
     margin: 0;

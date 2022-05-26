@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('../views/SessionConfigDateAndClass.vue')
     },
     {
+      path: "/student-settings",
+      name: "studentSettings",
+      component: () => import('../views/StudentConfigView.vue')
+    },
+    {
       path: "/question",
       name: "sessionQuestion",
       component: () => import('../views/SessionQuestionView.vue')
