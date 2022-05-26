@@ -79,6 +79,14 @@ export default defineComponent({
                 } 
             }
 
+            let classNameId = localStorage.getItem("className");
+
+            if(classNameId.length != 0){
+                const inputCheck = document.getElementById(classNameId);
+
+                inputCheck.checked = true;
+            }            
+
             this.passFirstM = false
         }
 
@@ -113,8 +121,6 @@ export default defineComponent({
                 this.$emit("enable-btn")
             }
         }
-
-        console.log("------------------------")
 
     },
     computed: {
