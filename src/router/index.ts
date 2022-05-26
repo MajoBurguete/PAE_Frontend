@@ -45,6 +45,11 @@ const router = createRouter({
       component: () => import('../views/FeedbackSurvey.vue')
     },
     {
+      path: "/tutor-session-record",
+      name: "TutorSessionRecord",
+      component: () => import('../views/TutorSessionRecordView.vue')
+    },
+    {
       path: "/admin-home",
       name: "adminHome",
       component: () => import('../views/HomeAdminView.vue')
