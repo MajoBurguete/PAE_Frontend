@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LoginSignupView from "@/views/LoginSignupView.vue";
+import LoginSignupView from "../views/LoginSignupView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +8,16 @@ const router = createRouter({
       path: "/",
       name: "login",
       component: LoginSignupView,
+    },
+    {
+      path: "/tutor-signup",
+      name: "tutorSignup",
+      component: () => import('../views/SignupTutorView.vue')
+    },
+    {
+      path: "/student-signup",
+      name: "studentSignup",
+      component: () => import('../views/SignupStudentView.vue')
     },
     {
       path: "/home",
@@ -33,6 +43,11 @@ const router = createRouter({
       path: "/tutor-session-record",
       name: "TutorSessionRecord",
       component: () => import('../views/TutorSessionRecordView.vue')
+    },
+    {
+      path: "/admin-home",
+      name: "adminHome",
+      component: () => import('../views/HomeAdminView.vue')
     }
   ],
 });

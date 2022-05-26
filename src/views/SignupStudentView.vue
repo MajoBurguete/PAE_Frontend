@@ -1,13 +1,17 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue'
+import router from "../router";
 import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
 const careers = ref([]);
+let dsb = true;
 
 export default defineComponent({
-
     mounted() {
+
+        this.cleanInputs();
+
         axios
         .get(api + 'careers/')
         .then(result => {
@@ -16,32 +20,104 @@ export default defineComponent({
         .catch(error => {
             console.log(error)
         })
+
     },
 
     data() {
         return {
-            careerList: careers
+            careerList: careers,
+            username: null,
+            userpassword: null,
+            userConfirmPassword: "",
+            userId: "",
+            userMail: "",
+            semester: 0,
+            userCareer: "",
+            disabledV: true,
+            focusPass: false,
+            focusConfPass: false
         }
     },
+    updated(){
+        const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+        errorMess.style.display = "none"
+        const forms = document.querySelectorAll('.needs-validation');
 
-    methods:{
-        checkForm(){
-            'use strict'
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            let password = form.user_password_signup
+            let confirmPassword = form.user_confirm_password_signup
+            if ((form.user_name_signup.checkValidity() && form.user_email_signup.checkValidity() && form.user_id_signup.checkValidity() && form.user_semester_signup.checkValidity() && form.user_career_signup.checkValidity() && password.checkValidity() && password.value == confirmPassword.value)) {
+                dsb = false
+            }
+            else {
+                dsb = true
+            }
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                form.addEventListener('submit', function (event: Event) {
-                    if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    }
+            form.classList.add('was-validated')
+        })
 
-                    form.classList.add('was-validated')
-                }, false)
+        this.isDisabled = dsb;
+    },
+    computed: {
+        isDisabled: {
+            get(){
+                return this.disabledV;
+            },
+            set(val){
+                this.disabledV = val;
+            }
+        }
+
+    },
+    methods: {
+        backButton() {
+            localStorage.setItem("fromSignupForm", "true")
+            router.push('/')
+        },
+        async createUser(){
+            let postUser = await axios
+            .post(api + "users/", {
+                username: this.userId,
+                password: this.userpassword,
+                email: this.userMail,
+                first_name: this.username
             })
+            .then( result => {
+                const userNumId = result.data.id
+
+                axios
+                .post(api + "pae_users/", {
+                    id: userNumId,
+                    semester: this.semester,
+                    career: this.userCareer,
+                    user_type: 0,
+                    status: 0
+                })
+                .then(result => {
+                    console.log(result.data);
+                    localStorage.setItem("displayToast", "signupStudent");
+                    router.push("/")
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            })
+            .catch(error => {
+                console.log(error.response.data)
+                const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+                const useridInp = document.getElementById("user_id_signup") as HTMLInputElement;
+
+                if(error.response.data.username[0] == "A user with that username already exists."){
+                    errorMess.style.display = "flex";
+                    useridInp.value = "";
+                }
+                else{
+                    errorMess.style.display = "none"
+                }
+            })
+
         },
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
@@ -60,41 +136,49 @@ export default defineComponent({
         questionNameOnHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionNameOutOfHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionEmailOnHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionEmailOutOfHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionPasswordOnHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionPasswordOutOfHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionMatOnHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionMatOutOfHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         showPassword(passwordID: string, imageID: string){
@@ -114,13 +198,14 @@ export default defineComponent({
             }
         }
     }
-    
 })
 </script>
 
+
 <template>
     <body>
-        <form class="needs-validation" novalidate>
+        <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
+        <form class="needs-validation" novalidate  @submit.prevent="checkForm" id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
@@ -131,7 +216,7 @@ export default defineComponent({
                                 Máximo 100 caracteres, sin números ni caracteres especiales.
                             </div>
                         </div>
-                        <input type="text" class="form-control" id="user_name_signup" placeholder="Nombre" @input="checkForm" required>
+                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" minlength="1" maxlength="100" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -143,7 +228,7 @@ export default defineComponent({
                                 Correo válido dentro del dominio “@tec” o “@itesm”.
                             </div>
                         </div>
-                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXX@tec.com" required @input="checkForm">
+                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required >
                     </div>
                 </div>
             </div>
@@ -157,8 +242,8 @@ export default defineComponent({
                                 Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número
                             </div>
                         </div>
-                       <div class="input-group">
-                            <input type="password" class="form-control" id="user_password_signup" placeholder="Contraseña" required>
+                        <div class="input-group">
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -169,21 +254,6 @@ export default defineComponent({
                 </div>
                 <div class="col-6 col-md">
                     <div class="mb-3">
-                        <label class="form-label">Confirma tu contraseña</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class="col-6 col-md">
-                    <div class="mb-3">
                         <div class="with-icon">
                             <label class="form-label">Matrícula</label>
                             <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
@@ -191,14 +261,29 @@ export default defineComponent({
                                 Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
-                        <input type="text" class="form-control" id="user_id_signup" placeholder="A0XXXX" required>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
+                    </div>
+                    <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <label class="form-label">Confirma tu contraseña</label>
+                        <div class="input-group">
+                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" onkeyup="this.pattern = form.user_password_signup.value;" required>
+                            <div class="input-group-append" id="pass-hide">
+                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-6 col-md">
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
-                        <select class="form-select" required>
-                            <option selected>Semestre</option>
+                        <select v-model="semester" class="form-select" id="user_semester_signup" required>
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
@@ -212,11 +297,16 @@ export default defineComponent({
                     </div>
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
-                        <select class="form-select">
-                            <option selected>Carrera</option>
-                            <option v-for="(career, i) in careerList" :key="i" value="{{ career.id }}">{{ career.id }}</option>
+                        <select v-model="userCareer" class="form-select" id="user_career_signup" required>
+                            <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <div>
+                    <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
+                    <button class="bigger-buttons" id="signup-button" @click="createUser" :disabled="isDisabled"> Registrarse </button>
                 </div>
             </div>
         </form>
@@ -226,7 +316,74 @@ export default defineComponent({
 <style scoped>
 
     body{
-        padding: 0 0 0 2vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 3vh;
+    }
+
+    .PAE-logo{
+        width: 15%;
+        height: 15%;
+    }
+
+    button {
+        padding: 0.5vh 2vw;
+        margin: 1vh 0;
+        font-family: "Ubuntu";
+        font-weight: normal;
+        border-color: transparent;
+        border-radius: 1.5vh;
+        color: white;
+    }
+
+    /* Bottom containers */
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 6.5vh;
+    }
+
+
+    /* Return and signup buttons */
+
+    .bigger-buttons{
+        font-size: 2.5vh;
+        padding: 0.5vh 4.5vw;
+    }
+
+    #back-button{
+        background-color: #8699D0;
+        margin-inline-end: 1vw;
+    }
+
+    #back-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #ADBCE5;
+        transition: all 0.3s ease 0s;
+    }
+
+    #signup-button{
+        background-color: #26408B;
+        margin-inline-start: 1vw;
+    }
+
+    #signup-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
+    #signup-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+
+/* Signup form */
+
+    .mb-3{
+        width: 40vw;
     }
 
     /* Input labels */
@@ -242,6 +399,7 @@ export default defineComponent({
         margin-bottom: -0.8vh;
         width: 4vw;
     }
+
     /* Text boxes and dropdowns */
     input, 
     .form-select {
@@ -256,7 +414,8 @@ export default defineComponent({
 
     input {
         height: 6.5vh;
-        width: 23.93vw;
+        width: 35vw;
+        padding: 0 0vw 0 0.5vw;
         margin: 0 0vw 0 0vw;
     }
 
@@ -269,10 +428,8 @@ export default defineComponent({
     .input-group {
         display: flex;
         flex-wrap: nowrap;
-        align-items: center;
-        justify-items: center;
         margin: 1.3vh 0 0 0;
-        width: 24vw;
+        width: 35vw;
     }
 
     .dropdown-text-semester{
@@ -285,8 +442,8 @@ export default defineComponent({
 
     /* Question button */
     .question{
-        width: 6%;
-        height: 6%;
+        width: 4%;
+        height: 4%;
         margin: 0 0 0vh 0;
     }
 
@@ -307,13 +464,23 @@ export default defineComponent({
         width: 11.7vw;
     }
 
-    #user_confirm_password_signup{
+    #user_confirm_password_signup,
+    #pass-hide{
         margin: 0.75vh 0 0 0;
     }
 
     .row {
-        gap: 3vw;
+        gap: 0.5vw;
         margin-top: 2vh;
     }
 
-</style>
+    /* Error message */
+    .error-message{
+        display: none;
+        color: rgb(221, 31, 31);
+        font-family: "Catamaran";
+        font-weight: lighter;
+        font-size: 3vh;
+    }
+
+</style> 
