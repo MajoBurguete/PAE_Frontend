@@ -8,12 +8,11 @@ const now = new Date();
 const scheduleR = ref()
 
 const api = 'http://localhost:8000/api/'
-var id_subject = ref ("")
+var id_subject = ref (localStorage.getItem("classId"))
 var description = ref ("")
-const date = ref ("2022-05-05 14:00")
+const date = ref (localStorage.getItem("sessionSelected"))
 const id_tutor = ref (localStorage.getItem("tutorSesId"))
 const id_student = ref (localStorage.getItem("userID"))
-const file = ref (null)
 const status = ref (0)
 const spot = ref (null)
 const request_time = ref (now.toISOString())
@@ -42,7 +41,8 @@ export default defineComponent({
             questionValData: "",
             fileName: "",
             fileUpdated: [],
-            dsb: true
+            dsb: true,
+            fileObject: null
         }
     },
     updated(){
@@ -87,232 +87,80 @@ export default defineComponent({
         }
     },
     methods: {
-        getSessionDate(id: String){
-            if(id == "m8"){
-                return "Lunes 8:00"
+        getSessionDate(dayOfWeek:String) {
+            var dow = 1;
+            var finalDate = new Date();
+            finalDate.setDate(finalDate.getDate() + 1);
+            if (dayOfWeek[0] == 't' && dayOfWeek[1] != 'h') {
+            dow = 2;
             }
-            if(id == "t8"){
-                return "Martes 8:00"
+            if (dayOfWeek[0] == 'w') {
+            dow = 3;
             }
-            if(id == "w8"){
-                return "Miercoles 8:00"
+            if (dayOfWeek[0] == 't' && dayOfWeek[1] == 'h') {
+            dow = 4;
             }
-            if(id == "th8"){
-                return "Jueves 8:00"
+            if (dayOfWeek[0] == 'f') {
+            dow = 5;
             }
-            if(id == "f8"){
-                return "Viernes 8:00"
+            finalDate.setDate(finalDate.getDate() + (dow + (7 - finalDate.getDay())) % 7);
+            var month;
+            if ((finalDate.getMonth() + 1) < 10) {
+                month = '0' + (finalDate.getMonth() + 1);
             }
-            if(id == "m9"){
-                return "Lunes 9:00"
+            else {
+                month = finalDate.getMonth() + 1;
             }
-            if(id == "t9"){
-                return "Martes 9:00"
+            var day;
+            if ((finalDate.getDate()) < 10) {
+                day = '0' + finalDate.getDate();
             }
-            if(id == "w9"){
-                return "Miercoles 9:00"
+            else {
+                day = finalDate.getDate();
             }
-            if(id == "th9"){
-                return "Jueves 9:00"
+            if (dayOfWeek.length == 2) {
+                return finalDate.getFullYear() + '-' + month + '-' + day + " 0" + dayOfWeek[dayOfWeek.length - 1] + ":00";
             }
-            if(id == "f9"){
-                return "Viernes 9:00"
-            }
-            if(id == "m10"){
-                return "Lunes 10:00"
-            }
-            if(id == "t10"){
-                return "Martes 10:00"
-            }
-            if(id == "w10"){
-                return "Miercoles 10:00"
-            }
-            if(id == "th10"){
-                return "Jueves 10:00"
-            }
-            if(id == "f10"){
-                return "Viernes 10:00"
-            }
-            if(id == "m11"){
-                return "Lunes 11:00"
-            }
-            if(id == "t11"){
-                return "Martes 11:00"
-            }
-            if(id == "w11"){
-                return "Miercoles 11:00"
-            }
-            if(id == "th11"){
-                return "Jueves 11:00"
-            }
-            if(id == "f11"){
-                return "Viernes 11:00"
-            }
-            if(id == "m12"){
-                return "Lunes 12:00"
-            }
-            if(id == "t12"){
-                return "Martes 12:00"
-            }
-            if(id == "w12"){
-                return "Miercoles 12:00"
-            }
-            if(id == "th12"){
-                return "Jueves 12:00"
-            }
-            if(id == "f12"){
-                return "Viernes 12:00"
-            }
-            if(id == "m13"){
-                return "Lunes 13:00"
-            }
-            if(id == "t13"){
-                return "Martes 13:00"
-            }
-            if(id == "w13"){
-                return "Miercoles 13:00"
-            }
-            if(id == "th13"){
-                return "Jueves 13:00"
-            }
-            if(id == "f13"){
-                return "Viernes 13:00"
-            }
-            if(id == "m14"){
-                return "Lunes 14:00"
-            }
-            if(id == "t14"){
-                return "Martes 14:00"
-            }
-            if(id == "w14"){
-                return "Miercoles 14:00"
-            }
-            if(id == "th14"){
-                return "Jueves 14:00"
-            }
-            if(id == "f14"){
-                return "Viernes 14:00"
-            }
-            if(id == "m15"){
-                return "Lunes 15:00"
-            }
-            if(id == "t15"){
-                return "Martes 15:00"
-            }
-            if(id == "w15"){
-                return "Miercoles 15:00"
-            }
-            if(id == "th15"){
-                return "Jueves 15:00"
-            }
-            if(id == "f15"){
-                return "Viernes 15:00"
-            }
-            if(id == "m16"){
-                return "Lunes 16:00"
-            }
-            if(id == "t16"){
-                return "Martes 16:00"
-            }
-            if(id == "w16"){
-                return "Miercoles 16:00"
-            }
-            if(id == "th16"){
-                return "Jueves 16:00"
-            }
-            if(id == "f16"){
-                return "Viernes 16:00"
-            }
-            if(id == "m17"){
-                return "Lunes 17:00"
-            }
-            if(id == "t17"){
-                return "Martes 17:00"
-            }
-            if(id == "w17"){
-                return "Miercoles 17:00"
-            }
-            if(id == "th17"){
-                return "Jueves 17:00"
-            }
-            if(id == "f17"){
-                return "Viernes 17:00"
-            }
-            if(id == "m18"){
-                return "Lunes 18:00"
-            }
-            if(id == "t18"){
-                return "Martes 18:00"
-            }
-            if(id == "w18"){
-                return "Miercoles 18:00"
-            }
-            if(id == "th18"){
-                return "Jueves 18:00"
-            }
-            if(id == "f18"){
-                return "Viernes 18:00"
-            }
-            if(id == "m19"){
-                return "Lunes 19:00"
-            }
-            if(id == "t19"){
-                return "Martes 19:00"
-            }
-            if(id == "w19"){
-                return "Miercoles 19:00"
-            }
-            if(id == "th19"){
-                return "Jueves 19:00"
-            }
-            if(id == "f19"){
-                return "Viernes 19:00"
+            else {
+                return finalDate.getFullYear() + '-' + month+ '-' + day + " " + dayOfWeek[dayOfWeek.length - 2] + dayOfWeek[dayOfWeek.length - 1] + ":00";
             }
         },
-        postSession(){
-            id_subject.value = this.classId;
+
+
+        postSession() {
+            //id_subject.value = this.classId;
             description.value = this.questionVal;
-
-            const fileI = document.getElementById("session-file") as HTMLInputElement;
-            let fileFD;
             let formData = new FormData();
-            if(fileI.files.length != 0){
-                fileFD = fileI.files[0];
-                formData.append('file', fileFD)
-            }
-
+            
             formData.append('description', description.value);
-            formData.append('date', date.value);
+            formData.append('date', this.getSessionDate(date.value));
             formData.append('status', status.value.toString());
-            formData.append('spot', spot.value);
             formData.append('request_time', request_time.value);
-            formData.append('verify_time', verify_time.value);
             formData.append('id_subject',id_subject.value);
-            formData.append('id_tutor', id_tutor.value);
+            formData.append('id_tutor', Number(id_tutor.value));
             formData.append('id_student', id_student.value);
-            formData.append('id_admin_verify', id_admin_verify.value);
 
-            var session = {'description': description.value, 'date': date.value, 'file': file.value, 'status': status.value, 'spot': spot.value, 'request_time': request_time.value, 'verify_time': verify_time.value, 'id_subject': id_subject.value, 'id_tutor': id_tutor.value, 'id_student': id_student.value, 'id_admin_verify': id_admin_verify.value}
-            /* var newSession = {'description': session.value.description, 'date': session.value.date, 'file': session.value.file, 'status': session.value.status, 'spot': session.value.spot, 'request_time': session.value.request_time, 'verify_time': session.value.verify_time, 'id_subject': session.value.id_subject, 'id_tutor': session.value.id_tutor, 'id_student': session.value.id_student, 'id_admin_verify': session.value.id_admin_verify} */
-            axios
-            .post('http://localhost:8000/api/sessions/', session)
+            if(this.fileObject != null) {
+                formData.append('file', this.fileObject)
+            } 
+
+           axios
+            .post('http://localhost:8000/api/sessions/', formData)
             .then(result => {
                 console.log(result.data)
 
                 console.log(localStorage.getItem("sessionSelected"))
                 axios
-                .get(api + "schedule_by_tutor_and_day_hour/?tutor=" + localStorage.getItem("tutorSesId") + "&dayHour=" + localStorage.getItem("sessionSelected"))
+                .get(api + "schedule_by_tutor_and_day_hour/?tutor=" + id_tutor.value + "&dayHour=" + date.value)
                 .then(resultR => {
                     console.log(resultR.data[0])
                     scheduleR.value = resultR.data[0]
 
                     var info = {
-                        'id': scheduleR.value.id,
-                        'day_hour': scheduleR.value.day_hour,
+                        'day_hour': date.value,
                         'available': false,
-                        'id_user': scheduleR.value.id_user
+                        'id_user': id_tutor.value
                     }
-
 
                     axios
                     .put(api + "schedules/" + scheduleR.value.id + "/", info)
@@ -368,13 +216,15 @@ export default defineComponent({
             fileAttach.style.display = "flex";
 
         },
-        saveFile(){
-            const file = document.getElementById("session-file") as HTMLInputElement;
 
+        saveFile(event) {
+            const file = document.getElementById("session-file") as HTMLInputElement;
             this.fileC = [file.files[0].name];
             this.changeFileName;
             this.updateFile();
+            this.fileObject = event.target.files[0]
         },
+
         disableNextBtn(){
             this.isDisabled = true;
             this.$forceUpdate();
@@ -415,7 +265,7 @@ export default defineComponent({
                 </div>
                 <div class="file-container" id="file-container">
                     <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
-                    <input class="form-control" type="file" @change="saveFile" id="session-file">
+                    <input class="form-control" type="file" @change="saveFile($event)" id="session-file">
                 </div>
                 <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" :disabled="isDisabled">
                     Enviar
