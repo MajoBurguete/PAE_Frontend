@@ -3,6 +3,16 @@ import NavBar from "../components/Navbar.vue"
 import { defineComponent} from "vue";
 
 export default defineComponent({
+    data() {
+        return{
+            surveyList: [
+                {question: "Pregunta Abierta", type: "0", id: "1"},
+                {question: "Pregunta Cerrada Multiple", type: "1", id: "2"},
+                {question: "Pregunta Escala", type: "2", id: "3"},
+                {question: "Pregunta", type: "3", id: "4"}
+            ],
+        }
+    },
     components: {
         NavBar
     }
@@ -17,14 +27,14 @@ export default defineComponent({
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
             </div>
-        <div class="form-container">
+        <div class="form-container" v-for="( survey, i) in surveyList" :key="i">
             <form>
-                <div class="question-container">
-                    <label for="openQuestion" class="form-label">Comentarios</label>
+                <div class="question-container" v-if=" survey.type == '0'">
+                    <label for="openQuestion" class="form-label">{{survey.question}}</label>
                     <textarea type="form-control" class="form-control" id="comments" rows="3"></textarea>
                 </div>
-                <div class="question-container">
-                    <label for="closedQuestion" class="form-label">Tiempo de la asesor&iacute;a</label><br>
+                <div class="question-container"  v-if=" survey.type == '1'">
+                    <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="answer-container">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1">
@@ -52,8 +62,8 @@ export default defineComponent({
                         </div>   
                     </div>
                 </div>
-                <div class="question-container">
-                    <label for="scaleQuestion" class="form-label">Claridad de explicaci&oacute;n</label><br>
+                <div class="question-container" v-if=" survey.type == '2'">
+                    <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="scale-container">
                         <label for="scaleQuestion" class="form-step">1</label>
                         <label for="scaleQuestion" class="form-step">2</label>
@@ -66,20 +76,20 @@ export default defineComponent({
                             <label class="form-check-label" for="flexRadioDefault1">
                             Nada Claro
                             </label>
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer1">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer2">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer3">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer4">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer1">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer2">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer3">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5">
                             <label class="form-check-label" for="flexRadioDefault1">
                                 Muy Claro
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="question-container">
+                <div class="question-container"  v-if=" survey.type == '3'">
                     <div class="mb-3">
-                        <label for="formFile" class="form-label">Foto de Asesor&iacute;a</label>
+                        <label for="formFile" class="form-label">{{survey.question}}</label>
                         <input class="form-control" type="file" id="formFile">
                     </div>
                 </div>
@@ -119,6 +129,10 @@ export default defineComponent({
     padding: 3vh 2vw;
     margin-top: 2vh;
     width: 55vw;
+}
+.form-check-input:checked {
+    background-color: #57716F;
+    border-color: #57716F;
 }
 .answer-container{
     background-color: white;
