@@ -15,14 +15,14 @@ export default defineComponent({
     props: {
         tutorStudentSwitch: {
             type: String,
-            default: "Estudiante"
+            default: "Tutor"
         }
     },
 })
 </script>
 
 <template>
-    <div class="container">
+    <div class="container-record">
         <h3>Historial de asesorías</h3>
             <div class="table-container">
                  <table class="table">
@@ -89,7 +89,7 @@ h2{
     color: #6F9492;
 }
 h3{
-    font-size: 4vh;
+    font-size: 4.5vh;
     font-weight: bold;
     color: #57716F;
     padding-bottom: 1.5vh;
