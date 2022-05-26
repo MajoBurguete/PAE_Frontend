@@ -79,19 +79,21 @@ export default defineComponent({
         } 
     },
     updated() {
+        const squares = document.getElementsByClassName("locked") as HTMLCollection;
+
         /* It happens when the schedule is updated */
         if(this.lockSchedule == "home-active" ){
-            const squares = document.getElementsByClassName("locked") as HTMLCollection;
             this.clearLockedSchedule();
             this.checkLockedSchedule(squares);
         }
+        
         
     },
     data(){
         return{
             selectedHoursT: [],
             hourCount: 0,
-            errorMessage: "Has excedido las 5 horas permitidas por semana"
+            errorMessage: "Has excedido las 5 horas permitidas por semana",
         }
     },
     computed: {
@@ -277,13 +279,13 @@ export default defineComponent({
             let lengthA = availableS.length;
             let lengthSel = squaresSelect.length;
 
-            for (var _i = 0; _i < lengthS; _i++) {
-                squares[0].className = "locked";
-            } 
-
             for (var _i = 0; _i < lengthA; _i++) {
                 availableS[0].className = "locked";
             } 
+
+            for (var _i = 0; _i < lengthS; _i++) {
+                squares[0].className = "locked";
+            }
 
             for (var _i = 0; _i < lengthSel; _i++) {
                 squaresSelect[0].className = "locked";
@@ -508,6 +510,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-items: v-bind(alignItemsVal);
+        background-color: transparent;
     }
 
     button {
@@ -535,7 +538,7 @@ export default defineComponent({
         height: 6vh;
         align-content: center;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
     }
 
     .day-date{
@@ -607,7 +610,8 @@ export default defineComponent({
     .locked,
     .selected,
     .unavailable,
-    .available{
+    .available,
+    .lockUnavailable{
         width: 7vw;
         height: 4.5vh;
         border: 2.5px solid #000000;
@@ -620,6 +624,10 @@ export default defineComponent({
     .active,
     .selected{
         cursor: pointer;
+    }
+
+    .lockUnavailable{
+        background-color: #B8B8B8;
     }
 
     .selected{
@@ -640,7 +648,7 @@ export default defineComponent({
     }
 
     .locked:hover {
-        background-color: transparent;
+        background-color: none;
     }
 
     .inactive:hover{
