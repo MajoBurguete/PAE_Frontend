@@ -3,7 +3,10 @@ import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
 import NavBar from "../components/Navbar.vue"
+import axios from 'axios';
 
+const api = 'http://localhost:8000/api/'
+let resultHours = []
 
 export default defineComponent({
     components: {
@@ -13,9 +16,21 @@ export default defineComponent({
     },
     data() {
         return{
-            hours: ["m8","t8", "w12"]
+            hours: []
         }
     },
+
+    computed: {
+        pendingSessions: {
+            get(){
+                return this.hours;
+            },
+            set(val){
+                this.hours = val;
+            }
+        }
+    },
+
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
@@ -28,7 +43,68 @@ export default defineComponent({
 
             document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden";
+        },
+
+        async getHours() {
+            const userType = localStorage.getItem('userType')
+            const userID = localStorage.getItem('userID')
+
+            if(userType == '0') {
+                await axios
+                .get(api + 'recent_sessions_of_student/?student=' + userID)
+                .then(result => {
+                    resultHours = result.data
+                    console.log(result.data)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                await axios
+                .get(api + 'recent_sessions_of_tutor/?tutor=' + userID)
+                .then(result => {
+                    resultHours = result.data
+                    console.log(result.data)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+
+            let sk = []
+            for(let i = 0; i < resultHours.length; i++) {
+                const date = new Date(resultHours[i].date)
+                const day = date.getDay()
+                let dateString = ''
+
+                if(day == 1) {
+                    dateString += 'm'
+                } else if(day == 2) {
+                    dateString += 't'
+                } else if(day == 3) {
+                    dateString += 'w'
+                } else if(day == 4) {
+                    dateString += 'th'
+                } else {
+                    dateString += 'f'
+                }
+
+                const dateS = date.toString()
+                if(dateS[16] != '0') {
+                    dateString += dateS[16]
+                    dateString += dateS[17]
+                } else {
+                    dateString += dateS[17]
+                }
+                sk.push(dateString)
+            }
+
+            this.hours = sk
         }
+    },
+
+    mounted() {
+        this.getHours()
     }
 })
 </script>

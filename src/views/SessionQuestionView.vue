@@ -153,7 +153,6 @@ export default defineComponent({
                 axios
                 .get(api + "schedule_by_tutor_and_day_hour/?tutor=" + id_tutor.value + "&dayHour=" + date.value)
                 .then(resultR => {
-                    console.log(resultR.data[0])
                     scheduleR.value = resultR.data[0]
 
                     var info = {
