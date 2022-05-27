@@ -355,14 +355,13 @@
                                 </div>
                                 <h3 class="error-message" id="login-error"> Tu usuario o tu contraseña es incorrecto </h3>
                             </div>
-                            <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
+                            <a class="login-question-h3" data-bs-toggle="modal" data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
                         </div>
                         <button id="signin-button" type="submit" @click="login">Iniciar Sesión</button>
                     </div>
                 </form>
             </div>
         </div>
-
         <div class="modal fade" id="feedback-modal" tabindex="-1" aria-labelledby="feedbackModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
@@ -370,6 +369,29 @@
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" id="close-fmodal-btn"> Regresar </button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="password-modal" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="password-modal-container">
+                    <h4>Ingresa tu correo institucional para recuperar tu cuenta</h4>
+                    <form>
+                        <label class="modal-label">correo</label>
+                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required @input="checkForm">
+                    </form>
+                    <div class="password-button-container">
+                        <button class="return-password-button" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
+                        <button class="new-password-button" type="submit" data-bs-target="#password-modal1" data-bs-toggle="modal">Recuperar Cuenta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="password-modal1" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="password-modal-container">
+                    <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
+                    <button class="return-password-button-modal" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
                 </div>
             </div>
         </div>
@@ -408,10 +430,54 @@
         box-shadow: 0px 0px 0px 4px #ffffffb5;
         transition: all 0.3s ease 0s;
     }
+    .new-password-button {
+        background-color: #365295;
+        font-size: 2.5vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 15vw;
+    }
+    .return-password-button {
+        background-color: #769ABA;
+        font-size: 2.5vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 15vw;
+    }
+    .return-password-button-modal {
+        background-color: #365295;
+        font-size: 3vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 30vw;
+    }
 
     img{
         width: 35%;
         height: 35%;
+    }
+    h4 {
+        font-family: 'Montserrat';
+        font-style: normal;
+        color: #26408B;
+        text-align: center;
+        font-size: 3vh;
+    }
+    #password-modal-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2vh;
+        background-color: #9EB2ED;
+        border-radius: 34px;
+        padding: 5vh;
+
+    }
+    .password-button-container {
+        display: flex;
+        justify-content: center;
+        gap: 1vw;
+        margin-top: 3vh;
     }
 
     input {
@@ -429,12 +495,15 @@
         border-radius: 0.65vh;
     }
 
+    #user_email_signup {
+        width: 32vw;
+    }
+
     span{
         height: 6.2vh;
         width: 3.5vw;
         justify-content: center;
     }
-
     .input-group-text{
         height: 6.2vh;
         width: 3.5vw;
@@ -544,11 +613,14 @@
         font-size: 2.5vh;
         margin: 3.5vh 0 0 0;
     }
+    .modal-label {
+        margin: 0;
+    }
     .login-question-h3 {
         font-family: "Catamaran";
         font-weight: normal;
         color:#26408B;
-        margin: 2vh 0 0 0;
+        margin: 0 0 0 0;
         text-decoration: underline;
     }
     .login-question-h3:hover{
