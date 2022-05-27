@@ -69,6 +69,17 @@ const router = createRouter({
       name: "pendingSessions",
       component: () => import('../views/PendingSessionsView.vue')
     },
+    {
+      path: "/edit-survey",
+      name: "editSurvey",
+      component: () => import('../views/EditSurveyView.vue')
+    },
+    {
+      path: "/survey-record",
+      name: "surveyRecord",
+      component: () => import('../views/SurveyRecordView.vue')
+    },
+    
   ],
 });
 

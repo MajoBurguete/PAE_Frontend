@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import TutorCard from "../components/items/Tutor-Card.vue"
+import NavBar from "../components/Navbar.vue"
+
 
 export default defineComponent({
     data() {
@@ -40,7 +42,8 @@ export default defineComponent({
         }
     },
     components: {
-        TutorCard
+        TutorCard,
+        NavBar
     },
     mounted() {
         const half = Math.round(this.subjectList.length/2);
@@ -50,6 +53,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="sessions-container">
         <div class="row" v-for="n in Math.round(subjectList.length/2)" :key="n">
             <div class="col" >

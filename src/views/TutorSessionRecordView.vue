@@ -1,15 +1,22 @@
 <script>
 import { defineComponent } from "vue";
 import SessionRecord from "../components/items/Session-Record.vue"
+import NavBar from "../components/Navbar.vue"
+
+
 
 export default defineComponent({
     components: {
-        SessionRecord
+        SessionRecord,
+        NavBar
     },
 })
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container-tutor">
         <div class="button-container">
             <button>
