@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import NavBar from "../components/Navbar.vue"
-
+declare var bootstrap: any;
 
 export default defineComponent({
     computed: {
@@ -41,7 +41,8 @@ export default defineComponent({
                 {question: "Claridad de explicación ", type: "2"},
                 {question: "Foto de Asesoría ", type: "3"},
             ],
-            tab: "student"
+            tab: "student",
+            deleteIndex: -1
         }
     },
     methods: {
@@ -96,15 +97,18 @@ export default defineComponent({
         },
         deleteQuestion(place: number){
             this.surveyList.splice(place,1)
+        },
+        setIndex(place: number) {
+            this.deleteIndex = place;
         }
     },
 })
 </script>
 
 <template>
-    <header>
+    <!-- <header>
         <NavBar/>
-    </header>
+    </header> -->
     <div class="container">
         <div class="head-container">
             <div class="table-tabs">
@@ -121,7 +125,7 @@ export default defineComponent({
                     <div class="question-container" v-if="subject.type == '0'">
                         <input type="text" for="openQuestion" class="question-input" :value="subject.question" required @input="checkForm">
                         <textarea type="form-control" class="form-control" id="comments" rows="3" disabled></textarea>
-                        <button class="delete-button" @click="deleteQuestion(i)"></button>
+                        <button class="delete-button" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" @click="setIndex(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '1'">
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question" required @input="checkForm"><br>
@@ -151,7 +155,7 @@ export default defineComponent({
                                 </label>
                             </div>   
                         </div>
-                        <button class="delete-button" @click="deleteQuestion(i)"></button>
+                        <button class="delete-button" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" @click="setIndex(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '2'">
                         <input type="text" for="scaleQuestion" class="question-input" :value="subject.question" required @input="checkForm"><br>
@@ -177,22 +181,22 @@ export default defineComponent({
                                 </label>
                             </div>
                         </div>
-                        <button class="delete-button" @click="deleteQuestion(i)"></button>
+                        <button class="delete-button" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" @click="setIndex(i)"></button>
                     </div>
                     <div class="question-container" v-if="subject.type == '3'">
                         <input type="text" for="formFile" class="question-input" :value="subject.question" required @input="checkForm"><br>
                         <input class="form-control" type="file" id="formFile" disabled>
-                        <button class="delete-button" @click="deleteQuestion(i)"></button>
+                        <button class="delete-button" type="button" data-bs-toggle="modal" data-bs-target="#delete-modal" @click="setIndex(i)"></button>
                     </div>
                 </div>
             </form>
         </div>
        <a href="home" @click="checkForm">Guardar Cambios</a>
        <div class="add-question-container">
-           <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#class-modal"></button>
+           <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#question-modal"></button>
            <h1>añadir pregunta</h1>
        </div>
-       <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+       <div class="modal fade" id="question-modal" tabindex="-1" aria-labelledby="questionModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <h2> ¿Qué tipo de pregunta deseas agregar? </h2>
@@ -217,6 +221,17 @@ export default defineComponent({
                 </div>
             </div>
        </div>
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="delete-modal-content">
+                    <h3>¿Estás segurx de eliminar esta pregunta?</h3>
+                    <div class="button-modal-container">
+                        <button class="close-button" data-bs-dismiss="modal" aria-label="Close">No, regresar</button>
+                        <button class="confirm-button" data-bs-dismiss="modal" aria-label="Close" @click="deleteQuestion(deleteIndex)">Si, eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -229,6 +244,32 @@ export default defineComponent({
     align-items: center;
     flex-direction: column;
     min-width: 100vw;
+}
+.confirm-button {
+    font-family: "Ubuntu";
+    font-weight: normal;
+    color: white;
+    font-size: 3.5vh;
+    padding: 1vh 4vw;
+    border-radius: 15px;
+    border: 2.5px solid #00000000;
+    background-color: #26408B;
+    box-sizing: border-box;
+    margin: 3vh;
+    text-decoration: none;
+}
+.close-button {
+    font-family: "Ubuntu";
+    font-weight: normal;
+    color: white;
+    font-size: 3.5vh;
+    padding: 1vh 4vw;
+    border-radius: 15px;
+    border: 2.5px solid #00000000;
+    background-color: #769ABA;
+    box-sizing: border-box;
+    margin: 3vh;
+    text-decoration: none;
 }
 .head-container{
     display: flex;
@@ -395,6 +436,13 @@ h2 {
     color: #6F9492;
     font-size: 5vh;
 }
+h3 {
+    font-family: 'Montserrat';
+    font-weight: normal;
+    color: white;
+    font-size: 5vh;
+    text-align: center;
+}
 .add-button-container {
     display: flex;
     gap: 4vw;
@@ -423,5 +471,16 @@ h2 {
 #file-button {
     background-image: url('src/assets/img/file-question.png');
     background-position: 1.3vw 1.3vh;
+}
+#delete-modal-content {
+    border-radius: 20px;
+    background-color: #9BAEE6;
+    border-style: hidden;
+}
+
+.button-modal-container {
+    display: flex;
+    gap: 2vw;
+    margin-top: 2vh;
 }
 </style>
