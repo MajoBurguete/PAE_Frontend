@@ -4,20 +4,54 @@ import { defineComponent } from "vue";
 export default defineComponent({
     data() {
         return{
-            subjectList: [
-                {name: "Maria jose Burguete", date: "17 mayo", time: "20:00"},
-                {name: "Majo Burguete", date: "17 mayo", time: "20:00"},
-                {name: "Majo Burguete", date: "17 mayo", time: "20:00"},
-                {name: "Majo Burguete", date: "17 mayo", time: "20:00"},
-            ]
+            sessionList: this.sessionL
         }
+    },
+    mounted(){
+        console.log(this.sessionL)
+    },
+    updated(){
+        this,this.updateSessionL = this.sessionL;
     },
     props: {
         tutorStudentSwitch: {
             type: String,
             default: "Tutor"
+        },
+        sessionL: {
+            type: Array,
+            default: []
         }
     },
+    computed: {
+        updateSessionL:{
+            get(){
+                return this.sessionList;
+            },
+            set(val){
+                this.sessionList = val; 
+            }
+        }
+    }, 
+
+    methods: {
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
+
+        formatStatus(status) {
+            if(status == 0) {
+                return 'Pendiente'
+            } else if(status == 1) {
+                return 'Confirmada'
+            } else if(status == 2) {
+                return 'Cancelada'
+            } else {
+                return 'Completada'
+            }
+        }
+    }
 })
 </script>
 
@@ -29,15 +63,18 @@ export default defineComponent({
                     <thead>
                         <tr>
                             <th id="cornerTL"><h1>{{tutorStudentSwitch}}</h1></th>
+                            <th><h1>Materia</h1></th>
                             <th><h1>Fecha</h1></th>
-                            <th id="cornerTR"><h1>Hora</h1></th>
+                            <th id="cornerTR"><h1>Estatus</h1></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(subject, i) in subjectList" :key="i">
-                            <td><h2>{{ subject.name }}</h2></td>
-                            <td><h2>{{ subject.date }}</h2></td>
-                            <td><h2>{{ subject.time }}</h2></td>
+                        <tr v-for="(session, i) in sessionList" :key="i">
+                            <td v-if="tutorStudentSwitch == 'Estudiante'"><h2>{{ session.id_student__id__first_name }}</h2></td>
+                            <td v-else><h2>{{ session.id_tutor__id__first_name }}</h2></td>
+                            <td><h2>{{ session.id_subject__name }}</h2></td>
+                            <td><h2>{{ formatDate(session.date) }}</h2></td>
+                            <td><h2>{{ formatStatus(session.status) }}</h2></td>
                         </tr>
                     </tbody>
                 </table>

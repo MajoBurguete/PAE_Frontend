@@ -31,13 +31,8 @@ const router = createRouter({
     },
     {
       path: "/student-settings",
-      name: "studentSettings",
+      name: "studentConfig",
       component: () => import('../views/StudentConfigView.vue')
-    },
-    {
-      path: "/tutor-settings",
-      name: "tutorSettings",
-      component: () => import('../views/TutorConfigView.vue')
     },
     {
       path: "/admin-settings",
@@ -56,7 +51,7 @@ const router = createRouter({
     },
     {
       path: "/tutor-session-record",
-      name: "TutorSessionRecord",
+      name: "tutorSessionRecord",
       component: () => import('../views/TutorSessionRecordView.vue')
     },
     {
@@ -75,7 +70,7 @@ const router = createRouter({
       component: () => import('../views/PendingTutorsView.vue')
     },
     {
-      path: "/tutor-config",
+      path: "/tutor-settings",
       name: "tutorConfig",
       component: () => import('../views/TutorConfigView.vue')
     },

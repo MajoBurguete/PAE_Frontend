@@ -1,13 +1,73 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import SessionRecord from "../components/items/Session-Record.vue";
 import NavBar from "../components/Navbar.vue"
+import axios from 'axios';
+import router from "../router"
 
+const api = 'http://localhost:8000/api/'
+const user = localStorage.getItem('userID')
 
 export default defineComponent({
     components: {
         SessionRecord,
         NavBar
+    },
+
+    data() {
+        return {
+            name: '',
+            career: '',
+            semester: '',
+            sessions: []
+        }
+    },
+    computed: {
+        studentSessions: {
+            get(){
+                return this.sessions;
+            },
+            set(val){
+                this.sessions = val;
+            }
+        }
+    },
+
+    mounted() {
+        axios
+        .get(api + 'students/?student=' + user)
+        .then(result => {
+            this.name = result.data[0].id__first_name
+            this.career = result.data[0].career
+            this.semester = result.data[0].semester    
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+        axios
+        .get(api + 'sessions_of_specific_student/?student=' + user)
+        .then(result => {
+            console.log(result.data)
+            this.studentSessions = result.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+       
+    },
+
+    methods: {
+        deleteStudent() {
+            axios
+            .delete(api + 'users/' + user + '/')
+            .then(result => {
+                router.push('/')
+                })
+            .catch(error => {
+                console.log(error)
+            })
+        }
     }
 })
 </script>
@@ -20,18 +80,18 @@ export default defineComponent({
         <div class="container">
             <div class="container-head">
                 <div class="container-profile">
-                    <h1>Daniela Hernandez</h1>
+                    <h1>{{ name }}</h1>
                     <div class="container-info">
-                        <h2>ITC</h2>
+                        <h2>{{ career }}</h2>
                         <h2> | </h2>
-                        <h2>6to</h2>
+                        <h2>{{ semester }}°</h2>
                         <h2> Semestre</h2>
                     </div>
                 </div>
-                <a href="/">Eliminar<br>Perfil</a>
+                <button @click="deleteStudent()">Eliminar<br>Perfil</button>
             </div>
             <div class="container-table-info">
-                <SessionRecord/>
+                <SessionRecord :sessionL="studentSessions"/>
             </div>
         </div>
     </body>
@@ -94,7 +154,7 @@ export default defineComponent({
         color: #57716F;
     }
 
-    a {
+    button {
         font-family: "Ubuntu";
         font-weight: normal;
         text-align: center;

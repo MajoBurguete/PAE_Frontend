@@ -112,7 +112,7 @@
                             <h4>Horas de servicio</h4>
                         </div>
                         <div class="button-container">
-                            <a class="btn-cont" href="date-and-class"> Historial </a>
+                            <a class="btn-cont" href="tutor-session-record"> Historial </a>
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#class-modal"> Editar UFs </button>
                             <button class="btn-cont"> Guardar Cambios </button>
                         </div>
