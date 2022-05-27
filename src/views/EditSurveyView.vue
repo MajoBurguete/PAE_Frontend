@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import NavBar from "../components/Navbar.vue"
+
 
 export default defineComponent({
     computed: {
@@ -13,6 +15,9 @@ export default defineComponent({
             }
         }
         
+    },
+    components: {
+        NavBar
     },
     mounted(){
         this.surveyList = this.studentList;
@@ -97,6 +102,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container">
         <div class="head-container">
             <div class="table-tabs">
@@ -213,7 +221,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
 .container{
+    margin-top: 5vh;
     display: flex;
     justify-content: center;
     align-items: center;
