@@ -127,7 +127,7 @@ export default defineComponent({
         },
 
 
-        postSession() {
+        async postSession() {
             //id_subject.value = this.classId;
             description.value = this.questionVal;
             let formData = new FormData();
@@ -144,7 +144,7 @@ export default defineComponent({
                 formData.append('file', this.fileObject)
             } 
 
-           axios
+            await axios
             .post('http://localhost:8000/api/sessions/', formData)
             .then(result => {
                 console.log(result.data)

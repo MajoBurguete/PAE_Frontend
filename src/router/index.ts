@@ -74,6 +74,11 @@ const router = createRouter({
       name: "pendingTutors",
       component: () => import('../views/PendingTutorsView.vue')
     },
+    {
+      path: "/tutor-config",
+      name: "tutorConfig",
+      component: () => import('../views/TutorConfigView.vue')
+    },
   ],
 });
 
