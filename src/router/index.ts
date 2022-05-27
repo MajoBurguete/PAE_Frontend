@@ -69,6 +69,11 @@ const router = createRouter({
       name: "pendingSessions",
       component: () => import('../views/PendingSessionsView.vue')
     },
+    {
+      path: "/pending-tutors",
+      name: "pendingTutors",
+      component: () => import('../views/PendingTutorsView.vue')
+    },
   ],
 });
 
