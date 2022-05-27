@@ -198,19 +198,19 @@ export default defineComponent({
                     <h2> ¿Qué tipo de pregunta deseas agregar? </h2>
                     <div class="add-button-container">
                         <div class="button-label-container">
-                            <button class="add-button" id="open-button" @click="addQuestion('0')"></button>
+                            <button class="add-button" id="open-button"  data-bs-dismiss="modal" aria-label="Close" @click="addQuestion('0')"></button>
                             <h1>Abierta</h1>
                         </div>
                         <div class="button-label-container">
-                            <button class="add-button" id="multiple-button" @click="addQuestion('1')"></button>
+                            <button class="add-button" id="multiple-button" data-bs-dismiss="modal" aria-label="Close" @click="addQuestion('1')"></button>
                             <h1>Multiple</h1>
                         </div>
                         <div class="button-label-container">
-                            <button class="add-button" id="scale-button" @click="addQuestion('2')"></button>
+                            <button class="add-button" id="scale-button" data-bs-dismiss="modal" aria-label="Close"  @click="addQuestion('2')"></button>
                             <h1>Escala</h1>
                         </div>
                         <div class="button-label-container">
-                            <button class="add-button" id="file-button" @click="addQuestion('3')"></button>
+                            <button class="add-button" id="file-button" data-bs-dismiss="modal" aria-label="Close" @click="addQuestion('3')"></button>
                             <h1>Archivo</h1>
                         </div>
                     </div>
