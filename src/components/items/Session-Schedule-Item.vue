@@ -329,10 +329,60 @@ export default defineComponent({
         currentDateTime(day: number) {
             const current = new Date();
             const currentDay = current.getDay();
+            const currentDate = current.getDate();
             //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
             for(var i = -4; i < 5; i++){
-                if(currentDay+i == day) {
-                    const date = (current.getDate()+i)+' '+(this.getMonth(current.getMonth()));
+                var tempDate = currentDate+i +(Number(this.weekLock)*7);
+                var tempMonth = current.getMonth();
+                var lengthMonth1 = 31;
+                var lengthMonth2 = 30;
+                if (tempMonth < 7){
+                    lengthMonth1 = 30;
+                    lengthMonth2 = 31;
+                }
+                if (tempDate <= 0){
+                    var negativeDate = tempDate;
+                    tempMonth = (current.getMonth()-1);
+                    if (tempMonth == 0){
+                        tempDate = 31 + negativeDate;
+                    }
+                    else if (tempMonth == 1){
+                        if ((current.getFullYear() % 4) == 0){
+                            tempDate = 29 + negativeDate;
+                        }
+                        else {
+                            tempDate = 28 + negativeDate;
+                        }
+                    }
+                    else if ((tempMonth % 2) == 0){
+                        tempDate = 31 + negativeDate;
+                    }
+                    else {
+                        tempDate = 30 + negativeDate;
+                    }
+                    if(currentDay+i == day){
+                        const date = (tempDate)+' '+(this.getMonth(tempMonth));
+                        return date;
+                    }
+                }
+                else if(tempDate > 31 && tempMonth == 0 && currentDay+i == day){
+                    const date = -(31-tempDate)+' '+(this.getMonth(tempMonth+1));
+                    return date;
+                }
+                else if(tempDate > lengthMonth1 && (tempMonth % 2 != 0) && currentDay+i == day){
+                    const date = -(lengthMonth1-tempDate)+' '+(this.getMonth(tempMonth+1));
+                    return date;
+                }
+                else if(tempDate > lengthMonth2 && (tempMonth % 2 == 0) && currentDay+i == day){
+                    const date = -(lengthMonth2-tempDate)+' '+(this.getMonth(tempMonth+1));
+                    return date;
+                }
+                else if(tempDate > 28 && tempMonth == 1 && currentDay+i == day){
+                    const date = -(28-tempDate)+' '+(this.getMonth(tempMonth+1));
+                    return date;
+                }
+                else if(currentDay+i == day) {
+                    const date = (tempDate)+' '+(this.getMonth(tempMonth));
                     return date;
                 }
             }

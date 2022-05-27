@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { defineComponent } from 'vue'
 import SessionCard from "../components/items/Session-Card.vue"
+import NavBar from "../components/NavBar.vue"
+
 
 const api = 'http://localhost:8000/api/'
 
@@ -15,12 +17,17 @@ export default defineComponent({
     },
     methods: {
         defineHalves(half: number) {
-            this.firstHalf = this.subjectList.slice(0, half);
-            if ((this.subjectList.length%2)==0){
-                this.secondHalf = this.subjectList.slice(-half);
+            if (this.subjectList.length <= 1){
+                this.firstHalf = this.subjectList
             }
-            else{
-                this.secondHalf = this.subjectList.slice(1-half);
+            else {
+                this.firstHalf = this.subjectList.slice(0, half);
+                if ((this.subjectList.length%2)==0){
+                    this.secondHalf = this.subjectList.slice(-half);
+                }
+                else{
+                    this.secondHalf = this.subjectList.slice(1-half);
+                }
             }
         },
 
@@ -52,7 +59,8 @@ export default defineComponent({
         }
     },
     components: {
-        SessionCard
+        SessionCard,
+        NavBar
     },
     mounted() {
         this.getSessions()
@@ -61,6 +69,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="sessions-container">
         <div class="row" v-for="n in Math.round(subjectList.length/2)" :key="n">
             <div class="col" >

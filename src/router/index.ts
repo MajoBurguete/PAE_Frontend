@@ -79,6 +79,16 @@ const router = createRouter({
       name: "tutorConfig",
       component: () => import('../views/TutorConfigView.vue')
     },
+    {
+      path: "/edit-survey",
+      name: "editSurvey",
+      component: () => import('../views/EditSurveyView.vue')
+    },
+    {
+      path: "/survey-record",
+      name: "surveyRecord",
+      component: () => import('../views/SurveyRecordView.vue')
+    }
   ],
 });
 

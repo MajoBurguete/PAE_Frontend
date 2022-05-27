@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { defineComponent } from 'vue'
 import TutorCard from "../components/items/Tutor-Card.vue"
+import NavBar from "../components/Navbar.vue"
+
 
 const api = 'http://localhost:8000/api/'
 
@@ -44,7 +46,8 @@ export default defineComponent({
         },
     },
     components: {
-        TutorCard
+        TutorCard,
+        NavBar
     },
     mounted() {
         this.getTutors()
@@ -53,6 +56,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="sessions-container">
         <div class="row" v-for="n in Math.round(tutorsList.length/2)" :key="n">
             <div class="col" >
