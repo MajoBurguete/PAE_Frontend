@@ -11,7 +11,7 @@ const api = 'http://localhost:8000/api/'
 var id_subject = ref (localStorage.getItem("classId"))
 var description = ref ("")
 const date = ref (localStorage.getItem("sessionSelected"))
-const id_tutor = ref (localStorage.getItem("tutorSesId"))
+const id_tutor = ref ("")
 const id_student = ref (localStorage.getItem("userID"))
 const status = ref (0)
 const spot = ref (null)
@@ -25,6 +25,8 @@ export default defineComponent({
         NavBar
     },
     mounted(){
+        console.log(localStorage.getItem("tutorSesId"))
+        id_tutor.value = localStorage.getItem("tutorSesId")
         let txt = localStorage.getItem("questionText");
 
         if(txt != null && txt.length != 0){

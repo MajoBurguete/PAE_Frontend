@@ -17,7 +17,8 @@
                 username: '',
                 password: '',
                 token: localStorage.getItem('user-token') || null,
-                modalMessage: "Tu cuenta ha sido creada con éxito"
+                modalMessage: "Tu cuenta ha sido creada con éxito",
+                errorMessage: "Tu usuario o tu contraseña es incorrecto"
             }
         },
         mounted(){
@@ -42,20 +43,31 @@
                 set(val){
                     this.modalMessage = val;
                 }
-            }
+            },
+            updateErrorMess: {
+                get(){
+                    return this.errorMessage;
+                },
+                set(val){
+                    this.errorMessage = val;
+                }
+            },
         },
         methods:{
             async detectUserType(){
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.username)
                 .then( result => {
-                    console.log(result.data[0])
-                    localStorage.setItem("userID", result.data[0].id);
-                    localStorage.setItem("userType", result.data[0].user_type);
-
-                    if(localStorage.getItem("userType") == "2"){
-                        console.log(localStorage.getItem("userType"));
+                    this.storeUserInfo(result.data[0].id ,result.data[0].user_type)
+                    if(result.data[0].user_type == 2){
                         router.push('http://localhost:3000/admin-home');
+                    }
+                    else if(result.data[0].user_type == 1 && result.data[0].status == 2){
+                        const errorMess = document.getElementById('login-error') as HTMLInputElement;
+                        
+                        this.updateErrorMess = "Tu cuenta aún no ha sido aprobada"
+                        errorMess.style.display = "flex"
+
                     }
                     else{
                         router.push('http://localhost:3000/home')
@@ -64,6 +76,10 @@
                 .catch( error => {
                     console.log(error);
                 })
+            },
+            storeUserInfo(userId: string, userT: string){
+                localStorage.setItem("userID", userId);
+                localStorage.setItem("userType", userT);
             },
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
@@ -165,12 +181,12 @@
                     localStorage.setItem('user-token', result.data.token);
                     localStorage.removeItem("hoursSelectedT");
                     localStorage.removeItem("classesSelected");
-
                     this.detectUserType();
                 })
                 .catch(error => {
                     console.log(error)
                     localStorage.removeItem('user-token')
+                    this.updateErrorMess = "Tu usuario o tu contraseña es incorrecto"
 
                     errorMess.style.display = "flex"
 
@@ -353,7 +369,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <h3 class="error-message" id="login-error"> Tu usuario o tu contraseña es incorrecto </h3>
+                                <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
                             <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
                         </div>

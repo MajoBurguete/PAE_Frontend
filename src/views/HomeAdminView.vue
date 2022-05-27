@@ -13,7 +13,6 @@
             ScheduleItem
         },
         mounted(){
-            this.toTutorsTab();
             this.getTutorListB();
             this.getStudentListB();
             this.getPendingSessions();
@@ -28,9 +27,17 @@
             clearInterval(this.timer);
             clearInterval(this.timer2);
         },
+        updated(){
+            if(this.changeFirstPass){
+                this.toTutorsTab()
+                this.changeFirstPass = false;
+                console.log(this.changeFirstPass)
+            }
+        },
         data(){
             return{
                 usernameP: "",
+                userId: "",
                 careerP: "",
                 semesterP: "",
                 classList: [],
@@ -45,7 +52,8 @@
                 timer2: null,
                 noTutors: false,
                 noStudents: false,
-                messageWarn: "No existen tutores aprobados en el sistema"
+                messageWarn: "No existen tutores aprobados en el sistema",
+                firstPass: true
             }
 
         },
@@ -122,6 +130,14 @@
                     this.scheduledHours = val;
                 }
             },
+            updateUserId: {
+                get(){
+                    return this.userId;
+                },
+                set(val){
+                    this.userId = val;
+                }
+            },
             disablePendingSessions: {
                 get(){
                     return this.dsbPendingSession; 
@@ -138,8 +154,21 @@
                     this.dsbPendingTutors = val;
                 }
             },
-            updateWarningMessage(val){
-                this.messageWarn = val;
+            updateWarningMessage: {
+                get(){
+                    return this.messageWarn;
+                },
+                set(val){
+                    this.messageWarn = val;
+                }
+            },
+            changeFirstPass:{
+                get(){
+                    return this.firstPass;
+                },
+                set(val){
+                    this.firstPass = val;
+                }
             }
         },
         methods: {
@@ -153,8 +182,8 @@
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
                 const ufList = document.getElementById('uf-list');
                 const recentTutorsL = document.getElementById('recent-tutors-list');
-                const cardUser = document.getElementById('card-user');
-                const warningMess = document.getElementById('warning-message');
+
+                this.getStudentListB()
 
                 ufList.style.display = "none";
                 recentTutorsL.style.display = "flex";
@@ -175,6 +204,9 @@
                 deleteButton.textContent = "Baja de alumno"
 
                 this.changeTabC = "student"
+
+                const cardUser = document.getElementById('card-user');
+                const warningMess = document.getElementById('warning-message');
 
                 if(this.updateStudentList.length != 0){
                     cardUser.style.display = "flex";
@@ -198,8 +230,8 @@
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
                 const ufList = document.getElementById('uf-list');
                 const recentTutorsL = document.getElementById('recent-tutors-list');
-                const cardUser = document.getElementById('card-user');
-                const warningMess = document.getElementById('warning-message');
+
+                this.getTutorListB();
 
                 ufList.style.display = "";
                 recentTutorsL.style.display = "none";
@@ -222,9 +254,15 @@
                 this.changeTabC = "tutor"
 
                 if(this.updateTutorList.length != 0){
+                    this.clickTutor(0);
+                }
+
+                const cardUser = document.getElementById('card-user');
+                const warningMess = document.getElementById('warning-message');
+
+                if(this.updateTutorList.length != 0){
                     cardUser.style.display = "flex";
                     warningMess.style.display = "none";
-                    this.clickTutor(0);
                 }
                 else{
                     this.updateWarningMessage = "No existen tutores aprobados en el sistema";
@@ -331,6 +369,7 @@
                 .then(result => {
                     console.log(result.data)
                     this.updateTutorList = result.data;
+
                 })
                 .catch(error => {
                     console.log(error);
@@ -346,7 +385,6 @@
                 .catch(error => {
                     console.log(error);
                 })
-                this.clickTutor(0);
             },
             async getClassListByTutor(tutorS: string) {
                 await axios
@@ -407,7 +445,8 @@
                 
                 const elementS = document.getElementById(tutorS.id).getElementsByTagName("h1") as HTMLCollection;
                 elementS[0].style.fontWeight = "bold"
-                
+
+                this.updateUserId = tutorS.id;
                 this.updateUserN = tutorS.id__first_name;
                 this.updateCareer = tutorS.career;
                 this.updateSemester = tutorS.semester;
@@ -417,6 +456,7 @@
                 
             },
             clickStudent(i: number) {
+                console.log(this.updateStudentList)
                 const studentS = this.updateStudentList[i];
 
                 this.clearStudentsSelectedH1();
@@ -424,11 +464,38 @@
                 const elementS = document.getElementById(studentS.id).getElementsByTagName("h1") as HTMLCollection;
                 elementS[0].style.fontWeight = "bold"
 
+                this.updateUserId = studentS.id;
                 this.updateUserN = studentS.id__first_name;
                 this.updateCareer = studentS.career;
                 this.updateSemester = studentS.semester;
+
                 this.getRecentTutors(studentS.id);
                 this.updateScheduledHours = [];
+            },
+            deleteTutor(){
+                axios
+                .delete(api + "users/" + this.updateUserId + "/")
+                .then(result => {
+                    this.getTutorListB();
+                    this.getStudentListB();
+                    console.log(this.changeTabC);
+                    if(this.changeTabC == "student" && this.updateStudentList.length != 0){
+                        this.clickStudent(0)
+                    }
+                    else{
+                        this.toStudentsTab()
+                    }
+                    
+                    if(this.changeTabC == "tutor" && this.updateTutorList.length != 0){
+                        this.clickTutor(0)
+                    }
+                    else{
+                        this.toTutorsTab();
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
         }
     })
@@ -474,7 +541,7 @@
                 <button id="pending-tutors" class="wiggle" :disabled="dsbPendingTutors" @click="toPendingTutorsView"> Tutores sin confirmar </button>
             </div>
             <div class="user-information">
-                <h1 id="warning-message">{{messageWarn}}</h1>
+                <h1 id="warning-message">{{updateWarningMessage}}</h1>
                 <div id="card-user">
                     <div class="information">
                         <div class="question-container-image">
@@ -521,7 +588,7 @@
                     <h1 class="user-h1-modal"> {{usernameP}} </h1>
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" id="cancel-action-btn"> No, regresar </button>
-                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn"> Si, eliminar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn" @click="deleteTutor"> Si, eliminar </button>
                     </div>
                 </div>
             </div>
@@ -702,13 +769,13 @@
     }
 
     #pending-session:disabled,
-    #pending-tutros:disabled{
+    #pending-tutors:disabled{
         background-color: #33416d;
         color: #d9eff49d;
     }
 
     #pending-session:disabled:hover,
-    #pending-tutros:disabled:hover{
+    #pending-tutors:disabled:hover{
         box-shadow: none;
     }
 

@@ -2,12 +2,20 @@
 import axios from 'axios';
 import { defineComponent } from 'vue'
 import TutorCard from "../components/items/Tutor-Card.vue"
+import router from "../router"
 import NavBar from "../components/Navbar.vue"
 
 
 const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
+    components: {
+        TutorCard,
+        NavBar
+    },
+    mounted() {
+        this.getTutors()
+    },
     data() {
         return{
             tutorsList: [],
@@ -15,10 +23,16 @@ export default defineComponent({
             secondHalf: [],
         }
     },
+    updated(){
+        if(this.tutorsList.length == 0){
+            router.push("/admin-home")
+        }
+    },
     methods: {
         defineHalves(half: number){
             if (this.tutorsList.length <= 1){
                 this.firstHalf = this.tutorsList
+                this.secondHalf = []
             }
             else {
                 this.firstHalf = this.tutorsList.slice(0, half);
@@ -29,6 +43,7 @@ export default defineComponent({
                     this.secondHalf = this.tutorsList.slice(1-half);
                 }
             }
+            this.$forceUpdate();
         },
 
         async getTutors() {
@@ -36,21 +51,18 @@ export default defineComponent({
             .get(api + 'pending_tutors/')
             .then(result => {
                 this.tutorsList = result.data
+                const half = Math.round(this.tutorsList.length/2);
+                console.log(half)
+                this.defineHalves(half);
             })
             .catch(error => {
                 console.log(error)
             })
-
-            const half = Math.round(this.tutorsList.length/2);
-            this.defineHalves(half);
         },
-    },
-    components: {
-        TutorCard,
-        NavBar
-    },
-    mounted() {
-        this.getTutors()
+        
+        updateCards(){
+            this.getTutors();
+        }
     }
 })
 </script>
@@ -63,12 +75,12 @@ export default defineComponent({
         <div class="row" v-for="n in Math.round(tutorsList.length/2)" :key="n">
             <div class="col" >
                 <div class="card-container" id="left" v-for="(tutor, i) in firstHalf" :key="i" >
-                    <TutorCard  v-if="i+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name"></TutorCard>
+                    <TutorCard  v-if="i+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name" :userId="tutor.id" v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
                 </div>
             </div>
             <div class="col" id="right">
                 <div class="card-container" id="right" v-for="(tutor, j) in secondHalf" :key="j">
-                    <TutorCard v-if="j+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name">></TutorCard>
+                    <TutorCard v-if="j+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name" :userId="tutor.id"  v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ScheduleItem from "../components/items/Schedule-Item.vue"
+import ScheduleItem from "../components/items/Home-Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
@@ -16,10 +16,34 @@ export default defineComponent({
     },
     data() {
         return{
-            hours: []
+            hours: [],
+            sessionsIds: [],
+            classNameC: "",
+            tutorNameC: "",
+            tutorIdC: "",
+            studentNameC: "",
+            studentIdC: "",
+            dateC: "",
+            placeC: "",
+            statusC: "",
+            weekSelected: "Semana actual",
+            weekList:["Semana actual", "Semana próxima"],
+            firstPass: true
         }
     },
+    mounted() {
+        this.getHours()
+    },
+    updated(){
+        if(this.changeFirstPass){
+            if(resultHours.length != 0){
+                let hourS = resultHours[0];
+                this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status)
+            }
 
+            this.changeFirstPass = false;
+        }
+    },
     computed: {
         pendingSessions: {
             get(){
@@ -28,9 +52,88 @@ export default defineComponent({
             set(val){
                 this.hours = val;
             }
+        },
+        updateWeek: {
+            get(){
+                return this.weekSelected;
+            },
+            set(val){
+                this.weekSelected = val;
+            }
+        },
+        changeFirstPass: {
+            get(){
+                return this.firstPass;
+            },
+            set(val){
+                this.firstPass = val;
+            }
+        },
+        updateClassN: {
+            get(){
+                return this.classNameC;
+            },
+            set(val){
+                this.classNameC = val;
+            }
+        },
+        updateTutorN: {
+            get(){
+                return this.tutorNameC;
+            },
+            set(val){
+                this.tutorNameC = val;
+            }
+        },
+        updateTutorID: {
+            get(){
+                return this.tutorIdC;
+            },
+            set(val){
+                this.tutorIdC = val;
+            }
+        },
+        updateStudentN: {
+            get(){
+                return this.studentNameC;
+            },
+            set(val){
+                this.studentNameC = val;
+            }
+        },
+        updateStudentID: {
+            get(){
+                return this.studentIdC;
+            },
+            set(val){
+                this.studentIdC = val;
+            }
+        },
+        updateDate: {
+            get(){
+                return this.dateC;
+            },
+            set(val){
+                this.dateC = val;
+            }
+        },
+        updatePlace: {
+            get(){
+                return this.placeC;
+            },
+            set(val){
+                this.placeC = val;
+            }
+        },
+        updateStatus: {
+            get(){
+                return this.statusC;
+            },
+            set(val){
+                this.statusC = val;
+            }
         }
     },
-
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
@@ -38,6 +141,7 @@ export default defineComponent({
             document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible";
         },
+
         questionOutOfHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
 
@@ -72,6 +176,7 @@ export default defineComponent({
             }
 
             let sk = []
+            let sessionI = []
             for(let i = 0; i < resultHours.length; i++) {
                 const date = new Date(resultHours[i].date)
                 const day = date.getDay()
@@ -97,14 +202,47 @@ export default defineComponent({
                     dateString += dateS[17]
                 }
                 sk.push(dateString)
+                sessionI.push(resultHours[i].id)
             }
 
-            this.hours = sk
-        }
-    },
+            this.hours = sk;
+            this.sessionsIds = sessionI;
+            this.$forceUpdate();
+        },
 
-    mounted() {
-        this.getHours()
+        updateCardInfo(classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string){
+            this.updateClassN = classNameI;
+            this.updateTutorN = tutorNameI;
+            this.updateTutorID = tutorIdI;
+            this.updateStudentN = studentNameI;
+            this.updateStudentID = studentIdI;
+            this.updateDate = dateI;
+            this.updatePlace = placeI;
+            if(statusI == "0"){
+                this.updateStatus = "Pendiente";
+            }
+            else if(statusI == "1"){
+                this.updateStatus = "Confirmada";
+            }
+            else if(statusI == "2"){
+                this.updateStatus = "Cancelada";
+            }
+            else{
+                this.updateStatus = "Completada";
+            }
+
+            this.$forceUpdate();
+        },
+
+        sessionOnClick(){
+            let sessionHour = localStorage.getItem("sessionCardHour");
+        },
+
+        showWeek(index: number){
+            this.updateWeek = this.weekList[index];
+            this.updateHours();
+            this.$forceUpdate();
+        }
     }
 })
 </script>
@@ -117,9 +255,19 @@ export default defineComponent({
         <div class="container">
             <div class="card-container">
                 <a href="date-and-class"> Agendar nueva asesoría </a>
-                <SessionCard showAllButtons="inactive" status="En revisión" class-name="Bases de datos" date="16 mayo de 15:00" place="A1204" tutor-name="Daniela Hernández" tutor-id="A01730397@tec.mx" student-name="Marco Flamenco" student-id="A01732313@tec.mx" />
+                <SessionCard showAllButtons="inactive" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" />
             </div>
             <div class="schedule-container">
+                <div class="dropdown-center">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{weekSelected}}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownCenterBtn">
+                        <li v-for="(weekObj, i) in weekList" :key="i">
+                            <button class="dropdown-item" type="button" @click="showWeek(i)"> {{weekObj}} </button>
+                        </li>
+                    </ul>
+                </div>
                 <div class="title-container">
                     <label>Asesorías pendientes</label>
                     <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
@@ -130,7 +278,7 @@ export default defineComponent({
                         Asesoria Agendada
                     </div>
                 </div>
-                <ScheduleItem base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="hours"/>
+                <ScheduleItem v-on:update-session-card="sessionOnClick" base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="hours" :sessionIdsArray="sessionsIds"/>
             </div>
         </div>
 
@@ -155,6 +303,52 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+    /* Dropdown style */
+
+    .dropdown-center{
+        display: flex;
+        padding: 1vh 0 1vh;
+        justify-content: center;
+    }
+
+    .dropdown-toggle{
+        align-items: center;
+    }
+
+    .btn{
+        font-family: "Catamaran";
+        font-weight: medium;
+        display: flex;
+        justify-content: space-between;
+        width: 10vw;
+        height: 3vh;
+        color: black;
+        background-color: white;
+        border-radius: 20px;
+    }
+
+    .btn:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #E1F0EA;
+        transition: all 0.3s ease 0s;
+    }
+
+    .dropdown-item {
+        font-family: "Catamaran";
+        font-weight: medium;
+    }
+
+    .dropdown-item:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
+    #nextWeek{
+        display: none;
+    }
+
     body{
         overflow: hidden;
     }
