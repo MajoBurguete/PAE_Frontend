@@ -70,12 +70,11 @@ const router = createRouter({
       component: () => import('../views/PendingSessionsView.vue')
     },
     {
-<<<<<<< HEAD
       path: "/pending-tutors",
       name: "pendingTutors",
       component: () => import('../views/PendingTutorsView.vue')
     },
-=======
+    {
       path: "/edit-survey",
       name: "editSurvey",
       component: () => import('../views/EditSurveyView.vue')
@@ -84,9 +83,7 @@ const router = createRouter({
       path: "/survey-record",
       name: "surveyRecord",
       component: () => import('../views/SurveyRecordView.vue')
-    },
-    
->>>>>>> 016a9443bd4eb34c50bc6a1af35fef263269af43
+    }
   ],
 });
 
