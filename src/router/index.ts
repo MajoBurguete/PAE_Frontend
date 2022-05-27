@@ -63,7 +63,12 @@ const router = createRouter({
       path: "/admin-home",
       name: "adminHome",
       component: () => import('../views/HomeAdminView.vue')
-    }
+    },
+    {
+      path: "/pending-sessions",
+      name: "pendingSessions",
+      component: () => import('../views/PendingSessionsView.vue')
+    },
   ],
 });
 

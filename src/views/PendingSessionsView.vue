@@ -1,37 +1,53 @@
 <script lang="ts">
+import axios from 'axios';
 import { defineComponent } from 'vue'
 import SessionCard from "../components/items/Session-Card.vue"
+
+const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
     data() {
         return{
-            subjectList: [
-                {className: "Base de datos y otras cosas 1", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                {className: "Programacion Competitiva 2", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                {className: "Computacion para dummies 3", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                {className: "biologia Computacional 4", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                {className: "biologia Computacional 5", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-            ],
-            firstHalf: [{className: "Base de datos 1", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                        {className: "Base de datos 1", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                        ],
-            secondHalf: [{className: "Base de datos 1", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                        {className: "Base de datos 1", tutorName: "Daniela Hernandez", tutorId: "A01732313@tec.mx", studentName: "Majo Burguete", studentId: "A01732313@tec.mx", date: "17 de mayo 20:00", place: "el parque"},
-                        ]
+            subjectList: [],
+            firstHalf: [],
+            secondHalf: []
         }
-        //<SessionCard v-for="(subject, i) in subjectList" :key="i" :class-name="subject.className" :date="subject.date" :place="subject.place" :tutor-name="subject.tutorName" :tutor-id="subject.tutorId" :student-name="subject.studentName" :student-id="subject.studentId" ></SessionCard>
-
     },
     methods: {
-        defineHalves(half: number){
+        defineHalves(half: number) {
             this.firstHalf = this.subjectList.slice(0, half);
             if ((this.subjectList.length%2)==0){
                 this.secondHalf = this.subjectList.slice(-half);
-
             }
             else{
                 this.secondHalf = this.subjectList.slice(1-half);
+            }
+        },
 
+        async getSessions() {
+            await axios
+            .get(api + 'pending_sessions/')
+            .then(result => {
+                this.subjectList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+            const half = Math.round(this.subjectList.length/2);
+            this.defineHalves(half);
+        },
+
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
+
+        defineSpot(spot) {
+            if(spot == null){
+                return 'Por definir'
+            } else {
+                return spot
             }
         }
     },
@@ -39,8 +55,7 @@ export default defineComponent({
         SessionCard
     },
     mounted() {
-        const half = Math.round(this.subjectList.length/2);
-        this.defineHalves(half);
+        this.getSessions()
     }
 })
 </script>
@@ -50,12 +65,12 @@ export default defineComponent({
         <div class="row" v-for="n in Math.round(subjectList.length/2)" :key="n">
             <div class="col" >
                 <div class="card-container" id="left" v-for="(subject, i) in firstHalf" :key="i" >
-                    <SessionCard  v-if="i+1==n" :class-name="subject.className" :date="subject.date" :place="subject.place" :tutor-name="subject.tutorName" :tutor-id="subject.tutorId" :student-name="subject.studentName" :student-id="subject.studentId"></SessionCard>
+                    <SessionCard  v-if="i+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email"></SessionCard>
                 </div>
             </div>
             <div class="col" id="right">
                 <div class="card-container" id="right" v-for="(subject, j) in secondHalf" :key="j">
-                    <SessionCard v-if="j+1==n" :class-name="subject.className" :date="subject.date" :place="subject.place" :tutor-name="subject.tutorName" :tutor-id="subject.tutorId" :student-name="subject.studentName" :student-id="subject.studentId"></SessionCard>
+                    <SessionCard v-if="j+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email"></SessionCard>
                 </div>
             </div>
         </div>

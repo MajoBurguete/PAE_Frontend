@@ -42,20 +42,17 @@ export default defineComponent({
 
 
         if(this.showAllButtons == "active"){
-            editButton.style.display = ""
-            confirmButton.style.display = ""
+            editButton.style.display = "flex"
+            confirmButton.style.display = "flex"
             statusContainer.style.display ="none"
             detailsButton.style.display = "none"
         }
         else{
             editButton.style.display = "none"
             confirmButton.style.display = "none"
-            detailsButton.style.display = ""
+            detailsButton.style.display = "flex"
             cancelButton.style.width = "9vw";
-            statusContainer.style.display =""
-
-
-
+            statusContainer.style.display ="contents"
         }
     }
 })
@@ -205,4 +202,12 @@ export default defineComponent({
     #status{
         color: #F65E0B;
     } 
+
+    #status-container {
+        display: none;
+    }
+
+    #details-button {
+        display: none;
+    }
 </style>
