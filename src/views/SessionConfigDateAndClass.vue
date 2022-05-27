@@ -27,7 +27,7 @@ export default defineComponent({
             classLegend: "Escoge la materia para tu asesoría",
             dsb: true,
             weekSelected: "Semana actual",
-            weekList:["Semana actual", "Semana proxima"],
+            weekList:["Semana actual", "Semana próxima"],
             weekL: "0",
             activeLockWeek: false
         }
