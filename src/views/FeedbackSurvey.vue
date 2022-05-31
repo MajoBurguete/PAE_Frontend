@@ -9,27 +9,59 @@ const api = 'http://localhost:8000/api/'
 export default defineComponent({
     data() {
         return{
-            surveyList: [
-                {question: "Pregunta Abierta", type: "0", id: "1"},
-                {question: "Pregunta Cerrada Multiple", type: "1", id: "2"},
-                {question: "Pregunta Escala", type: "2", id: "3"},
-                {question: "Pregunta", type: "3", id: "4"}
-            ],
+            surveyList: [],
+            choicesList: []
         }
     },
     components: {
         NavBar
     },
     mounted(){
-        axios
-            .get(api + 'most_recent_survey_for_students/')
+        this.getQuestions()
+    },
+    methods: {
+        async getQuestions() {
+            var id_survey = 0
+            const user_type = localStorage.getItem('userType')
+
+            if(user_type == '0') {
+                await axios
+                .get(api + 'most_recent_survey_for_students/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                await axios
+                .get(api + 'most_recent_survey_for_tutors/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+
+            await axios
+            .get(api + 'questions_of_specific_survey/?survey=' + id_survey)
             .then(result => {
-                console.log(result.data)
-                //this.surveyList = result.data
+                this.surveyList = result.data
             })
             .catch(error => {
                 console.log(error)
             })
+
+            axios
+            .get(api + 'choices/')
+            .then(result => {
+                this.choicesList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
     }
 })
 </script>
@@ -42,42 +74,26 @@ export default defineComponent({
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
             </div>
-        <div class="form-container" v-for="( survey, i) in surveyList" :key="i">
+        <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
             <form>
-                <div class="question-container" v-if=" survey.type == '0'">
+                <div class="question-container" v-if=" survey.question_type == '0'">
                     <label for="openQuestion" class="form-label">{{survey.question}}</label>
                     <textarea type="form-control" class="form-control" id="comments" rows="3"></textarea>
                 </div>
-                <div class="question-container"  v-if=" survey.type == '1'">
+                <div class="question-container"  v-if=" survey.question_type == '1'">
                     <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="answer-container">
-                        <div class="form-check">
+                        <div v-for="(choice, i) in choicesList" :key="i" >
+                            <div  v-if="choice.id_question == survey.id" class="form-check">
                             <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1">
                             <label class="form-check-label" for="flexRadioDefault1">
-                                20 minutos
+                                {{ choice.choice }} 
                             </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer2">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                30 minutos
-                            </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer3">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                40 minutos
-                            </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer4">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                45 minutos
-                            </label>
-                        </div>   
+                        </div> 
+                        </div> 
                     </div>
                 </div>
-                <div class="question-container" v-if=" survey.type == '2'">
+                <div class="question-container" v-if=" survey.question_type == '2'">
                     <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="scale-container">
                         <label for="scaleQuestion" class="form-step">1</label>
@@ -97,12 +113,12 @@ export default defineComponent({
                             <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4">
                             <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5">
                             <label class="form-check-label" for="flexRadioDefault1">
-                                Muy Claro
+                            Muy Claro
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="question-container"  v-if=" survey.type == '3'">
+                <div class="question-container"  v-if=" survey.question_type == '3'">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">{{survey.question}}</label>
                         <input class="form-control" type="file" id="formFile">
