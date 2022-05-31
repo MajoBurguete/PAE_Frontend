@@ -328,15 +328,21 @@ export default defineComponent({
         },
         clearLockedSchedule(){
             const squares = document.getElementsByClassName("active");
+            const unavailableS = document.getElementsByClassName("unavailable");
             const availableS = document.getElementsByClassName("available");
             const squaresSelect = document.getElementsByClassName("selected");
 
             let lengthS = squares.length;
             let lengthA = availableS.length;
+            let lengthU = unavailableS.length;
             let lengthSel = squaresSelect.length;
 
             for (var _i = 0; _i < lengthA; _i++) {
                 availableS[0].className = "locked";
+            } 
+
+            for (var _i = 0; _i < lengthU; _i++) {
+                unavailableS[0].className = "locked";
             } 
 
             for (var _i = 0; _i < lengthS; _i++) {
