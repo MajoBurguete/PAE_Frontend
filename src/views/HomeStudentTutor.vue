@@ -7,6 +7,8 @@ import axios from 'axios';
 
 const api = 'http://localhost:8000/api/'
 let resultHours = []
+let daysHoursCurrentWeek = []
+let daysHoursNextWeek = []
 
 export default defineComponent({
     components: {
@@ -135,6 +137,16 @@ export default defineComponent({
         }
     },
     methods: {
+        getReferenceDate() {
+            var date = new Date();
+            const currentDay = date.getDay();
+            if (currentDay != 0 && currentDay != 6) {
+                date.setDate(date.getDate() + (5 + (7 - currentDay)) % 7)
+                date.setHours(23, 59, 59)
+            }
+            return date;
+        },
+
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
 
@@ -182,9 +194,13 @@ export default defineComponent({
 
             let sk = []
             let sessionI = []
+            let currentWeekHours = []
+            let nextWeekHours = []
             for(let i = 0; i < resultHours.length; i++) {
                 const date = new Date(resultHours[i].date)
                 const day = date.getDay()
+                const weekendDate = this.getReferenceDate()
+                const dateS = date.toString()
                 let dateString = ''
 
                 if(day == 1) {
@@ -198,13 +214,16 @@ export default defineComponent({
                 } else {
                     dateString += 'f'
                 }
-
-                const dateS = date.toString()
                 if(dateS[16] != '0') {
                     dateString += dateS[16]
                     dateString += dateS[17]
                 } else {
                     dateString += dateS[17]
+                }
+                if(date < weekendDate) {
+                    currentWeekHours.push(dateString)
+                } else {
+                    nextWeekHours.push(dateString)
                 }
                 sk.push(dateString)
                 sessionI.push(resultHours[i].id)
@@ -212,7 +231,13 @@ export default defineComponent({
 
             this.hours = sk;
             this.sessionsIds = sessionI;
+            this.daysHoursCurrentWeek = currentWeekHours;
+            this.daysHoursNextWeek = nextWeekHours;
             this.$forceUpdate();
+        },
+
+        getSessionInfo() {
+            
         },
 
         updateCardInfo(classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string){
