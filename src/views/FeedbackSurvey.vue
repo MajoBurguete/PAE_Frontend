@@ -1,6 +1,10 @@
 <script lang="ts">
+import axios from 'axios';
 import NavBar from "../components/Navbar.vue"
 import { defineComponent} from "vue";
+
+const api = 'http://localhost:8000/api/'
+
 
 export default defineComponent({
     data() {
@@ -15,6 +19,17 @@ export default defineComponent({
     },
     components: {
         NavBar
+    },
+    mounted(){
+        axios
+            .get(api + 'most_recent_survey_for_students/')
+            .then(result => {
+                console.log(result.data)
+                //this.surveyList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 })
 </script>
