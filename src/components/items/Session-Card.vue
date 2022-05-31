@@ -31,6 +31,30 @@ export default defineComponent({
         },
         status: {
             type: String
+        },
+        sessionId: {
+            type: String
+        },
+        listPlacement: {
+            type: String
+        },
+        indexSession: {
+            type: String
+        }
+    },
+    data(){
+        return{
+            dsb: true
+        }
+    },
+    computed: {
+        isDisabled:{
+            get(){
+                return this.dsb;
+            },
+            set(val){
+                this.dsb = val;
+            }
         }
     },
     mounted(){
@@ -42,20 +66,38 @@ export default defineComponent({
 
 
         if(this.showAllButtons == "active"){
-            editButton.style.display = ""
-            confirmButton.style.display = ""
+            editButton.style.display = "flex"
+            confirmButton.style.display = "flex"
             statusContainer.style.display ="none"
             detailsButton.style.display = "none"
         }
         else{
             editButton.style.display = "none"
             confirmButton.style.display = "none"
-            detailsButton.style.display = ""
+            detailsButton.style.display = "flex"
             cancelButton.style.width = "9vw";
-            statusContainer.style.display =""
+            statusContainer.style.display ="contents"
+        }
 
-
-
+        if(this.place != "Por definir"){
+            this.isDisabled = false;
+        }
+    },
+    updated(){
+        if(this.place != "Por definir"){
+            this.isDisabled = false;
+        }
+    },
+    methods:{
+        storageInfo(){
+            localStorage.setItem("sessionId", this.sessionId)
+            localStorage.setItem("sessionIndex", this.indexSession)
+            localStorage.setItem("sessionPlacement", this.listPlacement)
+            this.$emit("edit-session-event")
+        },
+        confirmSession(){
+            this.storageInfo()
+            this.$emit("confirm-session-event")
         }
     }
 })
@@ -88,8 +130,8 @@ export default defineComponent({
             </div>
             <div class="button-container">
                 <button id="details-button" data-bs-toggle="modal" data-bs-target="#information-modal"> Ver detalles </button>
-                <button id="confirm-button">Confirmar Asesor&iacute;a</button>
-                <button id="edit-button">Editar Asesor&iacute;a</button>
+                <button id="confirm-button" :disabled="isDisabled" @click="confirmSession">Confirmar Asesor&iacute;a</button>
+                <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="storageInfo">Editar Asesor&iacute;a</button>
                 <button id="cancel-button">Cancelar Asesor&iacute;a</button>
             </div>
             <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>
@@ -182,6 +224,15 @@ export default defineComponent({
         background-color: #26408B;
     }
 
+    #confirm-button:disabled{
+        background-color: #33416d;
+        color: #d9eff49d;
+    }
+
+    #confirm-button:disabled:hover{
+        box-shadow: none;
+    }
+
     #edit-button{
         background-color: #769ABA;
     }
@@ -205,4 +256,12 @@ export default defineComponent({
     #status{
         color: #F65E0B;
     } 
+
+    #status-container {
+        display: none;
+    }
+
+    #details-button {
+        display: none;
+    }
 </style>

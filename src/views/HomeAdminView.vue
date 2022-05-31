@@ -15,11 +15,29 @@
         mounted(){
             this.getTutorListB();
             this.getStudentListB();
+            this.getPendingSessions();
+            this.getPendingTutors();
 
+            this.timer = setInterval(this.getPendingSessions, 30000)
+
+            this.timer2 = setInterval(this.getPendingTutors, 30000)
+
+        },
+        beforeDestroy(){
+            clearInterval(this.timer);
+            clearInterval(this.timer2);
+        },
+        updated(){
+            if(this.changeFirstPass){
+                this.toTutorsTab()
+                this.changeFirstPass = false;
+                console.log(this.changeFirstPass)
+            }
         },
         data(){
             return{
                 usernameP: "",
+                userId: "",
                 careerP: "",
                 semesterP: "",
                 classList: [],
@@ -27,7 +45,15 @@
                 scheduledHours: [],
                 tab:"tutor",
                 tutorList: [],
-                studentList:[]
+                studentList:[],
+                dsbPendingSession: true,
+                dsbPendingTutors: true,
+                timer: null,
+                timer2: null,
+                noTutors: false,
+                noStudents: false,
+                messageWarn: "No existen tutores aprobados en el sistema",
+                firstPass: true
             }
 
         },
@@ -103,6 +129,46 @@
                 set(val){
                     this.scheduledHours = val;
                 }
+            },
+            updateUserId: {
+                get(){
+                    return this.userId;
+                },
+                set(val){
+                    this.userId = val;
+                }
+            },
+            disablePendingSessions: {
+                get(){
+                    return this.dsbPendingSession; 
+                },
+                set(val){
+                    this.dsbPendingSession= val;
+                }
+            },
+            disablePendingTutors: {
+                get(){
+                    return this.dsbPendingTutors; 
+                },
+                set(val){
+                    this.dsbPendingTutors = val;
+                }
+            },
+            updateWarningMessage: {
+                get(){
+                    return this.messageWarn;
+                },
+                set(val){
+                    this.messageWarn = val;
+                }
+            },
+            changeFirstPass:{
+                get(){
+                    return this.firstPass;
+                },
+                set(val){
+                    this.firstPass = val;
+                }
             }
         },
         methods: {
@@ -116,6 +182,8 @@
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
                 const ufList = document.getElementById('uf-list');
                 const recentTutorsL = document.getElementById('recent-tutors-list');
+
+                this.getStudentListB()
 
                 ufList.style.display = "none";
                 recentTutorsL.style.display = "flex";
@@ -137,7 +205,19 @@
 
                 this.changeTabC = "student"
 
-                this.clickStudent(0);
+                const cardUser = document.getElementById('card-user');
+                const warningMess = document.getElementById('warning-message');
+
+                if(this.updateStudentList.length != 0){
+                    cardUser.style.display = "flex";
+                    warningMess.style.display = "none";
+                    this.clickStudent(0);
+                }
+                else{
+                    this.updateWarningMessage = "No existen alumnos en el sistema";
+                    cardUser.style.display = "none";
+                    warningMess.style.display = "flex";
+                }
 
             },
             toTutorsTab() {
@@ -150,6 +230,8 @@
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
                 const ufList = document.getElementById('uf-list');
                 const recentTutorsL = document.getElementById('recent-tutors-list');
+
+                this.getTutorListB();
 
                 ufList.style.display = "";
                 recentTutorsL.style.display = "none";
@@ -170,7 +252,23 @@
                 deleteButton.textContent = "Baja de tutor"
 
                 this.changeTabC = "tutor"
-                this.clickTutor(0);
+
+                if(this.updateTutorList.length != 0){
+                    this.clickTutor(0);
+                }
+
+                const cardUser = document.getElementById('card-user');
+                const warningMess = document.getElementById('warning-message');
+
+                if(this.updateTutorList.length != 0){
+                    cardUser.style.display = "flex";
+                    warningMess.style.display = "none";
+                }
+                else{
+                    this.updateWarningMessage = "No existen tutores aprobados en el sistema";
+                    cardUser.style.display = "none";
+                    warningMess.style.display = "flex";
+                }
 
             },
             questionOnHover(){
@@ -223,11 +321,55 @@
                     }
                 }
             },
+            async getPendingSessions(){
+                const pendingSessBtn = document.getElementById("pending-session") as HTMLInputElement;
+
+                await axios
+                .get(api + "pending_sessions")
+                .then(result => {
+                    if(result.data.length == 0){
+                        this.disablePendingSessions = true;
+                        pendingSessBtn.className = "disable";
+                        this.$forceUpdate();
+                    }
+                    else{
+                        this.disablePendingSessions = false;
+                        pendingSessBtn.className = "wiggle";
+                        this.$forceUpdate();
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            },
+            async getPendingTutors(){
+                const pendingTutorsBtn = document.getElementById("pending-tutors") as HTMLInputElement;
+
+                await axios
+                .get(api + "pending_tutors")
+                .then(result => {
+                    if(result.data.length == 0){
+                        this.disablePendingTutors = true;
+                        pendingTutorsBtn.className = "disable";
+                        this.$forceUpdate();
+                    }
+                    else{
+                        this.disablePendingTutors = false;
+                        pendingTutorsBtn.className = "wiggle";
+                        this.$forceUpdate();
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            },
             async getTutorListB(){
                 await axios
                 .get(api + 'tutors')
                 .then(result => {
+                    console.log(result.data)
                     this.updateTutorList = result.data;
+
                 })
                 .catch(error => {
                     console.log(error);
@@ -243,7 +385,6 @@
                 .catch(error => {
                     console.log(error);
                 })
-                this.clickTutor(0);
             },
             async getClassListByTutor(tutorS: string) {
                 await axios
@@ -255,11 +396,16 @@
                     console.log(error);
                 })
             },
+            toPendingSessionsView(){
+                router.push("/pending-sessions");
+            },
+            toPendingTutorsView(){
+                router.push("/pending-tutors");
+            },
             async getScheduledHoursByTutor(tutorS: string) {
                 await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + tutorS)
                 .then(result => {
-                    console.log(result.data);
                     this.updateScheduledHours = result.data;
                 })
                 .catch(error => {
@@ -293,12 +439,14 @@
             },
             clickTutor(i: number) {
                 const tutorS = this.updateTutorList[i];
+                console.log(tutorS)
 
                 this.clearTutorsSelectedH1();
                 
                 const elementS = document.getElementById(tutorS.id).getElementsByTagName("h1") as HTMLCollection;
                 elementS[0].style.fontWeight = "bold"
-                
+
+                this.updateUserId = tutorS.id;
                 this.updateUserN = tutorS.id__first_name;
                 this.updateCareer = tutorS.career;
                 this.updateSemester = tutorS.semester;
@@ -308,6 +456,7 @@
                 
             },
             clickStudent(i: number) {
+                console.log(this.updateStudentList)
                 const studentS = this.updateStudentList[i];
 
                 this.clearStudentsSelectedH1();
@@ -315,11 +464,38 @@
                 const elementS = document.getElementById(studentS.id).getElementsByTagName("h1") as HTMLCollection;
                 elementS[0].style.fontWeight = "bold"
 
+                this.updateUserId = studentS.id;
                 this.updateUserN = studentS.id__first_name;
                 this.updateCareer = studentS.career;
                 this.updateSemester = studentS.semester;
+
                 this.getRecentTutors(studentS.id);
                 this.updateScheduledHours = [];
+            },
+            deleteTutor(){
+                axios
+                .delete(api + "users/" + this.updateUserId + "/")
+                .then(result => {
+                    this.getTutorListB();
+                    this.getStudentListB();
+                    console.log(this.changeTabC);
+                    if(this.changeTabC == "student" && this.updateStudentList.length != 0){
+                        this.clickStudent(0)
+                    }
+                    else{
+                        this.toStudentsTab()
+                    }
+                    
+                    if(this.changeTabC == "tutor" && this.updateTutorList.length != 0){
+                        this.clickTutor(0)
+                    }
+                    else{
+                        this.toTutorsTab();
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
         }
     })
@@ -361,41 +537,45 @@
                         </tbody>
                     </table>
                 </div>
-                <button id="pending-session"> Asesorías pendientes </button>
+                <button id="pending-session" class="wiggle" :disabled="dsbPendingSession" @click="toPendingSessionsView"> Asesorías pendientes </button>
+                <button id="pending-tutors" class="wiggle" :disabled="dsbPendingTutors" @click="toPendingTutorsView"> Tutores sin confirmar </button>
             </div>
             <div class="user-information">
-                <div class="information">
-                    <div class="question-container-image">
-                        <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
-                        <div class="tooltip-style" id="popover">
-                            <img src="src/assets/img/circle.png" id="scheduled">
-                            Asesoría agendada <br>
-                            <img src="src/assets/img/circle.png" id="available">
-                            Hora disponible
+                <h1 id="warning-message">{{updateWarningMessage}}</h1>
+                <div id="card-user">
+                    <div class="information">
+                        <div class="question-container-image">
+                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
+                            <div class="tooltip-style" id="popover">
+                                <img src="src/assets/img/circle.png" id="scheduled">
+                                Asesoría agendada <br>
+                                <img src="src/assets/img/circle.png" id="available">
+                                Hora disponible
+                            </div>
+                        </div>
+                        <div class="user-info-container">
+                            <h1 class="cont-h1 user-name"> {{usernameP}} </h1>
+                            <h1 class="cont-h1 user-career"> {{careerP}} | {{semesterP}}° semestre </h1>
+                        </div>
+                        <div class="uf-user-container">
+                            <h1 class="cont-h1 uf-h1" id="uf-tutors-title"> Unidades de formación </h1>
+                            <div class="uf-list  style-2" id="uf-list">
+                                <h2 v-for="(classTutor, k) in classList" :key="k" class="uf-h2"> {{classTutor.id_subject__name}} </h2>
+                            </div>
+                            <div class="recent-tutors-list  style-2" id="recent-tutors-list">
+                                <h2 v-for="(recentT, l) in recentTutorsList" :key="l" class="uf-h2"> {{recentT.id_tutor__id__first_name}} </h2>
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"  id="delete-user"> Baja de tutor </button>
+                            <button class="btn-cont"> Encuestas </button>
                         </div>
                     </div>
-                    <div class="user-info-container">
-                        <h1 class="cont-h1 user-name"> {{usernameP}} </h1>
-                        <h1 class="cont-h1 user-career"> {{careerP}} | {{semesterP}}° semestre </h1>
-                    </div>
-                    <div class="uf-user-container">
-                        <h1 class="cont-h1 uf-h1" id="uf-tutors-title"> Unidades de formación </h1>
-                        <div class="uf-list  style-2" id="uf-list">
-                            <h2 v-for="(classTutor, k) in classList" :key="k" class="uf-h2"> {{classTutor.id_subject__name}} </h2>
+                    <div class="user-schedule">
+                        <div class="schedule-item">
+                            <h1 class="schedule-h1"> Horario disponible </h1>
+                            <ScheduleItem :userScheduledHours="updateScheduledHours" fromHomeAdmin="true" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
                         </div>
-                        <div class="recent-tutors-list  style-2" id="recent-tutors-list">
-                            <h2 v-for="(recentT, l) in recentTutorsList" :key="l" class="uf-h2"> {{recentT.id_tutor__id__first_name}} </h2>
-                        </div>
-                    </div>
-                    <div class="button-container">
-                        <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"  id="delete-user"> Baja de tutor </button>
-                        <button class="btn-cont"> Encuestas </button>
-                    </div>
-                </div>
-                <div class="user-schedule">
-                    <div class="schedule-item">
-                        <h1 class="schedule-h1"> Horario disponible </h1>
-                        <ScheduleItem :userScheduledHours="updateScheduledHours" fromHomeAdmin="true" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
                     </div>
                 </div>
             </div>
@@ -408,7 +588,7 @@
                     <h1 class="user-h1-modal"> {{usernameP}} </h1>
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" id="cancel-action-btn"> No, regresar </button>
-                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn"> Si, eliminar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn" @click="deleteTutor"> Si, eliminar </button>
                     </div>
                 </div>
             </div>
@@ -438,7 +618,7 @@
     }
 
     .page-container{
-        padding: 2vh 0 0 0;
+        padding: 5vh 0 0 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -485,11 +665,22 @@
 
     /* User card information */
     .user-information{
-        box-shadow: 0px 0px 0px 12px #9EC7D1;
-        border-radius: 11px; 
+        width: 75vw;
         display: flex;
-        padding: 1vh 1vw;
         align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0px 12px #9EC7D1;
+        border-radius: 11px;
+        padding: 1vh 1vw;
+    }
+
+    #card-user{
+        display: flex;
+        align-items: center;
+    }
+
+    .warning-message{
+        display: none;
     }
 
     /* User information (Name, career and semester) */
@@ -549,7 +740,8 @@
     }
 
     .btn-cont,
-    #pending-session{
+    #pending-session,
+    #pending-tutors{
         font-size: 3vh;
         font-family: "Ubuntu";
         font-weight: normal;
@@ -559,15 +751,84 @@
         color: white;
     }
 
-    #pending-session{
+    #pending-session,
+    #pending-tutors{
+        margin: 1vh 0 0 0;
+        padding: 1vh 1vw;
+        width: 13vw;
+        font-size: 2.3vh;
         border-radius: 9px;
     }
 
     .btn-cont:hover,
-    #pending-session:hover{
+    #pending-session:hover,
+    #pending-tutors:hover{
         border-color: transparent;
         box-shadow: 0px 0px 0px 4px #7690CE;
         transition: all 0.3s ease 0s;
+    }
+
+    #pending-session:disabled,
+    #pending-tutors:disabled{
+        background-color: #33416d;
+        color: #d9eff49d;
+    }
+
+    #pending-session:disabled:hover,
+    #pending-tutors:disabled:hover{
+        box-shadow: none;
+    }
+
+    @keyframes wiggle {
+        2% {
+            -webkit-transform: translateX(3px) rotate(2deg);
+            transform: translateX(3px) rotate(2deg);
+        }
+        4% {
+            -webkit-transform: translateX(-3px) rotate(-2deg);
+            transform: translateX(-3px) rotate(-2deg);
+        }
+        6% {
+            -webkit-transform: translateX(3px) rotate(2deg);
+            transform: translateX(3px) rotate(2deg);
+        }
+        8% {
+            -webkit-transform: translateX(-3px) rotate(-2deg);
+            transform: translateX(-3px) rotate(-2deg);
+        }
+        10% {
+            -webkit-transform: translateX(2px) rotate(1deg);
+            transform: translateX(2px) rotate(1deg);
+        }
+        12% {
+            -webkit-transform: translateX(-2px) rotate(-1deg);
+            transform: translateX(-2px) rotate(-1deg);
+        }
+        14% {
+            -webkit-transform: translateX(2px) rotate(1deg);
+            transform: translateX(2px) rotate(1deg);
+        }
+        16% {
+            -webkit-transform: translateX(-2px) rotate(-1deg);
+            transform: translateX(-2px) rotate(-1deg);
+        }
+        18% {
+            -webkit-transform: translateX(1px) rotate(0);
+            transform: translateX(1px) rotate(0);
+        }
+        20% {
+            -webkit-transform: translateX(-1px) rotate(0);
+            transform: translateX(-1px) rotate(0);
+        }
+    }
+
+    .wiggle {
+        display: inline-block;
+        animation: wiggle 2.7s infinite;
+    }
+
+    .wiggle:hover {
+        animation: none;
     }
 
     /* Schedule */

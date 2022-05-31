@@ -9,6 +9,11 @@ import axios from "axios";
 const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
+    components: {
+        ScheduleItem,
+        ClassFilter,
+        NavBar
+    },
     mounted(){
         const subjectC = localStorage.getItem("className");
         const hoursA = JSON.parse(localStorage.getItem("hoursAvailable"))
@@ -27,7 +32,7 @@ export default defineComponent({
             classLegend: "Escoge la materia para tu asesoría",
             dsb: true,
             weekSelected: "Semana actual",
-            weekList:["Semana actual", "Semana proxima"],
+            weekList:["Semana actual", "Semana próxima"],
             weekL: "0",
             activeLockWeek: false
         }
@@ -82,11 +87,6 @@ export default defineComponent({
             }
         }
     },
-    components: {
-        ScheduleItem,
-        ClassFilter,
-        NavBar
-    },
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
@@ -129,10 +129,10 @@ export default defineComponent({
             this.isDisabled = false;
             this.$forceUpdate();
         },
-        getSessionTutor(){
+        async getSessionTutor(){
             const idSubject = localStorage.getItem("classId");
             const dayHour = localStorage.getItem("sessionSelected");
-            axios
+            await axios
             .get(api + "ordered_tutors_for_session/?subject=" + idSubject + "&dayHour=" + dayHour)
             .then(result => {
                 console.log(result.data[0])

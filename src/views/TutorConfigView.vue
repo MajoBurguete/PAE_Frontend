@@ -1,9 +1,13 @@
 <script lang="ts">
+    import axios from 'axios';
     import { defineComponent, ref } from "vue";
     import router from "../router"
     import ScheduleItem from "../components/items/Schedule-Item.vue";
     import ClassModal from '@/components/items/Class-Modal.vue';
     import NavBar from "../components/Navbar.vue"
+
+    const api = 'http://localhost:8000/api/'
+    var schedule = []
 
     export default defineComponent({
         components: {
@@ -11,23 +15,76 @@
             ClassModal,
             NavBar
         },
+
         data(){
             return{
-                usernameP: "Majo Burguete",
-                careerP: "ITC",
-                semesterP: "6",
-                hours: "100",
-                classList: [
-                    "Estructuras de datos",
-                    "Bases de datos",
-                    "Gráficas computacionales",
-                    "Seguridad informática",
-                    "Estructuras de datos",
-                    "Bases de datos",
-                    "Gráficas computacionales"
-                ],
+                usernameP: "",
+                careerP: "",
+                semesterP: "",
+                hours: "",
+                classList: [],
+                tutorS: []
             }
-        }   
+        },
+
+        computed: {
+            tutorSchedule: {
+                get(){
+                    return this.tutorS;
+                },
+                set(val){
+                    this.tutorS = val;
+                }
+            }
+        },
+
+        methods: {
+            async getTutorData() {
+                const user = localStorage.getItem('userID')
+
+                axios
+                .get(api + 'tutors/?tutor=' + user)
+                .then(result => {
+                    this.usernameP = result.data[0].id__first_name
+                    this.careerP = result.data[0].career
+                    this.semesterP = result.data[0].semester    
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                axios
+                .get(api + 'subjects_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.classList = result.data   
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                axios
+                .get(api + 'service_hours/?tutor=' + user)
+                .then(result => {
+                    this.hours = result.data[0].service_hours
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                axios
+                .get(api + 'schedule_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.tutorSchedule = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+        },
+
+        mounted() {
+            this.getTutorData()
+        }
     })
 </script>
 
@@ -46,7 +103,7 @@
                     <div class="uf-user-container">
                         <h1 class="cont-h1 uf-h1"> Unidades de formación </h1>
                         <div class="uf-list-names  style-2">
-                            <h2 v-for="(classN, j) in classList" :key="k" class="uf-h2"> {{classN}} </h2>
+                            <h2 v-for="(classN, j) in classList" :key="k" class="uf-h2"> {{classN.id_subject__name}} </h2>
                         </div>
                     </div>
                     <div class="button-time-container">
@@ -55,7 +112,7 @@
                             <h4>Horas de servicio</h4>
                         </div>
                         <div class="button-container">
-                            <a class="btn-cont" href="date-and-class"> Historial </a>
+                            <a class="btn-cont" href="tutor-session-record"> Historial </a>
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#class-modal"> Editar UFs </button>
                             <button class="btn-cont"> Guardar Cambios </button>
                         </div>
@@ -65,7 +122,8 @@
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
                         <h3 class="schedule-h3">Edita tu horario cuando lo necesites y recuerda guardar tus cambios</h3>
-                        <ScheduleItem base-color="#769ABA" hover-color="#A9BFD2" lock-schedule="active" showDate="inactive"/>
+                        <ScheduleItem :userScheduledHours="tutorSchedule" fromHomeAdmin="true" lock-schedule="home-active" showDate="inactive"/>
+                        <!-- <ScheduleItem base-color="#769ABA" hover-color="#A9BFD2" lock-schedule="active" showDate="inactive"/> -->
                     </div>
                 </div>
             </div>

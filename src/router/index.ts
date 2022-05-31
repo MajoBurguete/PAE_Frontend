@@ -31,13 +31,8 @@ const router = createRouter({
     },
     {
       path: "/student-settings",
-      name: "studentSettings",
+      name: "studentConfig",
       component: () => import('../views/StudentConfigView.vue')
-    },
-    {
-      path: "/tutor-settings",
-      name: "tutorSettings",
-      component: () => import('../views/TutorConfigView.vue')
     },
     {
       path: "/admin-settings",
@@ -56,13 +51,38 @@ const router = createRouter({
     },
     {
       path: "/tutor-session-record",
-      name: "TutorSessionRecord",
+      name: "tutorSessionRecord",
       component: () => import('../views/TutorSessionRecordView.vue')
     },
     {
       path: "/admin-home",
       name: "adminHome",
       component: () => import('../views/HomeAdminView.vue')
+    },
+    {
+      path: "/pending-sessions",
+      name: "pendingSessions",
+      component: () => import('../views/PendingSessionsView.vue')
+    },
+    {
+      path: "/pending-tutors",
+      name: "pendingTutors",
+      component: () => import('../views/PendingTutorsView.vue')
+    },
+    {
+      path: "/tutor-settings",
+      name: "tutorConfig",
+      component: () => import('../views/TutorConfigView.vue')
+    },
+    {
+      path: "/edit-survey",
+      name: "editSurvey",
+      component: () => import('../views/EditSurveyView.vue')
+    },
+    {
+      path: "/survey-record",
+      name: "surveyRecord",
+      component: () => import('../views/SurveyRecordView.vue')
     }
   ],
 });

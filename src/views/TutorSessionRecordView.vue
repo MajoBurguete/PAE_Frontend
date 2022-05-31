@@ -1,25 +1,64 @@
 <script>
 import { defineComponent } from "vue";
 import SessionRecord from "../components/items/Session-Record.vue"
+import NavBar from "../components/Navbar.vue"
+import axios from 'axios';
+import router from "../router"
+
+const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
     components: {
-        SessionRecord
+        SessionRecord,
+        NavBar
     },
+    data() {
+        return {
+            sessions: []
+        }
+    },
+    computed: {
+        tutorSessions: {
+            get(){
+                return this.sessions;
+            },
+            set(val){
+                this.sessions = val;
+            }
+        }
+    },
+
+    mounted() {
+        const user = localStorage.getItem('userID')
+
+        axios
+        .get(api + 'sessions_of_specific_tutor/?tutor=' + user)
+        .then(result => {
+            console.log(result.data)
+            this.tutorSessions = result.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+       
+    }
 })
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container-tutor">
         <div class="button-container">
             <button>
-                <a href="home">
+                <a href="tutor-settings">
                     <img src="src/assets/img/left-arrow.png"/>
                 </a>
             </button>
         </div>
         <div class="table-container">
-            <SessionRecord tutorStudentSwitch="Estudiante"/>
+            <SessionRecord :sessionL="tutorSessions" tutorStudentSwitch="Estudiante"/>
         </div>
     </div>
 </template>

@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import NavBar from "../components/Navbar.vue"
+
 
 export default defineComponent({
     data() {
@@ -55,11 +57,17 @@ export default defineComponent({
     },
     mounted(){
         this.changeSurvey(this.partnerList[0])
+    },
+    components: {
+        NavBar
     }
 })
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container">
         <div class="head-container">
             <div class="message-container">
@@ -160,6 +168,7 @@ export default defineComponent({
 
 <style scoped>
 .container{
+    margin-top: 3vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -206,6 +215,10 @@ export default defineComponent({
     color: black;
     background-color: white;
     border-radius: 20px;
+}
+.form-check-input:checked {
+    background-color: #57716F;
+    border-color: #57716F;
 }
 .dropdown-item {
     font-family: "Catamaran";

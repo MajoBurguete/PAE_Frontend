@@ -13,293 +13,75 @@ export default defineComponent({
         },
         hoverColor: {
             type: String,
-            default: "#263f8b85" 
+            default: "transparent" 
         },
         selectedColor:  {
             type: String,
             default: "transparent"
         },
-        scheduledHoursProp:{
+        unavailableColor: {
+            type: String,
+            default: "#568495"
+        },
+        lockSchedule: {
+            type: String,
+            default: "locked"
+        },
+        showDate: {
+            type: String,
+            default: "active"
+        },
+        scheduledHours:{
             type: Array,
             default: []
         },
-        weekLock:{
-            type: String,
-            default: "0"
+        sessionIdsArray:{
+            type: Array,
+            default: []
         },
-        activeLockWeek:{
-            type: Boolean,
-            default: false
+        alignItemsVal:{
+            type: String,
+            default: "center"
         }
     },
     mounted() {
-
-        const current = new Date();
-        this.lockDays(current.getDay() + Number(this.weekLock))
-
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
-        let hoursStore = JSON.parse(localStorage.getItem("hoursAvailable"))
-        if(hoursStore != null && hoursStore.length != 0){
-            this.scheduledHours = hoursStore;
-            this.checkLockedSchedule(squares);
+
+        const dates = document.getElementsByClassName("date") as HTMLCollection;
+
+        if (this.showDate == "active"){
+            for(var i = 0; i < 5; i++){
+                dates[i].style.display = "";
+            }
         }
+        else{
+            for(var i = 0; i < 5; i++){
+                dates[i].style.display = "none";
+            }
+        }
+
+
+        this.checkLockedSchedule(squares); 
     },
     updated() {
-        const current = new Date();
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
-        this.scheduledHours = this.scheduledHoursProp;
-
-        this.lockDays(current.getDay() + Number(this.weekLock))
+        /* It happens when the schedule is updated */
+        this.clearLockedSchedule();
         this.checkLockedSchedule(squares);
         
         
     },
     data(){
         return{
-            scheduledHoursData: []
+            selectedHoursT: []
         }
-    },
-    computed: {
-        scheduledHours:{
-            get(){
-                return this.scheduledHoursData;
-            },
-            set(val){
-                this.scheduledHoursData = val;
-            }
-        }  
-        
-    }, 
+    },  
     methods:{
-        lockDays(day: number){
-            const squares = document.getElementsByClassName("active") as HTMLCollection;
-            const selectSquares = document.getElementsByClassName("selected") as HTMLCollection;
-            const squaresLocked = document.getElementsByClassName("locked") as HTMLCollection;
-
-            this.clearLockedSchedule();
-
-            let squaresLen = squares.length;
-            let selectSq = selectSquares.length;
-            let squareLockLen = squaresLocked.length;
-
-
-            if(this.weekLock == "0"){
-                while(day > 0){
-                    if(day == 1){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("m") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("m") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("m") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 2){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("t") > -1 && squares[0].id.indexOf("th") == -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("t") > -1 && squares[0].id.indexOf("th") == -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("t") > -1 && squaresLocked[i].id.indexOf("th") == -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 3){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("w") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("w") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("w") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 4){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("th") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("th") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("th") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 5){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("f") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("f") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("f") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                                
-                            }
-                        }
-                    }
-
-                    day--;
-                }
-            }
-            else{
-                while(day < 6){
-                    if(day == 1){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("m") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("m") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("m") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 2){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("t") > -1 && squares[0].id.indexOf("th") == -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("t") > -1 && squares[0].id.indexOf("th") == -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("t") > -1 && squaresLocked[i].id.indexOf("th") == -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 3){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("w") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("w") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("w") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 4){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("th") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("th") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("th") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                            }
-                        }
-                    }
-                    if(day == 5){
-                        for(var i=0; i<squaresLen; i++){
-                            if(squares[0].id.indexOf("f") > -1){
-                                squares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<selectSq; i++){
-                            if(selectSquares[0].id.indexOf("f") > -1){
-                                selectSquares[0].className = "locked";
-                            }
-                        }
-
-                        for(var i=0; i<squareLockLen; i++){
-                            if(squaresLocked[i].id.indexOf("f") > -1){
-                                squaresLocked[i].classList.add("lockUnavailable")
-                                
-                            }
-                        }
-                    }
-
-                    day++;
-                }
-            }
-        },
-        ifClassIsLocked(classTL: DOMTokenList){
-
-            for(var i=0; i<classTL.length; i++){
-                if(classTL.item(i) == "lockUnavailable"){
-                    return true
-                }
-            }
-            return false;
-        },
         checkLockedSchedule(squares: HTMLCollection){
+
+            console.log(squares)
 
             var i, j, k, n;
 
@@ -310,13 +92,8 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
-                        if(!this.ifClassIsLocked(squares[n].classList)){
-                            this.scheduledHours.splice(j,1);
-                            squares[n].className = "active";
-                        }
-                        else{
-                            this.scheduledHours.splice(j,1);
-                        }
+                        this.scheduledHours.splice(j,1);
+                        squares[n].className = "active";
                         break;
                     }
                     else if(j == this.scheduledHours.length-1){
@@ -324,7 +101,6 @@ export default defineComponent({
                     }
                 }
             }
-
         },
         currentDateTime(day: number) {
             const current = new Date();
@@ -332,7 +108,7 @@ export default defineComponent({
             const currentDate = current.getDate();
             //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
             for(var i = -4; i < 5; i++){
-                var tempDate = currentDate+i +(Number(this.weekLock)*7);
+                var tempDate = currentDate+i;
                 var tempMonth = current.getMonth();
                 var lengthMonth1 = 31;
                 var lengthMonth2 = 30;
@@ -424,21 +200,31 @@ export default defineComponent({
             else if(date == 11){
                 return "Dic";
             }
+            else if(date > 11){
+                return "Ene"
+            }
+            else if(date < 0){
+                return "Dic"
+            }
         },
         clearLockedSchedule(){
             const squares = document.getElementsByClassName("active");
-            const unavailableS = document.getElementsByClassName("lockUnavailable");
+            const unavailableS = document.getElementsByClassName("unavailable");
+            const availableS = document.getElementsByClassName("available");
             const squaresSelect = document.getElementsByClassName("selected");
 
             let lengthS = squares.length;
+            let lengthA = availableS.length;
+            let lengthU = unavailableS.length
             let lengthSel = squaresSelect.length;
-            let lengthUn = unavailableS.length;
 
-            if(this.activeLockWeek){
-                for (var _i = 0; _i < lengthUn; _i++) {
-                    unavailableS[0].classList.remove("lockUnavailable")
-                } 
-            }
+            for (var _i = 0; _i < lengthA; _i++) {
+                availableS[0].className = "locked";
+            } 
+
+            for (var _i = 0; _i < lengthU; _i++) {
+                unavailableS[0].className = "locked";
+            } 
 
             for (var _i = 0; _i < lengthS; _i++) {
                 squares[0].className = "locked";
@@ -448,18 +234,9 @@ export default defineComponent({
                 squaresSelect[0].className = "locked";
             } 
             
-        },
-        lockedSchedule(clearButton: HTMLInputElement){
-            const squares = document.getElementsByClassName("inactive");
-
-            let lengthS = squares.length;
-            for (var _i = 0; _i < lengthS; _i++) {
-                squares[0].className = "locked";
-            }
-
-            clearButton.style.display = "none";
         }, 
         saveHourSelected(event: Event){
+            
             const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
             const squares = document.getElementsByClassName("active") as HTMLCollection;
             const squaresSelect = document.getElementsByClassName("selected") as HTMLCollection;
@@ -467,7 +244,7 @@ export default defineComponent({
             let lengthS = squares.length;
             let lengthSel = squaresSelect.length;
 
-            if(((event.target as HTMLInputElement).className) == "active"){
+            if((square.className) == "active"){
                 for(var i=0; i<lengthS; i ++){
                     squares[i].className = "active";
                 }
@@ -478,9 +255,12 @@ export default defineComponent({
 
                 square.className = "selected";
 
-                this.$emit("session-enable-btn")
+                let idIndex = this.scheduledHours.indexOf(square.id)
+                console.log(idIndex)
 
-                localStorage.setItem("sessionSelected", square.id);
+                localStorage.setItem("sessionCardHour", square.id)
+
+                this.$emit("update-session-card")
             }
         }  
     }
@@ -489,6 +269,10 @@ export default defineComponent({
 
 <template>
     <body class="schedule-body">
+        <div class="warning-container" id="warning-message">
+            <img src="..\..\assets\img\warning.png"/>
+            <h2 id="error-message-h2">{{errorMessageC}}</h2>
+        </div>
         <div id="weekly-schedule">
             <div class="date-header">
                 <h2 class="col-sm-1"></h2>
@@ -719,7 +503,6 @@ export default defineComponent({
 
     /* Class for when a div has been unselected */
 
-    .inactive, 
     .active,
     .locked,
     .selected,
@@ -727,14 +510,13 @@ export default defineComponent({
     .available,
     .lockUnavailable{
         width: 7vw;
-        height: 4vh;
+        height: 4.5vh;
         border: 2.5px solid #000000;
         box-sizing: border-box;
         border-radius: 12px;
         margin: 0.5vh 0.5vw;
     }
 
-    .inactive,
     .active,
     .selected{
         cursor: pointer;
@@ -765,7 +547,7 @@ export default defineComponent({
         background-color: none;
     }
 
-    .inactive:hover{
+    .locked:hover{
         background-color: v-bind(hoverColor);
     }
 
