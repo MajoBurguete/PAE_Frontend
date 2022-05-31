@@ -167,8 +167,32 @@
                                     <h2 class="filter-h1-admin"> Miau </h2>
                                 </td>
                             </tr>
+                            <tr>
+                                <td> 
+                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                    <div class="admin-btn-container">
+                        <button> Crear administrador </button>
+                        <button> Eliminar administrador </button>
+                    </div>
                 </div>
                 <div class="table-scroll" id="subjects-list">
                     <table class="table table-bordered" id="table">
@@ -247,14 +271,11 @@
     }
 
     .tabs-search-input{
-        background-color: #EAF6F9;
-        border: #D9EFF4;
-        border-radius: 15px;
-        width: 20vw;
-        padding: 1vh 0 1vh 0;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-end;
+        padding: 0 2vw 0 0;
     }
 
     #subjects-tab{
@@ -274,20 +295,27 @@
     /* Table style */
 
     .table-scroll{
-        width: 80vw;
-        border: 2px solid black;
+        width: 60vw;
+        border: 2px solid #C2E7D9;
         border-radius: 10px;
+        background-color: #E1F0EA;
+        display: flex;
     }
 
-    table{
-        border-radius: 10px;
+    table {
         border-style: hidden;
-        box-shadow: 0px 0px 0px 2px black;
+        color: transparent;
         width: 40vw;
         margin: 0;
     }
 
+    thead {
+        height: 4vw;
+    }
+
     tbody { 
+        box-shadow: 0px 0px 0px 1.5px #C2E7D9;
+        border-radius: 0 0 0px 10px;
         display: block;
         border-style: hidden;
         border-color: transparent;
@@ -297,20 +325,32 @@
         overflow-x: hidden;  
     }
 
-    td{
+    td {
         width: 40vw;
     }
 
-    td h1:hover{
-        color: #26408B;
-    }
-
-    tr{
+    tr {
         min-width: 100%;
+        border: 2px solid #C2E7D9;
+        border-inline-end: 0;
+        border-inline-start: 0;
     }
 
-    tr:last-child{
+    tr:first-child{
+        border-top: 0;
+    }
+
+    tr:last-child {
         border-bottom: 0;
+    }
+
+    .admin-btn-container {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
     }
 
     /* Scrollbar styles */
@@ -339,13 +379,17 @@
         font-weight: medium;
         border-radius: 8px;
         border-style: hidden;
-        width: 18.5vw;
-        margin: 0 0 0 0;
+        width: 35vw;
+        margin: 0.8vh 0 0 0.8vw;
         padding: 0.3vh 4vh;
         background-image: url('src/assets/img/search.png');
         background-position: 0.4vw 0.5vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 7%;
+    }
+
+    #search-input:active{
+        border-style: hidden;
     }
 
 </style>
