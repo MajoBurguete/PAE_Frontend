@@ -149,6 +149,11 @@ export default defineComponent({
             messageContainer.style.visibility = "hidden";
         },
 
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
+
         async getHours() {
             const userType = localStorage.getItem('userType')
             const userID = localStorage.getItem('userID')
@@ -216,7 +221,7 @@ export default defineComponent({
             this.updateTutorID = tutorIdI;
             this.updateStudentN = studentNameI;
             this.updateStudentID = studentIdI;
-            this.updateDate = dateI;
+            this.updateDate = this.formatDate(dateI);
             this.updatePlace = placeI;
             if(statusI == "0"){
                 this.updateStatus = "Pendiente";
