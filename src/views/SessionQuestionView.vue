@@ -11,7 +11,7 @@ const api = 'http://localhost:8000/api/'
 var id_subject = ref (localStorage.getItem("classId"))
 var description = ref ("")
 const date = ref (localStorage.getItem("sessionSelected"))
-const id_tutor = ref ("")
+const id_tutor = ref (localStorage.getItem("tutorSesId"))
 const id_student = ref (localStorage.getItem("userID"))
 const status = ref (0)
 const spot = ref (null)
@@ -25,8 +25,6 @@ export default defineComponent({
         NavBar
     },
     mounted(){
-        console.log(localStorage.getItem("tutorSesId"))
-        id_tutor.value = localStorage.getItem("tutorSesId")
         let txt = localStorage.getItem("questionText");
 
         if(txt != null && txt.length != 0){
@@ -120,14 +118,18 @@ export default defineComponent({
             else {
                 day = finalDate.getDate();
             }
-            if (dayOfWeek.length == 2) {
+            if (dayOfWeek.length == 2 || (dayOfWeek.length == 3 && dayOfWeek[1] == 'h')) {
                 return finalDate.getFullYear() + '-' + month + '-' + day + " 0" + dayOfWeek[dayOfWeek.length - 1] + ":00";
             }
             else {
-                return finalDate.getFullYear() + '-' + month+ '-' + day + " " + dayOfWeek[dayOfWeek.length - 2] + dayOfWeek[dayOfWeek.length - 1] + ":00";
+                return finalDate.getFullYear() + '-' + month + '-' + day + " " + dayOfWeek[dayOfWeek.length - 2] + dayOfWeek[dayOfWeek.length - 1] + ":00";
             }
         },
 
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
 
         async postSession() {
             //id_subject.value = this.classId;
@@ -139,7 +141,7 @@ export default defineComponent({
             formData.append('status', status.value.toString());
             formData.append('request_time', request_time.value);
             formData.append('id_subject',id_subject.value);
-            formData.append('id_tutor', Number(id_tutor.value));
+            formData.append('id_tutor', id_tutor.value);
             formData.append('id_student', id_student.value);
 
             if(this.fileObject != null) {
@@ -278,7 +280,7 @@ export default defineComponent({
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <h1 class="class-name">{{classNameS}}</h1>
-                    <h2 class="session-sel">{{sessionSel}}</h2>
+                    <h2 class="session-sel">{{formatDate(sessionSel)}}</h2>
                     <div class="scrollbar" id="style-2">
                         <h3 class="question-val">{{questionVal}}</h3>
                     </div>
