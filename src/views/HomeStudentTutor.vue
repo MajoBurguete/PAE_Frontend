@@ -7,8 +7,6 @@ import axios from 'axios';
 
 const api = 'http://localhost:8000/api/'
 let resultHours = []
-let daysHoursCurrentWeek = []
-let daysHoursNextWeek = []
 
 export default defineComponent({
     components: {
@@ -19,6 +17,8 @@ export default defineComponent({
     data() {
         return{
             hours: [],
+            daysHoursCurrentWeek: [],
+            daysHoursNextWeek: [],
             sessionsIds: [],
             classNameC: "",
             tutorNameC: "",
@@ -30,7 +30,9 @@ export default defineComponent({
             statusC: "",
             weekSelected: "Semana actual",
             weekList:["Semana actual", "Semana próxima"],
-            firstPass: true
+            firstPass: true,
+            showInstructB: true,
+            instructionTxtV: "No cuentas con ninguna asesoría registrada."
         }
     },
     mounted() {
@@ -39,14 +41,50 @@ export default defineComponent({
     updated(){
         if(this.changeFirstPass){
             if(resultHours.length != 0){
-                let hourS = resultHours[0];
-                this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status)
+                this.updateInstructionText = "Escoge una asesoría para ver sus detalles"
+            }
+            else{
+                this.updateInstructionText = "No cuentas con ninguna asesoría registrada"
             }
 
             this.changeFirstPass = false;
+            this.$forceUpdate();
         }
     },
     computed: {
+        updateInstructionBool:{
+            get(){
+                return this.showInstructB;
+            },
+            set(val){
+                this.showInstructB = val;
+            }
+        },
+        updateInstructionText:{
+            get(){
+                return this.instructionTxtV;
+            },
+            set(val){
+                this.instructionTxtV = val;
+            }
+        },
+        updateCurrentDaysHours:{
+            get(){
+                return this.daysHoursCurrentWeek;
+            },
+            set(val){
+                this.daysHoursCurrentWeek = val;
+            }
+        },
+        updateNextDaysHours:{
+            get(){
+                return this.daysHoursNextWeek;
+            },
+            set(val){
+                this.daysHoursNextWeek = val;
+            }
+        }
+        ,
         pendingSessions: {
             get(){
                 return this.hours;
@@ -134,6 +172,14 @@ export default defineComponent({
             set(val){
                 this.statusC = val;
             }
+        },
+        updateHours: {
+            get(){
+                return this.hours;
+            },
+            set(val){
+                this.hours = val;
+            }
         }
     },
     methods: {
@@ -193,7 +239,6 @@ export default defineComponent({
             }
 
             let sk = []
-            let sessionI = []
             let currentWeekHours = []
             let nextWeekHours = []
             for(let i = 0; i < resultHours.length; i++) {
@@ -225,18 +270,17 @@ export default defineComponent({
                 } else {
                     nextWeekHours.push(dateString)
                 }
+
+
                 sk.push(dateString)
-                sessionI.push(resultHours[i].id)
             }
 
-            this.hours = sk;
-            this.sessionsIds = sessionI;
-            this.daysHoursCurrentWeek = currentWeekHours;
-            this.daysHoursNextWeek = nextWeekHours;
-            this.$forceUpdate();
-        },
+            this.updateHours = currentWeekHours;
+            this.sessionsIds = sk;
+            this.updateCurrentDaysHours = currentWeekHours;
+            this.updateNextDaysHours = nextWeekHours;
+            console.log(currentWeekHours)
 
-        getSessionInfo() {
             
         },
 
@@ -265,13 +309,30 @@ export default defineComponent({
         },
 
         sessionOnClick(){
+            this.updateInstructionBool = false;
             let sessionHour = localStorage.getItem("sessionCardHour");
+            let hourS;
+
+            if(this.updateWeek == "Semana actual"){
+                hourS = resultHours[this.sessionsIds.indexOf(sessionHour)];
+            }
+            else{
+                hourS = resultHours[this.sessionsIds.lastIndexOf(sessionHour)];
+            }
+
+            this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status)
         },
 
         showWeek(index: number){
             this.updateWeek = this.weekList[index];
-            this.updateHours();
-            this.$forceUpdate();
+            if(this.updateWeek == "Semana actual"){
+                console.log(this.updateCurrentDaysHours)
+                this.updateHours = this.updateCurrentDaysHours;
+            }
+            else{
+                console.log(this.updateNextDaysHours.length)
+                this.updateHours = this.updateNextDaysHours;
+            }
         }
     }
 })
@@ -285,7 +346,7 @@ export default defineComponent({
         <div class="container">
             <div class="card-container">
                 <a href="date-and-class"> Agendar nueva asesoría </a>
-                <SessionCard showAllButtons="inactive" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" />
+                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" />
             </div>
             <div class="schedule-container">
                 <div class="dropdown-center">
@@ -308,7 +369,7 @@ export default defineComponent({
                         Asesoria Agendada
                     </div>
                 </div>
-                <ScheduleItem v-on:update-session-card="sessionOnClick" base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="hours" :sessionIdsArray="sessionsIds"/>
+                <ScheduleItem v-on:update-session-card="sessionOnClick" base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="updateHours" :sessionIdsArray="sessionsIds"/>
             </div>
         </div>
 

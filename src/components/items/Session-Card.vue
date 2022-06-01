@@ -40,6 +40,14 @@ export default defineComponent({
         },
         indexSession: {
             type: String
+        },
+        instructionsTxt: {
+            type: String,
+            default: "Escoge una asesoría para ver sus detalles"
+        },
+        showInstructions: {
+            type: Boolean,
+            default: false
         }
     },
     data(){
@@ -82,10 +90,44 @@ export default defineComponent({
         if(this.place != "Por definir"){
             this.isDisabled = false;
         }
+
+        const cbody = document.getElementById("card-body") as HTMLInputElement;
+
+        if(this.showInstructions){
+            cbody.style.display = ""
+        }
+        else{
+            cbody.style.display = "none"
+        }
     },
     updated(){
+        
         if(this.place != "Por definir"){
             this.isDisabled = false;
+        }
+
+        const cbody = document.getElementById("card-body") as HTMLInputElement;
+
+        if(this.showInstructions){
+            cbody.style.display = "none"
+        }
+        else{
+            cbody.style.display = ""
+        }
+
+        const statusElement = document.getElementById("status") as HTMLInputElement;
+
+        if(this.status == "Pendiente"){
+            statusElement.style.color = "#FF813C"
+        }
+        if(this.status == "Confirmada"){
+            statusElement.style.color = "#365295"
+        }
+        if(this.status == "Cancelada"){
+            statusElement.style.color = "#FF0000"
+        }
+        if(this.status == "Confirmada"){
+            statusElement.style.color = "#338C31"
         }
     },
     methods:{
@@ -106,7 +148,8 @@ export default defineComponent({
 
 <template>
     <div class="card">
-        <div class="card-body">
+        <h1 v-if="showInstructions" id="instruction-txt"> {{instructionsTxt}} </h1>
+        <div class="card-body" id="card-body">
             <h1 class="card-title text-center">{{className}}</h1>
             <div class="row">
                 <div class="col">
@@ -176,6 +219,11 @@ export default defineComponent({
         font-weight: regular;
         font-size: 2.2vh;
         color: #636262;
+    }
+
+    #instruction-txt{
+        margin: 1vh 1vw;
+        text-align: center;
     }
 
     .card-body {

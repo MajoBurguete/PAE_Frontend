@@ -1,11 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { store, useStore } from '../../store'
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
     props: {
         baseColor: {
             type: String,
@@ -44,6 +40,21 @@ export default defineComponent({
             default: "center"
         }
     },
+    data(){
+        return{
+            firstPass: true
+        }
+    },
+    computed:{
+        updateFirstPass: {
+            get(){
+                return this.firstPass;
+            },
+            set(val){
+                this.firstPass = val;
+            }
+        }
+    },
     mounted() {
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
@@ -72,16 +83,9 @@ export default defineComponent({
         this.checkLockedSchedule(squares);
         
         
-    },
-    data(){
-        return{
-            selectedHoursT: []
-        }
     },  
     methods:{
         checkLockedSchedule(squares: HTMLCollection){
-
-            console.log(squares)
 
             var i, j, k, n;
 
@@ -92,13 +96,13 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
-                        this.scheduledHours.splice(j,1);
                         squares[n].className = "active";
                         break;
                     }
                     else if(j == this.scheduledHours.length-1){
                         n++;
                     }
+                    
                 }
             }
         },
@@ -254,9 +258,6 @@ export default defineComponent({
                 }
 
                 square.className = "selected";
-
-                let idIndex = this.scheduledHours.indexOf(square.id)
-                console.log(idIndex)
 
                 localStorage.setItem("sessionCardHour", square.id)
 
