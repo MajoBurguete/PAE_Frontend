@@ -28,15 +28,22 @@ export default defineComponent({
             dateC: "",
             placeC: "",
             statusC: "",
+            cancelC: false,
+            weekL: "0",
             weekSelected: "Semana actual",
             weekList:["Semana actual", "Semana próxima"],
             firstPass: true,
             showInstructB: true,
-            instructionTxtV: "No cuentas con ninguna asesoría registrada."
+            instructionTxtV: "No cuentas con ninguna asesoría registrada.",
+            descriptionTxt: "",
+            fileName: "",
+            fileURL: ""
         }
     },
     mounted() {
         this.getHours()
+
+        this.testMethod()
     },
     updated(){
         if(this.changeFirstPass){
@@ -52,6 +59,38 @@ export default defineComponent({
         }
     },
     computed: {
+        updateDescriptionTxt: {
+            get(){
+                return this.descriptionTxt;
+            },
+            set(val){
+                this.descriptionTxt = val;
+            }
+        },
+        updateFileName: {
+            get(){
+                return this.fileName;
+            },
+            set(val){
+                this.fileName = val;
+            }
+        },
+        updateFileURL: {
+            get(){
+                return this.fileURL;
+            },
+            set(val){
+                this.fileURL = val;
+            }
+        },
+        updateWeekLock: {
+            get(){
+                return this.weekL;
+            },
+            set(val){
+                this.weekL = val;
+            }
+        },
         updateInstructionBool:{
             get(){
                 return this.showInstructB;
@@ -173,6 +212,14 @@ export default defineComponent({
                 this.statusC = val;
             }
         },
+        updateCancelVal: {
+            get(){
+                return this.cancelC;
+            },
+            set(val){
+                this.cancelC = val;
+            }
+        },
         updateHours: {
             get(){
                 return this.hours;
@@ -183,6 +230,16 @@ export default defineComponent({
         }
     },
     methods: {
+        async testMethod(){
+            await axios
+            .get(api + "sessions")
+            .then(result => {
+                console.log(result.data)
+            })
+            .catch( error => {
+                console.log(error)
+            })
+        },
         getReferenceDate() {
             var date = new Date();
             const currentDay = date.getDay();
@@ -284,7 +341,7 @@ export default defineComponent({
             
         },
 
-        updateCardInfo(classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string){
+        updateCardInfo(classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string, canCancel: boolean, description: string, urlF: string){
             this.updateClassN = classNameI;
             this.updateTutorN = tutorNameI;
             this.updateTutorID = tutorIdI;
@@ -292,6 +349,7 @@ export default defineComponent({
             this.updateStudentID = studentIdI;
             this.updateDate = this.formatDate(dateI);
             this.updatePlace = placeI;
+            this.updateCancelVal = canCancel;
             if(statusI == "0"){
                 this.updateStatus = "Pendiente";
             }
@@ -304,6 +362,11 @@ export default defineComponent({
             else{
                 this.updateStatus = "Completada";
             }
+
+            this.updateDescriptionTxt = description;
+            this.updateFileName =" urlF";
+            console.log(this.updateFileURL.indexOf("media"));
+            
 
             this.$forceUpdate();
         },
@@ -320,11 +383,12 @@ export default defineComponent({
                 hourS = resultHours[this.sessionsIds.lastIndexOf(sessionHour)];
             }
 
-            this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status)
+            this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status, hourS.cancel, hourS.description, hourS.file)
         },
 
         showWeek(index: number){
             this.updateWeek = this.weekList[index];
+            this.updateWeekLock = index.toString();
             if(this.updateWeek == "Semana actual"){
                 console.log(this.updateCurrentDaysHours)
                 this.updateHours = this.updateCurrentDaysHours;
@@ -346,7 +410,7 @@ export default defineComponent({
         <div class="container">
             <div class="card-container">
                 <a href="date-and-class"> Agendar nueva asesoría </a>
-                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" />
+                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
             </div>
             <div class="schedule-container">
                 <div class="dropdown-center">
@@ -369,7 +433,7 @@ export default defineComponent({
                         Asesoria Agendada
                     </div>
                 </div>
-                <ScheduleItem v-on:update-session-card="sessionOnClick" base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :scheduledHours="updateHours" :sessionIdsArray="sessionsIds"/>
+                <ScheduleItem v-on:update-session-card="sessionOnClick" base-color="#769ABA" selectedColor="#365295" lock-schedule="home-active" :weekLock="updateWeekLock" :scheduledHours="updateHours" :sessionIdsArray="sessionsIds"/>
             </div>
         </div>
 
@@ -377,7 +441,7 @@ export default defineComponent({
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="scrollbar" id="style-2">
-                        <h3 class="question-val">{{questionVal}}</h3>
+                        <h3 class="question-val">{{descriptionTxt}}</h3>
                     </div>
                     <div class="flex-container">
                         <div class="session-info-container">

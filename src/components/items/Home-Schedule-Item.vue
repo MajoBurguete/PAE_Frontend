@@ -38,6 +38,10 @@ export default defineComponent({
         alignItemsVal:{
             type: String,
             default: "center"
+        },
+        weekLock:{
+            type: String,
+            default: "0"
         }
     },
     data(){

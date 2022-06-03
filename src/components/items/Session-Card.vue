@@ -48,11 +48,16 @@ export default defineComponent({
         showInstructions: {
             type: Boolean,
             default: false
+        },
+        cancelBtn: {
+            type: Boolean,
+            default: false
         }
     },
     data(){
         return{
-            dsb: true
+            dsb: true,
+            cancelDsb: false
         }
     },
     computed: {
@@ -62,6 +67,14 @@ export default defineComponent({
             },
             set(val){
                 this.dsb = val;
+            }
+        },
+        isCancelDisabled: {
+            get(){
+                return this.cancelDsb;
+            },
+            set(val){
+                this.cancelDsb = val;
             }
         }
     },
@@ -93,7 +106,7 @@ export default defineComponent({
 
         const cbody = document.getElementById("card-body") as HTMLInputElement;
 
-        if(this.showInstructions){
+        if(!this.showInstructions){
             cbody.style.display = ""
         }
         else{
@@ -101,6 +114,8 @@ export default defineComponent({
         }
     },
     updated(){
+
+        this.isCancelDisabled = !this.cancelBtn;
         
         if(this.place != "Por definir"){
             this.isDisabled = false;
@@ -175,7 +190,7 @@ export default defineComponent({
                 <button id="details-button" data-bs-toggle="modal" data-bs-target="#information-modal"> Ver detalles </button>
                 <button id="confirm-button" :disabled="isDisabled" @click="confirmSession">Confirmar Asesor&iacute;a</button>
                 <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="storageInfo">Editar Asesor&iacute;a</button>
-                <button id="cancel-button">Cancelar Asesor&iacute;a</button>
+                <button id="cancel-button" :disabled="isCancelDisabled">Cancelar Asesor&iacute;a</button>
             </div>
             <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>
         </div>
@@ -196,7 +211,7 @@ export default defineComponent({
     h1 {
         font-family: "Montserrat";
         font-weight: bold;
-        font-size: 2.8vh;
+        font-size: 2.5vh;
         margin-bottom: 2vh;
     }
 
@@ -277,10 +292,6 @@ export default defineComponent({
         color: #d9eff49d;
     }
 
-    #confirm-button:disabled:hover{
-        box-shadow: none;
-    }
-
     #edit-button{
         background-color: #769ABA;
     }
@@ -295,6 +306,16 @@ export default defineComponent({
 
     #cancel-button:hover{
         box-shadow: 0px 0px 0px 4px #EBA37C;
+    }
+
+    #cancel-button:disabled{
+        background-color: #b85b29c4;
+        color: #d9eff49d;
+    }
+
+    #confirm-button:disabled:hover,
+    #cancel-button:disabled:hover{
+        box-shadow: none;
     }
 
     #details-button{
