@@ -14,10 +14,7 @@ const date = ref (localStorage.getItem("sessionSelected"))
 const id_tutor = ref ("")
 const id_student = ref (localStorage.getItem("userID"))
 const status = ref (0)
-const spot = ref (null)
 const request_time = ref (now.toISOString())
-const verify_time = ref (null)
-const id_admin_verify = ref (null)
 
 
 export default defineComponent({
@@ -29,7 +26,7 @@ export default defineComponent({
         id_tutor.value = localStorage.getItem("tutorSesId")
         let txt = localStorage.getItem("questionText");
 
-        if(txt != null && txt.length != 0){
+        if(txt != null && txt.length != 0) {
             console.log("ams")
             this.questionVal = txt;
             this.$forceUpdate();

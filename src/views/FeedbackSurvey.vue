@@ -1,28 +1,28 @@
 <script lang="ts">
 import axios from 'axios';
-import NavBar from "../components/Navbar.vue"
-import { defineComponent} from "vue";
+import { defineComponent } from "vue";
 
 const api = 'http://localhost:8000/api/'
-
+const user_type = localStorage.getItem('userType')
 
 export default defineComponent({
     data() {
         return{
             surveyList: [],
-            choicesList: []
+            choicesList: [],
+            id_student: '',
+            id_tutor: '', 
+            answer: {},
+            fileObject: null
         }
-    },
-    components: {
-        NavBar
     },
     mounted(){
         this.getQuestions()
     },
+    
     methods: {
         async getQuestions() {
             var id_survey = 0
-            const user_type = localStorage.getItem('userType')
 
             if(user_type == '0') {
                 await axios
@@ -61,31 +61,167 @@ export default defineComponent({
             .catch(error => {
                 console.log(error)
             })
+        },
+
+        saveFile(event) {
+            this.fileObject = event.target.files[0]
+        },
+
+        async submitAnswer() {
+            /* 
+                id_question = models.ForeignKey(Question, on_delete=models.CASCADE)
+                id_student = models.ForeignKey(PaeUser, null=True, on_delete=models.SET_NULL, related_name='student_answer')
+                id_tutor = models.ForeignKey(PaeUser, null=True, on_delete=models.SET_NULL)
+                date = models.DateTimeField()
+                answer = models.JSONField()
+            */
+           const id_user = localStorage.getItem('userID')
+           const now = new Date();
+           const now2 = now.toISOString()
+
+           if(user_type == '0') {
+               await axios
+               .get(api + 'recent_completed_session/?student=' + id_user)
+               .then(result => {
+                   this.id_tutor = result.data[0].id_tutor
+               })
+               this.id_student = id_user
+           } else {
+               await axios
+               .get(api + 'recent_completed_session/?tutor=' + id_user)
+               .then(result => {
+                   this.id_student = result.data[0].id_student
+               })
+               this.id_tutor = id_user
+           }
+
+            var input = document.getElementById('') as HTMLInputElement;
+            var index = ''
+
+            for(let j = 0; j < this.surveyList.length; j++) {
+                if(this.surveyList[j].question_type == 0) {
+                    index = 'comment' + j.toString()
+                    input = document.getElementById(index) as HTMLInputElement;
+                    const answerJSON = JSON.stringify({
+                        value: input.value
+                    })
+
+                    await axios
+                    .post(api + 'answers/', {
+                        id_question:  this.surveyList[j].id,
+                        id_student: this.id_student,
+                        id_tutor: this.id_tutor,
+                        date: now2,
+                        answer: answerJSON
+                    })
+                    .then(result => {
+                        console.log(result.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                } else if(this.surveyList[j].question_type == 1) {
+                    for(let i = 0; i < this.choicesList.length; i++) {
+                        if(this.surveyList[j].id == this.choicesList[i].id_question) {
+                            index = 'closedAnswer' + i.toString()
+                            input = document.getElementById(index) as HTMLInputElement;
+                            
+                            if(input.checked) {
+                                const answerJSON = JSON.stringify({
+                                value: input.value
+                            })
+                            
+                            await axios
+                            .post(api + 'answers/', {
+                                id_question:  this.surveyList[j].id,
+                                id_student: this.id_student,
+                                id_tutor: this.id_tutor,
+                                date: now2,
+                                answer: answerJSON
+                            })
+                            .then(result => {
+                                console.log(result.data)
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                            }
+                        }
+                    }
+                } else if(this.surveyList[j].question_type == 2) {
+                    for(let i = 1; i < 6; i++) {
+                        index = 'scaleAnswer' + i.toString() + j.toString()
+                        input = document.getElementById(index) as HTMLInputElement;
+                        if(input.checked) {
+                            const answerJSON = JSON.stringify({
+                                value: input.value
+                            })
+                            
+                            await axios
+                            .post(api + 'answers/', {
+                                id_question:  this.surveyList[j].id,
+                                id_student: this.id_student,
+                                id_tutor: this.id_tutor,
+                                date: now2,
+                                answer: answerJSON
+                            })
+                            .then(result => {
+                                console.log(result.data)
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                        }
+                    }
+                } else {
+                    index = 'formFile' + j.toString() 
+                    input = document.getElementById(index) as HTMLInputElement;
+                    let formData = new FormData();
+                    formData.append('value', this.fileObject)
+
+                    var object = {};
+                    formData.forEach((value, key) => object[key] = value);
+                    var json = JSON.stringify(object);
+                    
+                    await axios
+                    .post(api + 'answers/', {
+                        id_question:  this.surveyList[j].id,
+                        id_student: this.id_student,
+                        id_tutor: this.id_tutor,
+                        date: now2,
+                        answer: json
+                    })
+                    .then(result => {
+                        console.log(result.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                }
+            }
         }
     }
 })
 </script>
 
 <template>
-    <header>
-        <NavBar/>
-    </header>
     <div class="container">
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
             </div>
-        <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
-            <form>
+        <form name="form" @submit.prevent="submitAnswer">
+            <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
                 <div class="question-container" v-if=" survey.question_type == '0'">
                     <label for="openQuestion" class="form-label">{{survey.question}}</label>
-                    <textarea type="form-control" class="form-control" id="comments" rows="3"></textarea>
+                    <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3"></textarea>
                 </div>
                 <div class="question-container"  v-if=" survey.question_type == '1'">
                     <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="answer-container">
-                        <div v-for="(choice, i) in choicesList" :key="i" >
+                        <div v-for="(choice, j) in choicesList" :key="j" >
                             <div  v-if="choice.id_question == survey.id" class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice>
                             <label class="form-check-label" for="flexRadioDefault1">
                                 {{ choice.choice }} 
                             </label> <br>
@@ -107,11 +243,11 @@ export default defineComponent({
                             <label class="form-check-label" for="flexRadioDefault1">
                             Nada Claro
                             </label>
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer1">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer2">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer3">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5">
                             <label class="form-check-label" for="flexRadioDefault1">
                             Muy Claro
                             </label>
@@ -121,12 +257,12 @@ export default defineComponent({
                 <div class="question-container"  v-if=" survey.question_type == '3'">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">{{survey.question}}</label>
-                        <input class="form-control" type="file" id="formFile">
+                        <input class="form-control" type="file" @change="saveFile($event)" :id="'formFile' + i">
                     </div>
                 </div>
-            </form>
-        </div>
-       <a href="home">Enviar</a>
+            </div>
+            <button>Enviar</button>
+        </form>
     </div>
 </template>
 
@@ -204,7 +340,8 @@ export default defineComponent({
     margin: 1vh 1.5vw;
     font-size: 3vh;
 }
-a {
+
+button {
     font-family: "Ubuntu";
     font-weight: normal;
     color: white;
