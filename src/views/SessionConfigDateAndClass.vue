@@ -118,7 +118,6 @@ export default defineComponent({
             this.disableNextBtn();
         },
         nextButtonOnClick(){
-            this.getSessionTutor();
             router.push("/question")
         },
         disableNextBtn(){
@@ -128,19 +127,6 @@ export default defineComponent({
         enableNextBtn(){
             this.isDisabled = false;
             this.$forceUpdate();
-        },
-        async getSessionTutor(){
-            const idSubject = localStorage.getItem("classId");
-            const dayHour = localStorage.getItem("sessionSelected");
-            await axios
-            .get(api + "ordered_tutors_for_session/?subject=" + idSubject + "&dayHour=" + dayHour)
-            .then(result => {
-                console.log(result.data[0])
-                localStorage.setItem("tutorSesId", result.data[0].id_tutor__id);
-            })
-            .catch(error => {
-                console.log(error)
-            })
         },
         deactiveLockWeek(){
             this.changeLockWeekStatus = false;

@@ -167,5 +167,11 @@ export default defineComponent({
         box-sizing: border-box;
         text-decoration: none;
     }
+
+    button:hover{
+        box-shadow: 0px 0px 0px 4px #EBA37C;
+        border-color: transparent;
+        transition: all 0.3s ease 0s;
+    }
     
 </style>

@@ -1,11 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { store, useStore } from '../../store'
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
     props: {
         baseColor: {
             type: String,
@@ -42,6 +38,25 @@ export default defineComponent({
         alignItemsVal:{
             type: String,
             default: "center"
+        },
+        weekLock:{
+            type: String,
+            default: "0"
+        }
+    },
+    data(){
+        return{
+            firstPass: true
+        }
+    },
+    computed:{
+        updateFirstPass: {
+            get(){
+                return this.firstPass;
+            },
+            set(val){
+                this.firstPass = val;
+            }
         }
     },
     mounted() {
@@ -72,16 +87,9 @@ export default defineComponent({
         this.checkLockedSchedule(squares);
         
         
-    },
-    data(){
-        return{
-            selectedHoursT: []
-        }
     },  
     methods:{
         checkLockedSchedule(squares: HTMLCollection){
-
-            console.log(squares)
 
             var i, j, k, n;
 
@@ -92,13 +100,13 @@ export default defineComponent({
             for(i = 0; i < listL; i++){
                 for(j = 0; j < this.scheduledHours.length; j++){
                     if(squares[n].id == this.scheduledHours[j]){
-                        this.scheduledHours.splice(j,1);
                         squares[n].className = "active";
                         break;
                     }
                     else if(j == this.scheduledHours.length-1){
                         n++;
                     }
+                    
                 }
             }
         },
@@ -108,7 +116,7 @@ export default defineComponent({
             const currentDate = current.getDate();
             //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
             for(var i = -4; i < 5; i++){
-                var tempDate = currentDate+i;
+                var tempDate = currentDate+i + (Number(this.weekLock)*7);
                 var tempMonth = current.getMonth();
                 var lengthMonth1 = 31;
                 var lengthMonth2 = 30;
@@ -254,9 +262,6 @@ export default defineComponent({
                 }
 
                 square.className = "selected";
-
-                let idIndex = this.scheduledHours.indexOf(square.id)
-                console.log(idIndex)
 
                 localStorage.setItem("sessionCardHour", square.id)
 
