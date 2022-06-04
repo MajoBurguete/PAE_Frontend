@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from 'axios';
+import emailjs from 'emailjs-com';
 
 const api = 'http://localhost:8000/api/'
 
@@ -17,26 +18,46 @@ export default defineComponent({
         },
         userId: {
             type: String
+        },
+        userEmail: {
+            type: String
+        }
+    },
+    data() {
+        return {
+            name: '',
+            email: ''
         }
     },
     methods:{
-        confirmTutor(){
+        confirmTutor() {
             var info = {
                         'id': this.userId,
                         'user_type':  1,
                         'status': 0
                     }
             axios
-
             .put(api + "pae_users/" + this.userId + "/", info)
             .then(result => {
                 console.log(result);
                 this.$emit("confirm-tutor")
+
+                var templateParams = {
+                    user_name: this.tutorName,
+                    user_email: this.userEmail
+                };
+
+                emailjs
+                .send('service_2efcuwp', 'template_u3zai5n', templateParams, 'LPBuS8HK51bdTE-9Y')
+                .then(response => {
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                });
             })
             .catch(error =>{
                 console.log(error)
             })
-
         },
         deleteTutor(){
             axios
