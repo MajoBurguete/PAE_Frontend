@@ -40,11 +40,24 @@ export default defineComponent({
         },
         indexSession: {
             type: String
+        },
+        instructionsTxt: {
+            type: String,
+            default: "Escoge una asesoría para ver sus detalles"
+        },
+        showInstructions: {
+            type: Boolean,
+            default: false
+        },
+        cancelBtn: {
+            type: Boolean,
+            default: false
         }
     },
     data(){
         return{
-            dsb: true
+            dsb: true,
+            cancelDsb: false
         }
     },
     computed: {
@@ -54,6 +67,14 @@ export default defineComponent({
             },
             set(val){
                 this.dsb = val;
+            }
+        },
+        isCancelDisabled: {
+            get(){
+                return this.cancelDsb;
+            },
+            set(val){
+                this.cancelDsb = val;
             }
         }
     },
@@ -82,10 +103,46 @@ export default defineComponent({
         if(this.place != "Por definir"){
             this.isDisabled = false;
         }
+
+        const cbody = document.getElementById("card-body") as HTMLInputElement;
+
+        if(!this.showInstructions){
+            cbody.style.display = ""
+        }
+        else{
+            cbody.style.display = "none"
+        }
     },
     updated(){
+
+        this.isCancelDisabled = !this.cancelBtn;
+        
         if(this.place != "Por definir"){
             this.isDisabled = false;
+        }
+
+        const cbody = document.getElementById("card-body") as HTMLInputElement;
+
+        if(this.showInstructions){
+            cbody.style.display = "none"
+        }
+        else{
+            cbody.style.display = ""
+        }
+
+        const statusElement = document.getElementById("status") as HTMLInputElement;
+
+        if(this.status == "Pendiente"){
+            statusElement.style.color = "#FF813C"
+        }
+        if(this.status == "Confirmada"){
+            statusElement.style.color = "#365295"
+        }
+        if(this.status == "Cancelada"){
+            statusElement.style.color = "#FF0000"
+        }
+        if(this.status == "Confirmada"){
+            statusElement.style.color = "#338C31"
         }
     },
     methods:{
@@ -98,6 +155,10 @@ export default defineComponent({
         confirmSession(){
             this.storageInfo()
             this.$emit("confirm-session-event")
+        },
+        cancelSession(){
+            this.storageInfo()
+            this.$emit("cancel-session-event")
         }
     }
 })
@@ -106,7 +167,8 @@ export default defineComponent({
 
 <template>
     <div class="card">
-        <div class="card-body">
+        <h1 v-if="showInstructions" id="instruction-txt"> {{instructionsTxt}} </h1>
+        <div class="card-body" id="card-body">
             <h1 class="card-title text-center">{{className}}</h1>
             <div class="row">
                 <div class="col">
@@ -132,7 +194,7 @@ export default defineComponent({
                 <button id="details-button" data-bs-toggle="modal" data-bs-target="#information-modal"> Ver detalles </button>
                 <button id="confirm-button" :disabled="isDisabled" @click="confirmSession">Confirmar Asesor&iacute;a</button>
                 <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="storageInfo">Editar Asesor&iacute;a</button>
-                <button id="cancel-button">Cancelar Asesor&iacute;a</button>
+                <button id="cancel-button" :disabled="isCancelDisabled" data-bs-toggle="modal" data-bs-target="#cancel-modal" @click="cancelSession">Cancelar Asesor&iacute;a</button>
             </div>
             <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>
         </div>
@@ -153,7 +215,7 @@ export default defineComponent({
     h1 {
         font-family: "Montserrat";
         font-weight: bold;
-        font-size: 2.8vh;
+        font-size: 2.5vh;
         margin-bottom: 2vh;
     }
 
@@ -176,6 +238,11 @@ export default defineComponent({
         font-weight: regular;
         font-size: 2.2vh;
         color: #636262;
+    }
+
+    #instruction-txt{
+        margin: 1vh 1vw;
+        text-align: center;
     }
 
     .card-body {
@@ -229,10 +296,6 @@ export default defineComponent({
         color: #d9eff49d;
     }
 
-    #confirm-button:disabled:hover{
-        box-shadow: none;
-    }
-
     #edit-button{
         background-color: #769ABA;
     }
@@ -247,6 +310,16 @@ export default defineComponent({
 
     #cancel-button:hover{
         box-shadow: 0px 0px 0px 4px #EBA37C;
+    }
+
+    #cancel-button:disabled{
+        background-color: #b85b29c4;
+        color: #d9eff49d;
+    }
+
+    #confirm-button:disabled:hover,
+    #cancel-button:disabled:hover{
+        box-shadow: none;
     }
 
     #details-button{

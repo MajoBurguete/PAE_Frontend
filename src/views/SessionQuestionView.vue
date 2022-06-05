@@ -11,7 +11,7 @@ const api = 'http://localhost:8000/api/'
 var id_subject = ref (localStorage.getItem("classId"))
 var description = ref ("")
 const date = ref (localStorage.getItem("sessionSelected"))
-const id_tutor = ref (localStorage.getItem("tutorSesId"))
+const id_tutor = ref (0)
 const id_student = ref (localStorage.getItem("userID"))
 const status = ref (0)
 const spot = ref (null)
@@ -26,7 +26,7 @@ export default defineComponent({
     },
     mounted(){
         let txt = localStorage.getItem("questionText");
-
+        this.getSessionTutor();
         if(txt != null && txt.length != 0){
             console.log("ams")
             this.questionVal = txt;
@@ -87,21 +87,34 @@ export default defineComponent({
         }
     },
     methods: {
+        async getSessionTutor(){
+            const idSubject = localStorage.getItem("classId");
+            const dayHour = localStorage.getItem("sessionSelected");
+            await axios
+            .get(api + "ordered_tutors_for_session/?subject=" + idSubject + "&dayHour=" + dayHour)
+            .then(result => {
+                console.log(result.data[0])
+                localStorage.setItem("tutorSesId", result.data[0].id_tutor__id)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
         getSessionDate(dayOfWeek:String) {
             var dow = 1;
             var finalDate = new Date();
             finalDate.setDate(finalDate.getDate() + 1);
             if (dayOfWeek[0] == 't' && dayOfWeek[1] != 'h') {
-            dow = 2;
+                dow = 2;
             }
             if (dayOfWeek[0] == 'w') {
-            dow = 3;
+                dow = 3;
             }
             if (dayOfWeek[0] == 't' && dayOfWeek[1] == 'h') {
-            dow = 4;
+                dow = 4;
             }
             if (dayOfWeek[0] == 'f') {
-            dow = 5;
+                dow = 5;
             }
             finalDate.setDate(finalDate.getDate() + (dow + (7 - finalDate.getDay())) % 7);
             var month;
@@ -135,7 +148,7 @@ export default defineComponent({
             //id_subject.value = this.classId;
             description.value = this.questionVal;
             let formData = new FormData();
-            
+            id_tutor.value = localStorage.getItem("tutorSesId");
             formData.append('description', description.value);
             formData.append('date', this.getSessionDate(date.value));
             formData.append('status', status.value.toString());
@@ -152,44 +165,17 @@ export default defineComponent({
             .post('http://localhost:8000/api/sessions/', formData)
             .then(result => {
                 console.log(result.data)
-
-                console.log(localStorage.getItem("sessionSelected"))
-                axios
-                .get(api + "schedule_by_tutor_and_day_hour/?tutor=" + id_tutor.value + "&dayHour=" + date.value)
-                .then(resultR => {
-                    scheduleR.value = resultR.data[0]
-
-                    var info = {
-                        'day_hour': date.value,
-                        'available': false,
-                        'id_user': id_tutor.value
-                    }
-
-                    axios
-                    .put(api + "schedules/" + scheduleR.value.id + "/", info)
-                    .then(resultS => {
-                        console.log(resultS.data)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
+                localStorage.removeItem("className")
+                localStorage.removeItem("classId")
+                localStorage.removeItem("tutorSesId")
+                localStorage.removeItem("questionText")
+                localStorage.removeItem("sessionSelected")
+                localStorage.removeItem("hoursAvailable")
+                router.push("/home")
                 })
-                .catch(error => {
-                    console.log(error)
-                })
-
-            })
             .catch(error => {
                 console.log(error)
             })
-            
-            localStorage.removeItem("className")
-            localStorage.removeItem("classId")
-            localStorage.removeItem("tutorSesId")
-            localStorage.removeItem("questionText")
-            localStorage.removeItem("sessionSelected")
-            localStorage.removeItem("hoursAvailable")
-            router.push("/home")
         },
         editSession(){
             router.push("/date-and-class")
