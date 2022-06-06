@@ -11,9 +11,6 @@
         components: {
             NavBar
         },
-        mounted(){
-
-        },
         data(){
             return{
                 tab:"admin",
