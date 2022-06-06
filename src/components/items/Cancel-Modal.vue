@@ -1,62 +1,132 @@
+<script lang="ts">
+import axios from 'axios';
+
+const api = 'http://localhost:8000/api/'
+
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    props: {
+        sessionId: {
+            type: String
+        },
+        description: {
+            type: String
+        },
+        date: {
+            type: String
+        },
+        placeTxt: {
+            type: String
+        },
+        request_time: {
+            type: String
+        }
+    },
+    methods: {
+        async cancelSession(){
+
+            console.log (this.sessionId)
+            console.log (this.description)
+            console.log (this.date)
+            console.log (this.placeTxt)
+            console.log (this.request_time)
+
+            var info = {
+                        'id': this.sessionId,
+                        'description': this.description,
+                        'date': this.date,
+                        'status': 2,
+                        'spot': this.placeTxt,
+                        'request_time': this.request_time
+                    }
+
+            await axios
+            .put(api + "sessions/" + this.sessionId + "/", info)
+            .then(result => {
+                console.log(result.data)
+                this.$emit("session-canceled-event")
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
+    }
+})
+
+</script>
+
 <template>
     <body>
         <div class="cancel-container">
             <h1>¿Estas seguro de cancelar la asesoría?</h1>
             <div class="button-container">
                 <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close"> No, regresar </button>
-                <button id="save-button"  data-bs-dismiss="modal" aria-label="Close"> Sí, cancelar </button>
+                <button id="save-button" @click="cancelSession" data-bs-dismiss="modal" aria-label="Close"> Sí, cancelar </button>
             </div>
         </div>
     </body>
 </template>
 
 <style scoped>
-.cancel-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: #E1F0EA;
-    border-radius: 20px;
-    padding: 7vh 2vw;
-    gap: 3vh;
-    width: 50vw;
-}
-h1 {
-font-family: 'Montserrat';
-font-weight: normal;
-font-size: 5vh;
-color: #6F9492;
-text-align: center;
-}
-.button-container {
-    display: flex;
-    justify-content: center;
-}
 
-#cancel-button {
-    font-family: "Ubuntu";
+    .cancel-container,
+    body {
+        background-color: transparent;
+    }
+
+    h1 {
+    font-family: 'Montserrat';
     font-weight: normal;
-    color: white;
-    font-size: 3.5vh;
-    padding: 1vh 4vw;
-    border-radius: 15px;
-    border: 2.5px solid #00000000;
-    background-color: #96CCC9;
-    box-sizing: border-box;
-    margin: 3vh;
-    text-decoration: none;
-}
-#save-button {
-    font-family: "Ubuntu";
-    font-weight: normal;
-    color: white;
-    font-size: 3.5vh;
-    padding: 1vh 4vw;
-    border-radius: 15px;
-    border: 2.5px solid #00000000;
-    background-color: #F75E0B;
-    box-sizing: border-box;
-    margin: 3vh;
-    text-decoration: none;
-}
+    font-size: 5vh;
+    color: #6F9492;
+    text-align: center;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    button:hover{
+        border-color: transparent;
+        transition: all 0.3s ease 0s;
+    }
+
+    #cancel-button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 3.5vh;
+        padding: 1vh 4vw;
+        border-radius: 15px;
+        border: 2.5px solid #00000000;
+        background-color: #96CCC9;
+        box-sizing: border-box;
+        margin: 3vh;
+        text-decoration: none;
+    }
+
+    #save-button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 3.5vh;
+        padding: 1vh 4vw;
+        border-radius: 15px;
+        border: 2.5px solid #00000000;
+        background-color: #F75E0B;
+        box-sizing: border-box;
+        margin: 3vh;
+        text-decoration: none;
+    }
+
+    #save-button:hover{
+        box-shadow: 0px 0px 0px 4px #EBA37C;
+    }
+
+    #cancel-button:hover{
+        box-shadow: 0px 0px 0px 4px #c3eae8;
+    }
+
 </style>

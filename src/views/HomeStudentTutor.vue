@@ -2,21 +2,26 @@
 import { defineComponent } from "vue";
 import ScheduleItem from "../components/items/Home-Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
+import CancelModal from "../components/items/Cancel-Modal.vue"
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
 
 const api = 'http://localhost:8000/api/'
 let resultHours = []
 
+declare var bootstrap: any;
+
 export default defineComponent({
     components: {
         ScheduleItem,
         SessionCard,
-        NavBar
+        NavBar,
+        CancelModal
     },
     data() {
         return{
             hours: [],
+            originalDate: "",
             daysHoursCurrentWeek: [],
             daysHoursNextWeek: [],
             sessionsIds: [],
@@ -28,6 +33,8 @@ export default defineComponent({
             dateC: "",
             placeC: "",
             statusC: "",
+            sessionIdC: "",
+            requestTimeC: "",
             cancelC: false,
             weekL: "0",
             weekSelected: "Semana actual",
@@ -81,6 +88,30 @@ export default defineComponent({
             },
             set(val){
                 this.fileURL = val;
+            }
+        },
+        updateRequestT:{
+            get(){
+                return this.requestTimeC;
+            },
+            set(val){
+                this.requestTimeC = val;
+            }
+        },
+        updateSessionI:{
+            get(){
+                return this.sessionIdC;
+            },
+            set(val){
+                this.sessionIdC = val;
+            }
+        },
+        updateOriginalDate:{
+            get(){
+                return this.originalDate;
+            },
+            set(val){
+                this.originalDate = val;
             }
         },
         updateWeekLock: {
@@ -162,14 +193,6 @@ export default defineComponent({
             },
             set(val){
                 this.tutorNameC = val;
-            }
-        },
-        updateTutorID: {
-            get(){
-                return this.tutorIdC;
-            },
-            set(val){
-                this.tutorIdC = val;
             }
         },
         updateStudentN: {
@@ -341,15 +364,42 @@ export default defineComponent({
             
         },
 
-        updateCardInfo(classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string, canCancel: boolean, description: string, urlF: string){
+        async getFile(id: string){
+            const fileCont = document.getElementById("file-attach-container") as HTMLInputElement;
+
+            axios
+            .get(api + "sessions_files/" + id)
+            .then( result => {
+                console.log(result.data)
+
+                if(result.data.file != null){
+                    fileCont.style.visibility = "visible";
+                    this.updateFileURL = result.data.file
+                }
+                else{
+                    this.updateFileURL = ""
+                    fileCont.style.visibility = "hidden";
+                }
+            })
+            .catch( error => {
+                console.log(error)
+            })
+        },
+
+        updateCardInfo(sessionId: string, classNameI: string, tutorNameI: string, tutorIdI: string, studentNameI: string, studentIdI: string, dateI:string, placeI:string, statusI: string, canCancel: boolean, description: string, fileN: string){
+            this.updateSessionI = sessionId;
+            this.getFile(sessionId);
             this.updateClassN = classNameI;
             this.updateTutorN = tutorNameI;
             this.updateTutorID = tutorIdI;
             this.updateStudentN = studentNameI;
             this.updateStudentID = studentIdI;
             this.updateDate = this.formatDate(dateI);
+            this.updateOriginalDate = dateI;
             this.updatePlace = placeI;
             this.updateCancelVal = canCancel;
+            this.updateFileName = fileN;
+
             if(statusI == "0"){
                 this.updateStatus = "Pendiente";
             }
@@ -364,8 +414,6 @@ export default defineComponent({
             }
 
             this.updateDescriptionTxt = description;
-            this.updateFileName =" urlF";
-            console.log(this.updateFileURL.indexOf("media"));
             
 
             this.$forceUpdate();
@@ -383,7 +431,9 @@ export default defineComponent({
                 hourS = resultHours[this.sessionsIds.lastIndexOf(sessionHour)];
             }
 
-            this.updateCardInfo(hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status, hourS.cancel, hourS.description, hourS.file)
+            this.updateRequestT = hourS.request_time;
+
+            this.updateCardInfo(hourS.id, hourS.id_subject__name, hourS.id_tutor__id__first_name, hourS.id_tutor__id__email, hourS.id_student__id__first_name, hourS.id_student__id__email, hourS.date, hourS.spot, hourS.status, hourS.cancel, hourS.description, hourS.file)
         },
 
         showWeek(index: number){
@@ -397,6 +447,17 @@ export default defineComponent({
                 console.log(this.updateNextDaysHours.length)
                 this.updateHours = this.updateNextDaysHours;
             }
+        },
+
+        cancelSession(){
+            var myModal = new bootstrap.Modal(document.getElementById('cancel-modal'));
+            myModal.show()
+        },
+
+        updatePage(){
+            this.updateInstructionBool = true;
+            this.updateInstructionText = "Escoge una asesoría para ver sus detalles"
+            this.getHours();
         }
     }
 })
@@ -409,8 +470,8 @@ export default defineComponent({
     <body>
         <div class="container">
             <div class="card-container">
-                <a href="date-and-class"> Agendar nueva asesoría </a>
-                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
+                <a href="date-and-class" id="date-and-class-a"> Agendar nueva asesoría </a>
+                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" v-on:cancel-session-event="" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
             </div>
             <div class="schedule-container">
                 <div class="dropdown-center">
@@ -439,18 +500,28 @@ export default defineComponent({
 
         <div class="modal fade" id="information-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
+                <div class="modal-content" id="info-modal-content">
                     <div class="scrollbar" id="style-2">
                         <h3 class="question-val">{{descriptionTxt}}</h3>
                     </div>
                     <div class="flex-container">
                         <div class="session-info-container">
                             <div class="file-attach-container" id="file-attach-container">
-                                <img class="attach-file-modal" src="..\assets\img\attach.png"/>
+                                <a :href="updateFileURL" target="_blank">
+                                    <img class="attach-file-modal" src="..\assets\img\attach.png"/>
+                                </a>
                                 <h3 class="file-name"> {{fileName}} </h3>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cancel-modal" tabindex="-1" aria-labelledby="cancelModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" id="cancel-modal-lg">
+                <div class="modal-content" id="cancel-modal-content">
+                    <CancelModal v-on:session-canceled-event="updatePage" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI"/>
                 </div>
             </div>
         </div>
@@ -531,7 +602,7 @@ export default defineComponent({
         margin: 0 -16vw 0 0;
     }
 
-    a{
+    #date-and-class-a{
         font-family: "Ubuntu";
         font-weight: normal;
         background-color: #26408B;
@@ -544,7 +615,7 @@ export default defineComponent({
         text-decoration: none;
     }
 
-    a:hover{
+    #date-and-class-a:hover{
         border-color: transparent;
         box-shadow: 0px 0px 0px 4px #7690CE;
         transition: all 0.3s ease 0s;
@@ -591,7 +662,7 @@ export default defineComponent({
     }
 
 
-    /* Modal */
+    /* Info Modal */
 
     .modal-lg{
         width: 40vw;
@@ -601,6 +672,10 @@ export default defineComponent({
         padding: 2vh 2.5vw 2vh 2.5vw;
         display: flex;
         gap: 0.5vh;
+    }
+
+    #info-modal-content{
+
     }
 
     .flex-container{
@@ -681,6 +756,22 @@ export default defineComponent({
         margin-bottom: 2vh;
     }
 
+    /* Cancel Modal */
+
+    #cancel-modal-lg{
+        width: 50vw;
+    }
+
+    #cancel-modal-content {
+        background-color: #E1F0EA;
+        border: 2.5px solid #96BECC;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 20px;
+        padding: 7vh 2vw;
+        gap: 3vh;
+    }
     
     #style-2::-webkit-scrollbar-track
     {
