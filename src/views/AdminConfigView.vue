@@ -52,7 +52,7 @@
             toAdminTab() {
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
-                const input = document.getElementById('search-input') as HTMLInputElement;
+                const input = document.getElementById('search-admin-input') as HTMLInputElement;
                 const adminsListT = document.getElementById('admin-list') as HTMLInputElement;
                 const subjectsListT = document.getElementById('subjects-list') as HTMLInputElement;
                 const title = document.getElementById('table-title-tab') as HTMLInputElement;
@@ -65,7 +65,7 @@
                 adminTab.style.backgroundColor = "#9EC7D1";
                 adminTab.style.color = "white";
 
-                adminsListT.style.display = "initial"
+                adminsListT.style.display = "flex"
                 subjectsListT.style.display = "none"
 
                 title.textContent = "Administradores"
@@ -78,7 +78,7 @@
             toSubjectsTab() {
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
-                const input = document.getElementById('search-input') as HTMLInputElement;
+                const input = document.getElementById('search-subject-input') as HTMLInputElement;
                 const adminsListT = document.getElementById('admin-list') as HTMLInputElement;
                 const subjectsListT = document.getElementById('subjects-list') as HTMLInputElement;
                 const title = document.getElementById('table-title-tab') as HTMLInputElement;
@@ -91,7 +91,7 @@
                 subjectsTab.style.backgroundColor = "#9EC7D1";
                 subjectsTab.style.color = "white";
 
-                subjectsListT.style.display = "initial"
+                subjectsListT.style.display = "flex"
                 adminsListT.style.display = "none"
 
                 title.textContent = "Unidades de Formación"
@@ -103,11 +103,11 @@
             searchElements(){
                 var input, td, temp, h1, i, j, filter,  txtValue;
 
-                if(this.changeTabC == "tutor"){
-                    input = document.getElementById('search-input') as HTMLInputElement;
+                if(this.changeTabC == "admin"){
+                    input = document.getElementById('search-admin-input') as HTMLInputElement;
                     filter = input.value.toUpperCase();
-                    td = document.getElementsByClassName('table-data-tutor');
-                    h1 = document.getElementsByClassName("filter-h1-tutor");
+                    td = document.getElementsByClassName('table-data-admin');
+                    h1 = document.getElementsByClassName("filter-h1-admin");
 
                     
                     for(i = 0; i < h1.length; i++){
@@ -121,10 +121,10 @@
                     }
                 }
                 else{
-                    input = document.getElementById('search-input') as HTMLInputElement;
+                    input = document.getElementById('search-subject-input') as HTMLInputElement;
                     filter = input.value.toUpperCase();
-                    td = document.getElementsByClassName('table-data-student');
-                    h1 = document.getElementsByClassName("filter-h1-student");
+                    td = document.getElementsByClassName('table-data-subject');
+                    h1 = document.getElementsByClassName("filter-h1-subject");
 
                     
                     for(i = 0; i < h1.length; i++){
@@ -159,56 +159,118 @@
                 <div class="table-scroll" id="admin-list">
                     <table class="table table-bordered" id="table">
                         <thead>
-                            <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca al administrador..">
+                            <input type="text" id="search-admin-input" v-on:keyup="searchElements" placeholder="Busca al administrador..">
                         </thead>
                         <tbody class="style-2">
-                            <tr>
+                            <tr class="table-data-admin">
                                 <td> 
-                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-admin"> Miau </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="table-data-admin">
                                 <td> 
-                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-admin"> Miu </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="table-data-admin">
                                 <td> 
-                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-admin"> Mio </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="table-data-admin">
                                 <td> 
-                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-admin"> MiaO </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="table-data-admin">
                                 <td> 
-                                    <h2 class="filter-h1-admin"> Miau </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-admin"> Miau </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="admin-btn-container">
-                        <button> Crear administrador </button>
-                        <button> Eliminar administrador </button>
+                        <button class="table-button"> Crear administrador </button>
+                        <button class="table-button delete"> Eliminar administrador </button>
                     </div>
                 </div>
                 <div class="table-scroll" id="subjects-list">
                     <table class="table table-bordered" id="table">
                         <thead>
-                            <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca la unidad de formación..">
+                            <input type="text" id="search-subject-input" v-on:keyup="searchElements" placeholder="Busca la unidad de formación..">
                         </thead>
                         <tbody class="style-2">
-                            <tr>
+                            <tr class="table-data-subject">
                                 <td> 
-                                    <h2 class="filter-h1-subject"> owo </h2>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-subject"> owo </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
+                                </td>
+                            </tr>
+                            <tr class="table-data-subject">
+                                <td> 
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-subject"> owu </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
+                                </td>
+                            </tr>
+                            <tr class="table-data-subject">
+                                <td> 
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
+                                        <label class="form-check-label" for="check-input">
+                                            <h2 class="filter-h1-subject"> uwo </h2>
+                                        </label>
+                                    </div>
+                                    <button class="edit-btn"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div class="subject-btn-container">
+                        <button class="table-button"> Crear UF </button>
+                        <button class="table-button delete"> Eliminar UF </button>
+                    </div>
                 </div>
-                <button id="pending-session"> Asesorías pendientes </button>
+                <button id="edit-survey-button"> Editar encuesta </button>
             </div>
         </div>
     </body>
@@ -235,7 +297,6 @@
         font-weight: 50;
         font-size: 2.5vh;
         margin: 0;
-        text-align: center;
         color: #6F9492;
     }
 
@@ -247,6 +308,12 @@
         border: transparent;
         background-color: #D9EFF4;
         color: #7FA0A8;
+    }
+
+    #table-title-tab{
+        font-size: 5vh;
+        font-weight: bold;
+        padding: 0 0 0 20vw;
     }
 
     .page-container{
@@ -310,7 +377,7 @@
     }
 
     thead {
-        height: 4vw;
+        height: 3vw;
     }
 
     tbody { 
@@ -327,6 +394,8 @@
 
     td {
         width: 40vw;
+        display: flex;
+        gap: 0vw;
     }
 
     tr {
@@ -344,13 +413,24 @@
         border-bottom: 0;
     }
 
-    .admin-btn-container {
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        align-items: center;
-        justify-content: center;
-        justify-items: center;
+    .form-check{
+        width: 90%;
+    }
+
+    .form-check-input{
+        background-color: transparent;
+        border-color: #6F9492;
+    }
+
+    .form-check-input:checked{
+        background-color: #6F9492;
+        
+    }
+
+    .form-check-input:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #79a9a7;
+        transition: all 0.3s ease 0s;
     }
 
     /* Scrollbar styles */
@@ -374,7 +454,8 @@
     }
     
     /* Search bar */
-    #search-input{
+    #search-admin-input,
+    #search-subject-input{
         font-family: "Montserrat";
         font-weight: medium;
         border-radius: 8px;
@@ -385,11 +466,54 @@
         background-image: url('src/assets/img/search.png');
         background-position: 0.4vw 0.5vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
-        background-size: 7%;
+        background-size: 3%;
     }
 
     #search-input:active{
         border-style: hidden;
+    }
+
+    /* Buttons in table */
+
+    .edit-btn{
+        border-radius: 100%;
+        background-position: center;
+        background-color: #6F9492;
+        background-image: url('src/assets/img/writing-white.png');
+        background-repeat: no-repeat;
+        background-size: 70%;
+    }
+
+    .admin-btn-container,
+    .subject-btn-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .table-button{
+        width: 12vw;
+        margin: 2vh 0 0 0;
+        color: white;
+        background-color: #26408B;
+        border-radius: 10px;
+    }
+
+    .delete{
+        background-color: #F65E0B;
+    }
+
+    /* Pending sessions button */
+    #edit-survey-button{
+        font-size: 4vh;
+        font-family: "Ubuntu";
+        font-weight: normal;
+        margin: 3vh 0 0 0;
+        background-color: #6F9492;
+        color: white;
+        border-radius: 5px;
     }
 
 </style>
