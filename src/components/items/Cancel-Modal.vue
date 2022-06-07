@@ -4,6 +4,7 @@ import axios from 'axios';
 const api = 'http://localhost:8000/api/'
 
 import { defineComponent } from "vue";
+import emailjs from 'emailjs-com';
 
 export default defineComponent({
     props: {
@@ -21,16 +22,19 @@ export default defineComponent({
         },
         request_time: {
             type: String
+        },
+        tutorEmail: {
+            type: String
+        }, 
+        studentEmail: {
+            type: String
+        }, 
+        className: {
+            type: String
         }
     },
     methods: {
         async cancelSession(){
-
-            console.log (this.sessionId)
-            console.log (this.description)
-            console.log (this.date)
-            console.log (this.placeTxt)
-            console.log (this.request_time)
 
             var info = {
                         'id': this.sessionId,
@@ -46,11 +50,33 @@ export default defineComponent({
             .then(result => {
                 console.log(result.data)
                 this.$emit("session-canceled-event")
+
+                console.log('tutor email: ' + this.tutorEmail)
+
+                var templateParams = {
+                    tutor_email: this.tutorEmail,
+                    student_email: this.studentEmail,
+                    session_date: this.formatDate(this.date),
+                    session_subject: this.className
+                };
+
+                emailjs
+                .send('service_2efcuwp', 'template_unnr568', templateParams, 'LPBuS8HK51bdTE-9Y')
+                .then(response => {
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                });
             })
             .catch(error => {
                 console.log(error)
             })
-        }
+        },
+
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
     }
 })
 

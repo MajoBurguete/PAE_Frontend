@@ -203,6 +203,14 @@ export default defineComponent({
                 this.studentNameC = val;
             }
         },
+        updateTutorID: {
+            get(){
+                return this.tutorIdC;
+            },
+            set(val){
+                this.tutorIdC = val;
+            }
+        },
         updateStudentID: {
             get(){
                 return this.studentIdC;
@@ -521,7 +529,7 @@ export default defineComponent({
         <div class="modal fade" id="cancel-modal" tabindex="-1" aria-labelledby="cancelModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" id="cancel-modal-lg">
                 <div class="modal-content" id="cancel-modal-content">
-                    <CancelModal v-on:session-canceled-event="updatePage" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI"/>
+                    <CancelModal v-on:session-canceled-event="updatePage" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI" :tutorEmail="tutorIdC" :studentEmail="studentIdC" :className="classNameC"/>
                 </div>
             </div>
         </div>

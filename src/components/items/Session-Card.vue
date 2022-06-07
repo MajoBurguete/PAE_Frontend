@@ -1,6 +1,7 @@
 <script lang="ts">
 
 import { defineComponent } from "vue";
+import emailjs from 'emailjs-com';
 
 export default defineComponent({
     props: {
@@ -155,6 +156,20 @@ export default defineComponent({
         confirmSession(){
             this.storageInfo()
             this.$emit("confirm-session-event")
+            var templateParams = {
+                tutor_email: this.tutorId,
+                student_email: this.studentId,
+                session_date: this.date,
+                session_subject: this.className
+            };
+
+            emailjs
+            .send('service_2efcuwp', 'template_87wpyd9', templateParams, 'LPBuS8HK51bdTE-9Y')
+            .then(response => {
+                console.log('SUCCESS!', response.status, response.text);
+            }, function(error) {
+                console.log('FAILED...', error);
+            });
         },
         cancelSession(){
             this.storageInfo()
