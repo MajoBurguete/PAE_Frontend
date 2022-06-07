@@ -39,7 +39,7 @@
         },
 
         methods: {
-            async getTutorData() {
+            getTutorData() {
                 const user = localStorage.getItem('userID')
 
                 axios
