@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import NavBar from "../components/Navbar.vue"
-
+import axios from 'axios';
 
 export default defineComponent({
     data() {
@@ -13,6 +13,7 @@ export default defineComponent({
                 {question: "Pregunta Escala", type: "2", id: "3"},
                 {question: "Pregunta", type: "3", id: "4"}
             ],
+            choicesList: [],
             partnerList: [
                 {name: "Marco Flamenco", date: "17/02/22"},
                 {name: "Emilio Flamenco", date: "18/02/22"},
@@ -53,6 +54,48 @@ export default defineComponent({
         changeSurvey(newSubject: { name: string; date: string; }) {
             this.changeCurrentPartner = newSubject.name;
             this.changeDate = newSubject.date;
+        },
+
+        async getSurveyList(){
+            var id_survey = 0
+
+            if(user_type == '0') {
+                await axios
+                .get(api + 'most_recent_survey_for_students/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                await axios
+                .get(api + 'most_recent_survey_for_tutors/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+
+            await axios
+            .get(api + 'questions_of_specific_survey/?survey=' + id_survey)
+            .then(result => {
+                this.surveyList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+            axios
+            .get(api + 'choices/')
+            .then(result => {
+                this.choicesList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
         }
     },
     mounted(){

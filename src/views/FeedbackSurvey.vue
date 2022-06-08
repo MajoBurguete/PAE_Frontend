@@ -1,4 +1,5 @@
 <script lang="ts">
+import router from '@/router';
 import axios from 'axios';
 import { defineComponent } from "vue";
 
@@ -68,13 +69,6 @@ export default defineComponent({
         },
 
         async submitAnswer() {
-            /* 
-                id_question = models.ForeignKey(Question, on_delete=models.CASCADE)
-                id_student = models.ForeignKey(PaeUser, null=True, on_delete=models.SET_NULL, related_name='student_answer')
-                id_tutor = models.ForeignKey(PaeUser, null=True, on_delete=models.SET_NULL)
-                date = models.DateTimeField()
-                answer = models.JSONField()
-            */
            const id_user = localStorage.getItem('userID')
            const now = new Date();
            const now2 = now.toISOString()
@@ -90,6 +84,7 @@ export default defineComponent({
                await axios
                .get(api + 'recent_completed_session/?tutor=' + id_user)
                .then(result => {
+                   console.log(result.data)
                    this.id_student = result.data[0].id_student
                })
                this.id_tutor = id_user
@@ -102,9 +97,6 @@ export default defineComponent({
                 if(this.surveyList[j].question_type == 0) {
                     index = 'comment' + j.toString()
                     input = document.getElementById(index) as HTMLInputElement;
-                    const answerJSON = JSON.stringify({
-                        value: input.value
-                    })
 
                     await axios
                     .post(api + 'answers/', {
@@ -112,7 +104,7 @@ export default defineComponent({
                         id_student: this.id_student,
                         id_tutor: this.id_tutor,
                         date: now2,
-                        answer: answerJSON
+                        answer: input.value
                     })
                     .then(result => {
                         console.log(result.data)
@@ -127,25 +119,21 @@ export default defineComponent({
                             index = 'closedAnswer' + i.toString()
                             input = document.getElementById(index) as HTMLInputElement;
                             
-                            if(input.checked) {
-                                const answerJSON = JSON.stringify({
-                                value: input.value
-                            })
-                            
-                            await axios
-                            .post(api + 'answers/', {
-                                id_question:  this.surveyList[j].id,
-                                id_student: this.id_student,
-                                id_tutor: this.id_tutor,
-                                date: now2,
-                                answer: answerJSON
-                            })
-                            .then(result => {
-                                console.log(result.data)
-                            })
-                            .catch(error => {
-                                console.log(error)
-                            })
+                            if(input.checked) {        
+                                await axios
+                                .post(api + 'answers/', {
+                                    id_question:  this.surveyList[j].id,
+                                    id_student: this.id_student,
+                                    id_tutor: this.id_tutor,
+                                    date: now2,
+                                    answer: input.value
+                                })
+                                .then(result => {
+                                    console.log(result.data)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
                             }
                         }
                     }
@@ -153,18 +141,14 @@ export default defineComponent({
                     for(let i = 1; i < 6; i++) {
                         index = 'scaleAnswer' + i.toString() + j.toString()
                         input = document.getElementById(index) as HTMLInputElement;
-                        if(input.checked) {
-                            const answerJSON = JSON.stringify({
-                                value: input.value
-                            })
-                            
+                        if(input.checked) {                            
                             await axios
                             .post(api + 'answers/', {
                                 id_question:  this.surveyList[j].id,
                                 id_student: this.id_student,
                                 id_tutor: this.id_tutor,
                                 date: now2,
-                                answer: answerJSON
+                                answer: input.value
                             })
                             .then(result => {
                                 console.log(result.data)
@@ -176,22 +160,15 @@ export default defineComponent({
                     }
                 } else {
                     index = 'formFile' + j.toString() 
-                    input = document.getElementById(index) as HTMLInputElement;
                     let formData = new FormData();
-                    formData.append('value', this.fileObject)
-
-                    var object = {};
-                    formData.forEach((value, key) => object[key] = value);
-                    var json = JSON.stringify(object);
+                    formData.append('id_question', this.surveyList[j].id)
+                    formData.append('id_student', this.id_student)
+                    formData.append('id_tutor', this.id_tutor)
+                    formData.append('date', now2)
+                    formData.append('file', this.fileObject)
                     
                     await axios
-                    .post(api + 'answers/', {
-                        id_question:  this.surveyList[j].id,
-                        id_student: this.id_student,
-                        id_tutor: this.id_tutor,
-                        date: now2,
-                        answer: json
-                    })
+                    .post(api + 'answer_files/', formData)
                     .then(result => {
                         console.log(result.data)
                     })
@@ -200,6 +177,8 @@ export default defineComponent({
                     })
                 }
             }
+
+            router.push('/home')
         }
     }
 })
