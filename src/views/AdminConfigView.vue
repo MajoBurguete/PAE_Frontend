@@ -17,21 +17,23 @@
                 index: 0,
                 subjectSwitch: 0,
                 careerList: ["ITC", "IRS", "LTM", "LAD"],
-                adminList: ["Lorena Sanchez", "Karla Perez", "Tu mama", "Equis de"],
+                adminList: [],
                 subjectList:
                 [ {name: "Base de datos", id: "TC001", semester: "6", career:"ITC"},
                   {name: "Algoritmos avanzados", id: "TC002", semester: "3", career:"IRS"},
                   {name: "Internet de las cosas", id: "TC003", semester: "1", career:"LTM"},
-                ]
+                ],
+                createAdminName: '',
+                createAdminEmail: '',
+                createAdminPassword: '',
+                editAdminName: '',
+                createAdminMat: ''
             }
 
         },
         mounted() {
-            const admin = document.getElementById("admin-radio") as HTMLInputElement;
-            const subject = document.getElementById("subject-radio") as HTMLInputElement;
-            admin.checked = true;
-            subject.checked = true;
-            this.selection = this.adminList[0];
+            this.getAdminNames()
+            
         },
         computed: {
             changeTabC:  {
@@ -68,6 +70,21 @@
             }
         },
         methods: {
+            async getAdminNames() {
+                await axios
+                .get(api + 'admins/')
+                .then(result => {
+                    this.adminList = result.data
+                    console.log(this.adminList)
+                })
+
+                const admin = document.getElementById("admin-radio") as HTMLInputElement;
+                const subject = document.getElementById("subject-radio") as HTMLInputElement;
+                admin.checked = true;
+                subject.checked = true;
+                this.selection = this.adminList[0];
+            },
+
             toAdminTab() {
                 this.selection = this.adminList[0];
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
@@ -172,7 +189,7 @@
                 if (this.changeTabC == "admin"){
                     const list = document.getElementsByClassName('admin-list');
                     list[i].checked = true;
-                    this.selection = this.adminList[i];
+                    this.selection = this.adminList[i].id__first_name;
                 }
                 else {
                     this.selection = this.subjectList[i].name;
@@ -184,9 +201,39 @@
                 this.adminList[this.updateIndex] = input.value;
             },
             createAdmin() {
-                const input = document.getElementById('admin-new-name') as HTMLInputElement;
+                //const input = document.getElementById('admin-new-name') as HTMLInputElement;
                 const list = document.getElementsByClassName('form-control');
-                this.adminList.push(input.value)
+
+                axios
+                .post(api + 'users/', {
+                    username: this.createAdminMat,
+                    password: this.createAdminPassword,
+                    email: this.createAdminEmail,
+                    first_name: this.createAdminName
+                })
+                .then(result => {
+                    const userNumId = result.data.id
+                    axios
+                    .post(api + "pae_users/", {
+                        id: userNumId,
+                        semester: 0,
+                        career: 'ITC',
+                        user_type: 2,
+                        status: 0
+                    })
+                    .then(result => {
+                        console.log(result.data);
+                        localStorage.setItem("displayToast", "signupStudent");
+                        this.$forceUpdate()
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                //this.adminList.push(input.value)
                 for(let i = 0; i < list.length; i++){
                     list[i].value = ""
                 }
@@ -236,9 +283,9 @@
 </script>
 
 <template>
-    <!-- <header>
+    <header>
         <NavBar/>
-    </header> -->
+    </header>
     <body>
         <h1 id="table-title-tab"> Administradores </h1>
         <div class="page-container">
@@ -260,7 +307,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input admin-list" type="radio" name="form-admin-btn" id="admin-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> {{admin}} </h2>
+                                            <h2 class="filter-h1-admin"> {{admin.id__first_name}} </h2>
                                         </label>
                                     </div>
                                     <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#name-modal" @click="assignDelete(i)"></button>
@@ -304,7 +351,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="delete-modal-content">
                     <h1 class="h1-modal"> Eliminar: </h1>
-                    <h1 class="user-h1-modal"> {{selection}} </h1>
+                    <h1 class="user-h1-modal"> {{selection.id__first_name}} </h1>
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn"> No, regresar </button>
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="delete-action-btn" @click="deleteItem"> Si, eliminar </button>
@@ -327,12 +374,14 @@
         <div class="modal fade" id="create-admin-modal" tabindex="-1" aria-labelledby="createAdminModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="create-admin-modal-content">
-                    <h1 class="h2-modal"> Nombre</h1>
-                    <input type="text" class="form-control" id="admin-new-name" placeholder="Nombre Apellido" minlength="1" maxlength="100" required>
-                    <h1 class="h2-modal"> Correo</h1>
-                    <input type="email" class="form-control" id="admin-email" placeholder="A0XXXXXXX@correo.com" minlength="1" maxlength="100" required>
-                    <h1 class="h2-modal"> Contraseña</h1>
-                    <input type="password" class="form-control" id="admin-password" placeholder="Contraseña" minlength="1" maxlength="100" required>
+                    <h1 class="h2-modal"> Nombre </h1>
+                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminName" placeholder="Nombre Apellido" minlength="1" maxlength="100" required>
+                    <h1 class="h2-modal"> Matrícula o nómina </h1>
+                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminMat" placeholder="A0XXXXXXX" minlength="1" maxlength="10" required>
+                    <h1 class="h2-modal"> Correo </h1>
+                    <input type="email" class="form-control" id="admin-email" v-model="createAdminEmail" placeholder="A0XXXXXXX@correo.com" minlength="1" maxlength="100" required>
+                    <h1 class="h2-modal"> Contraseña </h1>
+                    <input type="password" class="form-control" id="admin-password" v-model="createAdminPassword" placeholder="Contraseña" minlength="1" maxlength="100" required>
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="createAdmin"> Guardar</button>
