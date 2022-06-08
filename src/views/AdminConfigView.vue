@@ -3,7 +3,6 @@
     import router from "../router"
     import axios from "axios";
     import NavBar from "../components/Navbar.vue";
-    import ScheduleItem from "../components/items/Schedule-Item.vue";
 
     const api = 'http://localhost:8000/api/'
 
@@ -14,10 +13,25 @@
         data(){
             return{
                 tab:"admin",
-                adminList: [],
-                subjectList:[]
+                selection:"",
+                index: 0,
+                subjectSwitch: 0,
+                careerList: ["ITC", "IRS", "LTM", "LAD"],
+                adminList: ["Lorena Sanchez", "Karla Perez", "Tu mama", "Equis de"],
+                subjectList:
+                [ {name: "Base de datos", id: "TC001", semester: "6", career:"ITC"},
+                  {name: "Algoritmos avanzados", id: "TC002", semester: "3", career:"IRS"},
+                  {name: "Internet de las cosas", id: "TC003", semester: "1", career:"LTM"},
+                ]
             }
 
+        },
+        mounted() {
+            const admin = document.getElementById("admin-radio") as HTMLInputElement;
+            const subject = document.getElementById("subject-radio") as HTMLInputElement;
+            admin.checked = true;
+            subject.checked = true;
+            this.selection = this.adminList[0];
         },
         computed: {
             changeTabC:  {
@@ -43,10 +57,19 @@
                 set(val){
                     this.subjectList = val;
                 }
+            },
+            updateIndex:{
+                get(){
+                    return this.index;
+                },
+                set(val){
+                    this.subjectList = val;
+                }
             }
         },
         methods: {
             toAdminTab() {
+                this.selection = this.adminList[0];
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
                 const input = document.getElementById('search-admin-input') as HTMLInputElement;
@@ -56,10 +79,10 @@
 
                 input.placeholder = "Busca al administrador.."
 
-                subjectsTab.style.backgroundColor = "#D9EFF4";
-                subjectsTab.style.color = "#7FA0A8";
+                subjectsTab.style.backgroundColor = "#E1F0EA";
+                subjectsTab.style.color = "#6F9492";
 
-                adminTab.style.backgroundColor = "#9EC7D1";
+                adminTab.style.backgroundColor = "#9FD5D2";
                 adminTab.style.color = "white";
 
                 adminsListT.style.display = "flex"
@@ -69,10 +92,9 @@
 
                 this.changeTabC = "admin"
 
-                //this.clickStudent(0);
-
             },
             toSubjectsTab() {
+                this.selection = this.subjectList[0].name;
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
                 const input = document.getElementById('search-subject-input') as HTMLInputElement;
@@ -82,10 +104,10 @@
 
                 input.placeholder = "Busca la unidad de formación.."
 
-                adminTab.style.backgroundColor = "#D9EFF4";
-                adminTab.style.color = "#7FA0A8";
+                adminTab.style.backgroundColor = "#E1F0EA";
+                adminTab.style.color = "#6F9492";
 
-                subjectsTab.style.backgroundColor = "#9EC7D1";
+                subjectsTab.style.backgroundColor = "#9FD5D2";
                 subjectsTab.style.color = "white";
 
                 subjectsListT.style.display = "flex"
@@ -94,8 +116,6 @@
                 title.textContent = "Unidades de Formación"
 
                 this.changeTabC = "subject"
-                //this.clickTutor(0);
-
             },
             searchElements(){
                 var input, td, temp, h1, i, j, filter,  txtValue;
@@ -134,15 +154,91 @@
                         }
                     }
                 }
+            },
+            deleteItem() {
+                const list = document.getElementsByClassName('subject-list');
+                if (this.changeTabC == "admin"){
+                    const list = document.getElementsByClassName('admin-list');
+                    this.adminList.splice(this.updateIndex,1);
+                }
+                else {
+                    this.adminList.splice(this.updateIndex,1);
+                }
+            },
+            assignDelete(i: number) {
+                console.log(i)
+                this.index = i;
+                const list = document.getElementsByClassName('subject-list');
+                if (this.changeTabC == "admin"){
+                    const list = document.getElementsByClassName('admin-list');
+                    list[i].checked = true;
+                    this.selection = this.adminList[i];
+                }
+                else {
+                    this.selection = this.subjectList[i].name;
+                    list[i].checked = true;
+                }
+            },
+            editAdmin() {
+                const input = document.getElementById('admin-name') as HTMLInputElement;
+                this.adminList[this.updateIndex] = input.value;
+            },
+            createAdmin() {
+                const input = document.getElementById('admin-new-name') as HTMLInputElement;
+                const list = document.getElementsByClassName('form-control');
+                this.adminList.push(input.value)
+                for(let i = 0; i < list.length; i++){
+                    list[i].value = ""
+                }
+            },
+            saveSubject() {
+                const name = document.getElementById('subject-new-name') as HTMLInputElement;
+                const id = document.getElementById('subject-id') as HTMLInputElement;
+                const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
+                const career = document.getElementById('subject-new-career') as HTMLInputElement;
+                const list = document.getElementsByClassName('form-control');
+                if (this.subjectSwitch == 1) {
+                    this.subjectList[this.updateIndex].name = name.value
+                    this.subjectList[this.updateIndex].semester = semester.value
+                    this.subjectList[this.updateIndex].career = career.value
+                }
+                else {
+                    this.subjectList.push({name: name.value, id: id.value, semester: semester.value, career: career.value})
+                }
+            },
+            setSubjectModal(index: number) {
+                const id = document.getElementById('subject-id') as HTMLInputElement;
+                const name = document.getElementById('subject-new-name') as HTMLInputElement;
+                const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
+                const career = document.getElementById('subject-new-career') as HTMLInputElement;
+                const list = document.getElementsByClassName('form-control');
+                if (index == 0){
+                    this.subjectSwitch = 1;
+                    id.disabled = true
+                    id.value = this.subjectList[this.updateIndex].id
+                    name.value = this.subjectList[this.updateIndex].name
+                    semester.value = this.subjectList[this.updateIndex].semester
+                    career.value = this.subjectList[this.updateIndex].career
+                }
+                else {
+                    this.subjectSwitch = 0;
+                    id.disabled = false
+                    for(let i = 0; i < list.length; i++){
+                        list[i].value = ""
+                    }
+                    semester.value = "1"
+                    career.value = this.careerList[0]
+                    }
             }
+
         }
     })
 </script>
 
 <template>
-    <header>
+    <!-- <header>
         <NavBar/>
-    </header>
+    </header> -->
     <body>
         <h1 id="table-title-tab"> Administradores </h1>
         <div class="page-container">
@@ -159,66 +255,22 @@
                             <input type="text" id="search-admin-input" v-on:keyup="searchElements" placeholder="Busca al administrador..">
                         </thead>
                         <tbody class="style-2">
-                            <tr class="table-data-admin">
+                            <tr class="table-data-admin" v-for="(admin, i) in adminList" :key="i">
                                 <td> 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
+                                        <input class="form-check-input admin-list" type="radio" name="form-admin-btn" id="admin-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> Miau </h2>
+                                            <h2 class="filter-h1-admin"> {{admin}} </h2>
                                         </label>
                                     </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-admin">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> Miu </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-admin">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> Mio </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-admin">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> MiaO </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-admin">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-admin-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> Miau </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
+                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#name-modal" @click="assignDelete(i)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="admin-btn-container">
-                        <button class="table-button"> Crear administrador </button>
-                        <button class="table-button delete"> Eliminar administrador </button>
+                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#create-admin-modal"> Crear administrador </button>
+                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal"> Eliminar administrador </button>
                     </div>
                 </div>
                 <div class="table-scroll" id="subjects-list">
@@ -227,49 +279,101 @@
                             <input type="text" id="search-subject-input" v-on:keyup="searchElements" placeholder="Busca la unidad de formación..">
                         </thead>
                         <tbody class="style-2">
-                            <tr class="table-data-subject">
+                            <tr class="table-data-subject" v-for="(subject, i) in subjectList" :key="i">
                                 <td> 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
+                                        <input class="form-check-input subject-list" type="radio" name="form-subject-btn" id="subject-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-subject"> owo </h2>
+                                            <h2 class="filter-h1-subject"> {{subject.name}} </h2>
                                         </label>
                                     </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-subject">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-subject"> owu </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
-                                </td>
-                            </tr>
-                            <tr class="table-data-subject">
-                                <td> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="form-subject-btn" >
-                                        <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-subject"> uwo </h2>
-                                        </label>
-                                    </div>
-                                    <button class="edit-btn"></button>
+                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#subject-modal" @click="assignDelete(i) , setSubjectModal(0)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="subject-btn-container">
-                        <button class="table-button"> Crear UF </button>
-                        <button class="table-button delete"> Eliminar UF </button>
+                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#subject-modal" @click="setSubjectModal(1)"> Crear UF </button>
+                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal"> Eliminar UF </button>
                     </div>
                 </div>
                 <button id="edit-survey-button"> Editar encuesta </button>
             </div>
         </div>
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="delete-modal-content">
+                    <h1 class="h1-modal"> Eliminar: </h1>
+                    <h1 class="user-h1-modal"> {{selection}} </h1>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn"> No, regresar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="delete-action-btn" @click="deleteItem"> Si, eliminar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="name-modal" tabindex="-1" aria-labelledby="nameModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="name-modal-content">
+                    <h1 class="h2-modal"> Nombre: </h1>
+                    <input type="text" class="form-control" id="admin-name" :value="selection" minlength="1" maxlength="100" required>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="editAdmin"> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="create-admin-modal" tabindex="-1" aria-labelledby="createAdminModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="create-admin-modal-content">
+                    <h1 class="h2-modal"> Nombre</h1>
+                    <input type="text" class="form-control" id="admin-new-name" placeholder="Nombre Apellido" minlength="1" maxlength="100" required>
+                    <h1 class="h2-modal"> Correo</h1>
+                    <input type="email" class="form-control" id="admin-email" placeholder="A0XXXXXXX@correo.com" minlength="1" maxlength="100" required>
+                    <h1 class="h2-modal"> Contraseña</h1>
+                    <input type="password" class="form-control" id="admin-password" placeholder="Contraseña" minlength="1" maxlength="100" required>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="createAdmin"> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="subject-modal" tabindex="-1" aria-labelledby="createsubjectModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content" id="subject-modal-content">
+                        <h1 class="h2-modal"> Nombre</h1>
+                        <input type="text" class="form-control" id="subject-new-name" placeholder="Nombre De Materia" minlength="1" maxlength="100" required>
+                        <h1 class="h2-modal"> Clave</h1>
+                        <input type="text" class="form-control" id="subject-id" placeholder="TC1003B"  minlength="1" maxlength="100" required>
+                        <h1 class="h2-modal"> Semestre</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject-new-semester" required>
+                                <option value="1">1º</option>
+                                <option value="2">2º</option>
+                                <option value="3">3º</option>
+                                <option value="4">4º</option>
+                                <option value="5">5º</option>
+                                <option value="6">6º</option>
+                                <option value="7">7º</option>
+                                <option value="8">8º</option>
+                                <option value="9">9º</option>
+                            </select>
+                        </div>
+                        <h1 class="h2-modal"> Carrera</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject-new-career" required>
+                                <option v-for="(career, i) in careerList" :key="i" :value="career">{{ career }}</option>
+                            </select>
+                        </div>
+                        <div class="modal-button-container">
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="saveSubject"> Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </body>
 </template>
 
@@ -342,14 +446,16 @@
         padding: 0 2vw 0 0;
     }
 
-    #subjects-tab{
-        border-radius: 8px 8px 0 0;
-    }
-
     #admin-tab{
         border-radius: 8px 8px 0 0;
-        background-color: #9EC7D1;
+        background-color: #9FD5D2;
         color: white;
+    }
+
+    #subjects-tab{
+        border-radius: 8px 8px 0 0;
+        background-color: #E1F0EA;
+        color: #6F9492;
     }
 
     #subjects-list{
@@ -422,6 +528,20 @@
     .form-check-input:checked{
         background-color: #6F9492;
         
+    }
+    /* Text boxes and dropdowns */
+    .form-control, .form-select {
+        font-family: "Catamaran";
+        font-weight: normal;
+        font-size: 2.5vh;
+        padding: 0.25vh 0vw 0 0.5vw;
+        border-color: black;
+        border-width: 0.25vh;
+        border-radius: 0.65vh;
+        height: 6.5vh;
+        width: 30vw;
+        padding: 0 0vw 0 0.5vw;
+        margin: 0 0vw 0 0vw;
     }
 
     .form-check-input:hover{
@@ -510,7 +630,78 @@
         margin: 3vh 0 0 0;
         background-color: #6F9492;
         color: white;
-        border-radius: 5px;
+        border-radius: 15px;
+        padding: 1vh 3vw;
+    }
+
+    /* Modal */
+    
+    .modal-content{
+        gap: 1.5vh;
+        padding: 4vh 2.5vw;
+        background-color: #E1F0EA;
+        border-radius: 10px;
+        border-color: #96BECC;
+    }
+    #delete-modal-content {
+        align-items: center;
+    }
+    #name-modal-content {
+        align-items: left;
+    }
+
+    .modal-lg{
+        width: 35vw;
+    }
+
+    .h1-modal,
+    .user-h1-modal{
+        font-size: 4.5vh;
+        margin: 0 0 1.5vh 0;
+    }
+    .h2-modal {
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 2.5vh;
+        margin: 0;
+        color: #26408B;
+    }
+
+    .user-h1-modal{
+        font-weight: bold;
+        color: #57716F;
+    }
+
+    .modal-button-container{
+        width: 30vw;
+        display: flex;
+        justify-content: space-around;
+        margin-top: 2vh;
+    }
+
+    .option-button{
+        font-family: "Ubuntu";
+        font-weight: normal;
+        font-size: 2.6vh;
+        color: white;
+        border-radius: 8px;
+        width: 12vw;
+        padding: 1vh 1.5vw;
+    }
+
+    #cancel-action-btn{
+        background-color: #96CCC9;
+    }
+
+    #delete-action-btn{
+        background-color: #F65E0B;
+    }
+    #cancel-action-btn-blue{
+        background-color: #9EB2ED;
+    }
+
+    #save-action-btn{
+        background-color: #365295;
     }
 
 </style>
