@@ -3,7 +3,7 @@
     import { defineComponent, ref } from "vue";
     import router from "../router"
     import ScheduleItem from "../components/items/Schedule-Item.vue";
-    import ClassModal from '@/components/items/Class-Modal.vue';
+    import ClassModal from '../components/items/Class-Modal.vue';
     import NavBar from "../components/Navbar.vue"
 
     const api = 'http://localhost:8000/api/'

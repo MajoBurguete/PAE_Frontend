@@ -108,18 +108,17 @@
 </script>
 
 <template>
-    <body>
+    <div class="body-container">
         <ClassFilter :cancelClick="onClickCancelBtn" :saveClick="onClickSaveBtn" v-on:cancel-btn="cancelEvent" v-on:save-btn="saveEvent" v-on:disable-btn="disableButton" v-on:enable-btn="enableButton" v-on:update-made="updateEvent" :callForceUpdate="changeUpdate"/>
         <div class="button-container">
             <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close" @click="clickCancel"> Cancelar </button>
             <button id="save-button"  data-bs-dismiss="modal" aria-label="Close" @click="clickSave" :disabled="isDisabled"> Guardar cambios </button>
         </div>
-    </body>
+    </div>
 </template>
 
 <style scoped>
-    body{
-        width: inherit;
+    .body-container{
         display: flex;
         flex-direction: column;
         align-items: center;
