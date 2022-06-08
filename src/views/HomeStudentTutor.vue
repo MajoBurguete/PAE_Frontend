@@ -350,8 +350,7 @@ export default defineComponent({
                 } else {
                     nextWeekHours.push(dateString)
                 }
-
-
+                
                 sk.push(dateString)
             }
 
