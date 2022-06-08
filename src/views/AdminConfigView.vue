@@ -15,27 +15,37 @@
                 tab:"admin",
                 selection:"",
                 index: 0,
+                disableDeleteAdminBtn: false,
                 subjectSwitch: 0,
-                careerList: ["ITC", "IRS", "LTM", "LAD"],
+                careerList: [],
                 adminList: [],
-                subjectList:
-                [ {name: "Base de datos", id: "TC001", semester: "6", career:"ITC"},
-                  {name: "Algoritmos avanzados", id: "TC002", semester: "3", career:"IRS"},
-                  {name: "Internet de las cosas", id: "TC003", semester: "1", career:"LTM"},
-                ],
+                subjectList: [],
                 createAdminName: '',
                 createAdminEmail: '',
                 createAdminPassword: '',
+                createAdminMat: '',
                 editAdminName: '',
-                createAdminMat: ''
+                subjectName: '',
+                subjectID: '',
+                subjectSemester: '',
+                subjectCareer: ''
             }
 
         },
         mounted() {
             this.getAdminNames()
-            
+            this.getSubjectNames()
+            this.getCareers()
         },
         computed: {
+            updateDeleteAdminBtn: {
+                get() {
+                    return this.disableDeleteAdminBtn;
+                },
+                set(val) {
+                    this.disableDeleteAdminBtn = val;
+                }
+            },
             changeTabC:  {
                 get(){
                     return this.tab;
@@ -60,6 +70,22 @@
                     this.subjectList = val;
                 }
             },
+            updateCareerList: {
+                get() {
+                    return this.careerList;
+                },
+                set(val) {
+                    this.careerList = val;
+                }
+            },
+            updateSelection: {
+                get() {
+                    return this.selection;
+                },
+                set(val) {
+                    this.selection = val;
+                }
+            },
             updateIndex:{
                 get(){
                     return this.index;
@@ -78,15 +104,41 @@
                     console.log(this.adminList)
                 })
 
+                if(this.adminList.length < 2) {
+                    this.disableDeleteAdminBtn = true
+                }
+                else {
+                    this.disableDeleteAdminBtn = false
+                }
                 const admin = document.getElementById("admin-radio") as HTMLInputElement;
-                const subject = document.getElementById("subject-radio") as HTMLInputElement;
                 admin.checked = true;
+                this.assignDelete(0)
+            },
+
+            async getSubjectNames() {
+                await axios
+                    .get(api + 'subjects/')
+                    .then(result => {
+                        this.subjectList = result.data
+                        console.log(this.subjectList)
+                    })
+
+                const subject = document.getElementById("subject-radio") as HTMLInputElement;
                 subject.checked = true;
-                this.selection = this.adminList[0];
+                this.assignDelete(0)
+            },
+
+            async getCareers() {
+                await axios
+                    .get(api + 'careers/')
+                    .then(result => {
+                        this.careerList = result.data
+                        console.log(this.careerList)
+                    })
             },
 
             toAdminTab() {
-                this.selection = this.adminList[0];
+                this.selection = this.adminList[0].id__first_name;
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
                 const input = document.getElementById('search-admin-input') as HTMLInputElement;
@@ -108,6 +160,7 @@
                 title.textContent = "Administradores"
 
                 this.changeTabC = "admin"
+                this.assignDelete(0)
 
             },
             toSubjectsTab() {
@@ -133,6 +186,7 @@
                 title.textContent = "Unidades de Formación"
 
                 this.changeTabC = "subject"
+                this.assignDelete(0)
             },
             searchElements(){
                 var input, td, temp, h1, i, j, filter,  txtValue;
@@ -172,18 +226,36 @@
                     }
                 }
             },
-            deleteItem() {
-                const list = document.getElementsByClassName('subject-list');
+            async deleteItem() {
                 if (this.changeTabC == "admin"){
-                    const list = document.getElementsByClassName('admin-list');
-                    this.adminList.splice(this.updateIndex,1);
+                    await axios
+                    .delete(api + "users/" + this.adminList[this.index].id)
+                    .then(result => {
+                        console.log(result.data)
+                        if (this.adminList[this.index].id == localStorage.getItem("userID")) {
+                            router.push("/")
+                        }
+                        else {
+                            this.getAdminNames()
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
                 }
                 else {
-                    this.adminList.splice(this.updateIndex,1);
+                    await axios
+                        .delete(api + "subjects/" + this.subjectList[this.index].id)
+                        .then(result => {
+                            console.log(result.data)
+                            this.getSubjectNames()
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                 }
             },
             assignDelete(i: number) {
-                console.log(i)
                 this.index = i;
                 const list = document.getElementsByClassName('subject-list');
                 if (this.changeTabC == "admin"){
@@ -192,19 +264,35 @@
                     this.selection = this.adminList[i].id__first_name;
                 }
                 else {
-                    this.selection = this.subjectList[i].name;
                     list[i].checked = true;
+                    this.selection = this.subjectList[i];
                 }
             },
-            editAdmin() {
+            async editAdmin() {
                 const input = document.getElementById('admin-name') as HTMLInputElement;
-                this.adminList[this.updateIndex] = input.value;
+                const item = this.adminList[this.index]
+                var info = {
+                    'first_name': this.editAdminName,
+                    'email': item.id__email,
+                    'password': item.id__password,
+                    'username': item.id__username
+                }
+                await axios
+                .put(api + "users/" + item.id + "/", info)
+                .then(result => {
+                    console.log(result.data)
+                    this.editAdminName = ''
+                    this.getAdminNames()
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             },
-            createAdmin() {
+            async createAdmin() {
                 //const input = document.getElementById('admin-new-name') as HTMLInputElement;
                 const list = document.getElementsByClassName('form-control');
 
-                axios
+                await axios
                 .post(api + 'users/', {
                     username: this.createAdminMat,
                     password: this.createAdminPassword,
@@ -225,6 +313,7 @@
                         console.log(result.data);
                         localStorage.setItem("displayToast", "signupStudent");
                         this.$forceUpdate()
+                        this.getAdminNames()
                     })
                     .catch(error => {
                         console.log(error)
@@ -238,20 +327,47 @@
                     list[i].value = ""
                 }
             },
-            saveSubject() {
+            async saveSubject() {
                 const name = document.getElementById('subject-new-name') as HTMLInputElement;
                 const id = document.getElementById('subject-id') as HTMLInputElement;
                 const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
                 const career = document.getElementById('subject-new-career') as HTMLInputElement;
                 const list = document.getElementsByClassName('form-control');
+                let subjectCareerList = []
+                var info = {
+                    'id': this.selection.id,
+                    'name': this.subjectName,
+                    'id_career': subjectCareerList,
+                    'semester': this.subjectSemester
+                }
+                subjectCareerList.push(this.subjectCareer)
                 if (this.subjectSwitch == 1) {
-                    this.subjectList[this.updateIndex].name = name.value
-                    this.subjectList[this.updateIndex].semester = semester.value
-                    this.subjectList[this.updateIndex].career = career.value
+                    axios
+                    .put(api + "subjects/" + this.selection.id + "/", info)
+                    .then(result => {
+                        console.log(result.data)
+                        this.getSubjectNames()
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
                 }
                 else {
-                    this.subjectList.push({name: name.value, id: id.value, semester: semester.value, career: career.value})
+                    info.id = this.subjectID
+                    axios
+                    .post(api + "subjects/", info)
+                    .then(result => {
+                        console.log(result.data)
+                        this.getSubjectNames()
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
                 }
+                this.subjectName = ''
+                this.subjectCareer = ''
+                this.subjectSemester = ''
+                this.subjectID = ''
             },
             setSubjectModal(index: number) {
                 const id = document.getElementById('subject-id') as HTMLInputElement;
@@ -262,20 +378,24 @@
                 if (index == 0){
                     this.subjectSwitch = 1;
                     id.disabled = true
-                    id.value = this.subjectList[this.updateIndex].id
-                    name.value = this.subjectList[this.updateIndex].name
-                    semester.value = this.subjectList[this.updateIndex].semester
-                    career.value = this.subjectList[this.updateIndex].career
+                    id.placeholder = this.selection.id
+                    name.placeholder = this.selection.name
+                    semester.placeholder = this.selection.semester
+                    career.placeholder = this.selection.id_career[0]
                 }
                 else {
                     this.subjectSwitch = 0;
                     id.disabled = false
+                    id.placeholder = "XXXXXXX"
+                    name.placeholder = "Nombre De Materia"
+                    semester.placeholder = this.selection.semester
+                    career.placeholder = this.selection.id_career[0]
                     for(let i = 0; i < list.length; i++){
                         list[i].value = ""
                     }
-                    semester.value = "1"
-                    career.value = this.careerList[0]
-                    }
+                    semester.value = ""
+                    career.value = ""
+                }
             }
 
         }
@@ -284,8 +404,9 @@
 
 <template>
     <header>
-        <NavBar/>
+        <NavBar />
     </header>
+
     <body>
         <h1 id="table-title-tab"> Administradores </h1>
         <div class="page-container">
@@ -299,49 +420,59 @@
                 <div class="table-scroll" id="admin-list">
                     <table class="table table-bordered" id="table">
                         <thead>
-                            <input type="text" id="search-admin-input" v-on:keyup="searchElements" placeholder="Busca al administrador..">
+                            <input type="text" id="search-admin-input" v-on:keyup="searchElements"
+                                placeholder="Busca al administrador..">
                         </thead>
                         <tbody class="style-2">
                             <tr class="table-data-admin" v-for="(admin, i) in adminList" :key="i">
-                                <td> 
+                                <td>
                                     <div class="form-check">
-                                        <input class="form-check-input admin-list" type="radio" name="form-admin-btn" id="admin-radio" @click="assignDelete(i)">
+                                        <input class="form-check-input admin-list" type="radio" name="form-admin-btn"
+                                            id="admin-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
                                             <h2 class="filter-h1-admin"> {{admin.id__first_name}} </h2>
                                         </label>
                                     </div>
-                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#name-modal" @click="assignDelete(i)"></button>
+                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#name-modal"
+                                        @click="assignDelete(i)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="admin-btn-container">
-                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#create-admin-modal"> Crear administrador </button>
-                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal"> Eliminar administrador </button>
+                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#create-admin-modal"> Crear
+                            administrador </button>
+                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal" :disabled="disableDeleteAdminBtn">
+                            Eliminar administrador </button>
                     </div>
                 </div>
                 <div class="table-scroll" id="subjects-list">
                     <table class="table table-bordered" id="table">
                         <thead>
-                            <input type="text" id="search-subject-input" v-on:keyup="searchElements" placeholder="Busca la unidad de formación..">
+                            <input type="text" id="search-subject-input" v-on:keyup="searchElements"
+                                placeholder="Busca la unidad de formación..">
                         </thead>
                         <tbody class="style-2">
                             <tr class="table-data-subject" v-for="(subject, i) in subjectList" :key="i">
-                                <td> 
+                                <td>
                                     <div class="form-check">
-                                        <input class="form-check-input subject-list" type="radio" name="form-subject-btn" id="subject-radio" @click="assignDelete(i)">
+                                        <input class="form-check-input subject-list" type="radio"
+                                            name="form-subject-btn" id="subject-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
                                             <h2 class="filter-h1-subject"> {{subject.name}} </h2>
                                         </label>
                                     </div>
-                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#subject-modal" @click="assignDelete(i) , setSubjectModal(0)"></button>
+                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#subject-modal"
+                                        @click="assignDelete(i), setSubjectModal(0)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="subject-btn-container">
-                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#subject-modal" @click="setSubjectModal(1)"> Crear UF </button>
-                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal"> Eliminar UF </button>
+                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#subject-modal"
+                            @click="setSubjectModal(1)"> Crear UF </button>
+                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal">
+                            Eliminar UF </button>
                     </div>
                 </div>
                 <button id="edit-survey-button"> Editar encuesta </button>
@@ -351,10 +482,13 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="delete-modal-content">
                     <h1 class="h1-modal"> Eliminar: </h1>
-                    <h1 class="user-h1-modal"> {{selection.id__first_name}} </h1>
-                    <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn"> No, regresar </button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="delete-action-btn" @click="deleteItem"> Si, eliminar </button>
+                    <h1 class="user-h1-modal" v-if="this.changeTabC==='admin'"> {{selection}} </h1>
+                    <h1 class="user-h1-modal" v-else> {{selection.name}} </h1>
+                    <div class=" modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn">
+                            No, regresar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="delete-action-btn"
+                            @click="deleteItem"> Sí, eliminar </button>
                     </div>
                 </div>
             </div>
@@ -363,66 +497,81 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="name-modal-content">
                     <h1 class="h2-modal"> Nombre: </h1>
-                    <input type="text" class="form-control" id="admin-name" :value="selection" minlength="1" maxlength="100" required>
+                    <input type="text" class="form-control" id="admin-name" v-model="editAdminName"
+                        :placeholder="selection" minlength="1" maxlength="100" required>
                     <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="editAdmin"> Guardar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
+                            id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
+                            @click="editAdmin"> Guardar</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="create-admin-modal" tabindex="-1" aria-labelledby="createAdminModal" aria-hidden="true">
+        <div class="modal fade" id="create-admin-modal" tabindex="-1" aria-labelledby="createAdminModal"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="create-admin-modal-content">
                     <h1 class="h2-modal"> Nombre </h1>
-                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminName" placeholder="Nombre Apellido" minlength="1" maxlength="100" required>
+                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminName"
+                        placeholder="Nombre Completo" minlength="1" maxlength="100" required>
                     <h1 class="h2-modal"> Matrícula o nómina </h1>
-                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminMat" placeholder="A0XXXXXXX" minlength="1" maxlength="10" required>
+                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminMat"
+                        placeholder="L0XXXXXXX" minlength="1" maxlength="10" required>
                     <h1 class="h2-modal"> Correo </h1>
-                    <input type="email" class="form-control" id="admin-email" v-model="createAdminEmail" placeholder="A0XXXXXXX@correo.com" minlength="1" maxlength="100" required>
+                    <input type="email" class="form-control" id="admin-email" v-model="createAdminEmail"
+                        placeholder="L0XXXXXXX@tec.mx" minlength="1" maxlength="100" required>
                     <h1 class="h2-modal"> Contraseña </h1>
-                    <input type="password" class="form-control" id="admin-password" v-model="createAdminPassword" placeholder="Contraseña" minlength="1" maxlength="100" required>
+                    <input type="password" class="form-control" id="admin-password" v-model="createAdminPassword"
+                        placeholder="Contraseña" minlength="1" maxlength="100" required>
                     <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="createAdmin"> Guardar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
+                            id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
+                            @click="createAdmin"> Guardar</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="subject-modal" tabindex="-1" aria-labelledby="createsubjectModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content" id="subject-modal-content">
-                        <h1 class="h2-modal"> Nombre</h1>
-                        <input type="text" class="form-control" id="subject-new-name" placeholder="Nombre De Materia" minlength="1" maxlength="100" required>
-                        <h1 class="h2-modal"> Clave</h1>
-                        <input type="text" class="form-control" id="subject-id" placeholder="TC1003B"  minlength="1" maxlength="100" required>
-                        <h1 class="h2-modal"> Semestre</h1>
-                        <div class="input-group">
-                            <select class="form-select" id="subject-new-semester" required>
-                                <option value="1">1º</option>
-                                <option value="2">2º</option>
-                                <option value="3">3º</option>
-                                <option value="4">4º</option>
-                                <option value="5">5º</option>
-                                <option value="6">6º</option>
-                                <option value="7">7º</option>
-                                <option value="8">8º</option>
-                                <option value="9">9º</option>
-                            </select>
-                        </div>
-                        <h1 class="h2-modal"> Carrera</h1>
-                        <div class="input-group">
-                            <select class="form-select" id="subject-new-career" required>
-                                <option v-for="(career, i) in careerList" :key="i" :value="career">{{ career }}</option>
-                            </select>
-                        </div>
-                        <div class="modal-button-container">
-                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"> Cancelar</button>
-                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn" @click="saveSubject"> Guardar</button>
-                        </div>
+        <div class="modal fade" id="subject-modal" tabindex="-1" aria-labelledby="createsubjectModal"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="subject-modal-content">
+                    <h1 class="h2-modal"> Nombre</h1>
+                    <input type="text" class="form-control" id="subject-new-name" v-model="subjectName" minlength="1"
+                        maxlength="100" required>
+                    <h1 class="h2-modal"> Clave</h1>
+                    <input type="text" class="form-control" id="subject-id" v-model="subjectID" minlength="1"
+                        maxlength="100" required>
+                    <h1 class="h2-modal"> Semestre</h1>
+                    <div class="input-group">
+                        <select class="form-select" id="subject-new-semester" v-model="subjectSemester" required>
+                            <option value="1">1º</option>
+                            <option value="2">2º</option>
+                            <option value="3">3º</option>
+                            <option value="4">4º</option>
+                            <option value="5">5º</option>
+                            <option value="6">6º</option>
+                            <option value="7">7º</option>
+                            <option value="8">8º</option>
+                            <option value="9">9º</option>
+                        </select>
+                    </div>
+                    <h1 class="h2-modal"> Carrera</h1>
+                    <div class="input-group">
+                        <select class="form-select" id="subject-new-career" v-model="subjectCareer" required>
+                            <option v-for="(career, i) in careerList" :key="i">{{ career.id }}</option>
+                        </select>
+                    </div>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
+                            id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
+                            @click="saveSubject"> Guardar</button>
                     </div>
                 </div>
             </div>
+        </div>
     </body>
 </template>
 
