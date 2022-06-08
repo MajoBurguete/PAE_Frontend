@@ -246,11 +246,11 @@ export default defineComponent({
                 localStorage.setItem("classId", classSelected.value);
                 localStorage.setItem("className", classSelected.id);
 
-                let response = await axios.get(api + 'available_sessions/?subject='+ localStorage.getItem("classId"))
+                let response = await axios.get(api + 'available_sessions/?subject=' + localStorage.getItem("classId") + '&user='+localStorage.getItem("userID"))
                 this.sessions = response.data
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 for(var i=0; i<this.sessions.length; i++) {
-                    sk.push(this.sessions[i].id_tutor__schedule__day_hour)
+                    sk.push(this.sessions[i].day_hour)
                 } 
 
                 if(sk.length == 0){
