@@ -31,8 +31,9 @@ export default defineComponent({
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
         }
-
+        this.preSelectedClass = localStorage.getItem("classesSelected")
         localStorage.setItem("classesSelected", JSON.stringify([]))
+        console.log(this.preSelectedClass)
         
     },
     props: {
@@ -55,6 +56,7 @@ export default defineComponent({
     },
     data() {
         return {
+            preSelectedClass: [],
             subjectList: subjects,
             selectedClass: [],
             firstMount: true,
@@ -79,7 +81,7 @@ export default defineComponent({
                 } 
             }
 
-            let classNameId = localStorage.getItem("className");
+            let classNameId = JSON.parse(localStorage.getItem("className"));
 
             if(classNameId != null && classNameId.length != 0){
                 const inputCheck = document.getElementById(classNameId);
@@ -214,7 +216,7 @@ export default defineComponent({
 
         },
         fillChecks(){
-            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
+            const lcSelectedClass = this.preSelectedClass;
             console.log(lcSelectedClass);
             console.log(this.selectedClassC)
             const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
