@@ -24,7 +24,6 @@
                 hours: "",
                 classList: [],
                 tutorS: [],
-                selectedS: []
             }
         },
 
@@ -39,19 +38,38 @@
             },
             tutorSubjects: {
                 get(){
-                    return this.selectedS;
+                    return this.classList;
                 },
                 set(val){
-                    this.selectedS = val;
+                    this.classList = val;
                 }
             }
         },
 
         methods: {
+            async getSubjectsAndSchedule() {
+                const user = localStorage.getItem('userID')
+                await axios
+                .get(api + 'subjects_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.classList = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                await axios
+                .get(api + 'schedule_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.tutorSchedule = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            },
             async getTutorData() {
                 const user = localStorage.getItem('userID')
-
-                axios
+                await axios
                 .get(api + 'tutors/?tutor=' + user)
                 .then(result => {
                     this.usernameP = result.data[0].id__first_name
@@ -78,7 +96,7 @@
 
                 localStorage.setItem("classesSelected", JSON.stringify(sk))
 
-                axios
+                await axios
                 .get(api + 'service_hours/?tutor=' + user)
                 .then(result => {
                     this.hours = result.data[0].service_hours
@@ -87,7 +105,7 @@
                     console.log(error)
                 })
 
-                axios
+                await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
                     this.tutorSchedule = result.data
@@ -109,6 +127,10 @@
                         for(let i = 0; i < result.data.length; i++) {
                             axios
                             .delete(api + 'tutor_subjects/' + result.data[i].id)
+                            .then(result2 => {
+                                console.log(result2.data)
+                                this.getSubjectsAndSchedule()
+                            })
                             .catch(error => {
                                 console.log(error)
                             })
@@ -119,23 +141,22 @@
                     })
 
                     for(var i = 0; i < newClasses.length; i++) {
-                        axios
+                        await axios
                         .post(api + 'tutor_subjects/', {
                             id_tutor: tutor,
                             id_subject: newClasses[i]
                         })
                         .then(result => {
                             console.log(result.data);
+                            this.getSubjectsAndSchedule()
                         })
                         .catch(error => {
                             console.log(error);
                         })
                     }
-
                     this.tutorSubjects = newClasses
-                    this.$forceUpdate()
                 }
-
+                this.$forceUpdate()
                 //window.location.reload()
             }
         },
