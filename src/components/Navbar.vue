@@ -113,6 +113,9 @@ export default defineComponent({
     a:hover {
         color: #A0BCFF;
     }
+    .nav-item {
+        display: none;
+    }
 
     button{
         background-color: transparent;
