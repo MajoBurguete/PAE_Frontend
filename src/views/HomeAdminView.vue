@@ -53,7 +53,7 @@
                 noTutors: false,
                 noStudents: false,
                 messageWarn: "No existen tutores aprobados en el sistema",
-                firstPass: true
+                firstPass: true,
             }
 
         },
@@ -568,6 +568,10 @@
                 .catch(error => {
                     console.log(error)
                 })
+            },
+            toSurveyRecord() {
+                localStorage.setItem('selectedUser', this.userId)
+                router.push("/survey-record")
             }
         }
     })
@@ -640,7 +644,7 @@
                         </div>
                         <div class="button-container">
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"  id="delete-user"> Baja de tutor </button>
-                            <button class="btn-cont"> Encuestas </button>
+                            <button class="btn-cont" @click="toSurveyRecord()"> Encuestas </button>
                         </div>
                     </div>
                     <div class="user-schedule">

@@ -3,30 +3,21 @@ import { defineComponent } from "vue";
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
 
+const api = 'http://localhost:8000/api/'
+const userId = localStorage.getItem('selectedUser')
+
 export default defineComponent({
     data() {
         return{
-            setUser: "Daniela hernandez y Hernandez",
-            surveyList: [
-                {question: "Pregunta Abierta", type: "0", id: "1"},
-                {question: "Pregunta Cerrada Multiple", type: "1", id: "2"},
-                {question: "Pregunta Escala", type: "2", id: "3"},
-                {question: "Pregunta", type: "3", id: "4"}
-            ],
+            setUser: {},
+            surveyList: [],
             choicesList: [],
-            partnerList: [
-                {name: "Marco Flamenco", date: "17/02/22"},
-                {name: "Emilio Flamenco", date: "18/02/22"},
-                {name: "Francisco Hernandez Flamenco", date: "19/02/22"}
-            ],
-            answerList: [
-                {answer: "1", id: "2"},
-                {answer: "A ok que loco", id: "1"},
-                {answer: "4", id: "3"},
-                {answer: "fotoAsesoria.jpg", id: "4"},
-            ],
+            partnerList: [],
+            answerList: [],
+            answerFileList: [],
             currentPartner: "Nombre Apellido",
-            currentDate: "DD/MM/AA"
+            currentDate: "DD/MM/AA",
+            
         }
     },
     computed: {
@@ -47,6 +38,15 @@ export default defineComponent({
                 console.log(val)
                 this.currentDate = val;
             }
+        },
+        changePartnerList:  {
+            get(){
+                return this.partnerList;
+            },
+            set(val){
+                console.log(val)
+                this.partnerList = val;
+            }
         }
         
     },
@@ -56,14 +56,43 @@ export default defineComponent({
             this.changeDate = newSubject.date;
         },
 
-        async getSurveyList(){
+        formatDate(date) {
+            const dateF = new Date(date).toLocaleString()
+            return dateF.slice(0, -3) 
+        },
+
+        formatFileName(file) {
+            let index = file.indexOf('media/')
+            return file.substr(index + 6)
+        },
+
+        async getSurveyAndAnswerList(){
             var id_survey = 0
 
-            if(user_type == '0') {
+            if(this.setUser.user_type == '0') {
                 await axios
                 .get(api + 'most_recent_survey_for_students/')
                 .then(result => {
                     id_survey = result.data[0].id
+                    
+                    axios
+                    .get(api + 'answers_about_user/?student=' + userId)
+                    .then(result2 => {
+                        this.answerList = result2.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                    axios
+                    .get(api + 'files_answers_about_user/?student=' + userId)
+                    .then(result2 => {
+                        this.answerFileList = result2.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
                 })
                 .catch(error => {
                     console.log(error)
@@ -73,6 +102,26 @@ export default defineComponent({
                 .get(api + 'most_recent_survey_for_tutors/')
                 .then(result => {
                     id_survey = result.data[0].id
+
+                    axios
+                    .get(api + 'answers_about_user/?tutor=' + userId)
+                    .then(result2 => {
+                        this.answerList = result2.data
+                        this.getPartnerList()
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                    axios
+                    .get(api + 'files_answers_about_user/?tutor=' + userId)
+                    .then(result2 => {
+                        this.answerFileList = result2.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
                 })
                 .catch(error => {
                     console.log(error)
@@ -96,11 +145,62 @@ export default defineComponent({
             .catch(error => {
                 console.log(error)
             })
+        }, 
+        async getUser() {
+            await axios
+            .get(api + 'specific_user/?user=' + userId)
+            .then(result => {
+                this.setUser = result.data[0]
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+        async getPartnerList() {
+            if(this.answerList.length > 0) {
+                var aux = this.answerList[0].date
+                var survey = {
+                            name: '',
+                            date: this.answerList[0].date
+                        }
+
+                if(this.setUser.user_type == '0'){
+                    survey.name = this.answerList[0].id_tutor__id__first_name
+                } else {
+                    survey.name = this.answerList[0].id_student__id__first_name
+                }
+
+                var dropdownInfo = [survey]
+                
+                for(let i = 1; i < this.answerList.length; i++) {
+                    if(aux != this.answerList[i].date) {
+                        var survey = {
+                            name: '',
+                            date: this.answerList[i].date
+                        }
+
+                        if(this.setUser.user_type == '0'){
+                            survey.name = this.answerList[i].id_tutor__id__first_name
+                        } else {
+                            survey.name = this.answerList[i].id_student__id__first_name
+                        }
+                        
+                        dropdownInfo.push(survey)
+                        aux = this.answerList[i].date
+                    }
+                }
+
+                this.changePartnerList = dropdownInfo
+                this.changeSurvey(this.partnerList[0])
+            }
         }
     },
+   
     mounted(){
-        this.changeSurvey(this.partnerList[0])
+        this.getUser()
+        this.getSurveyAndAnswerList()
     },
+
     components: {
         NavBar
     }
@@ -114,59 +214,40 @@ export default defineComponent({
     <div class="container">
         <div class="head-container">
             <div class="message-container">
-                Encuestas sobre {{setUser}}
+                Encuestas sobre {{setUser.id__first_name}}
             </div>
             <div class="dropdown-center">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{currentPartner}} {{currentDate}}
+                    {{currentPartner}} {{ formatDate(currentDate) }}
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownCenterBtn">
-                     <li v-for="(partner, i) in partnerList" :key="i"><button class="dropdown-item" type="button" @click="changeSurvey(partner)">{{partner.name}} {{partner.date}}</button></li>
+                     <li v-for="(partner, i) in partnerList" :key="i"><button class="dropdown-item" type="button" @click="changeSurvey(partner)">{{partner.name}} {{ formatDate(partner.date) }}</button></li>
                 </ul>
             </div>
         </div>
         <div class="form-container">
             <form>
-                <div class="survey-container" v-for="( survey, i) in surveyList" :key="i">
+                <div class="survey-container" v-for="(survey, i) in surveyList" :key="i">
                     <div class="for" v-for="(answer, j) in answerList" :key="j">
-                        <div class="question-container" v-if=" survey.type == '0' && answer.id == survey.id">
-                            <label for="openQuestion" class="form-label">{{ survey.question}}</label>
+                        <div class="question-container" v-if="survey.question_type == '0' && answer.id_question == survey.id && answer.date == currentDate">
+                            <label for="openQuestion" class="form-label">{{survey.question}}</label>
                             <textarea type="form-control" class="form-control" id="comments" rows="3" disabled :placeholder="answer.answer"></textarea>
                         </div>
-                        <div class="question-container" v-if="survey.type == '1' && answer.id == survey.id">
+                        <div class="question-container" v-if="survey.question_type == '1' && answer.id_question == survey.id && answer.date == currentDate">
                             <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                             <div class="answer-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1" v-if="answer.answer == '0'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1" v-else disabled>
+                                <div v-for="(choice, j) in choicesList" :key="j" >
+                                    <div  v-if="choice.id_question == survey.id" class="form-check">
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice v-if="answer.answer == choice.choice" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice v-else disabled>
                                     <label class="form-check-label" for="flexRadioDefault1">
-                                        20 minutos
+                                        {{ choice.choice }} 
                                     </label> <br>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer2" v-if="answer.answer == '1'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer2" v-else disabled>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        30 minutos
-                                    </label> <br>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer3" v-if="answer.answer == '2'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer3" v-else disabled>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        40 minutos
-                                    </label> <br>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer4" v-if="answer.answer == '3'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer4" v-else disabled>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        45 minutos
-                                    </label>
-                                </div>   
+                                    </div> 
+                                </div> 
                             </div>
                         </div>
-                        <div class="question-container" v-if=" survey.type == '2' && answer.id == survey.id">
+                        <div class="question-container" v-if=" survey.question_type == '2' && answer.id_question == survey.id && answer.date == currentDate">
                             <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
                             <div class="scale-container">
                                 <label for="scaleQuestion" class="form-step">1</label>
@@ -180,26 +261,29 @@ export default defineComponent({
                                     <label class="form-check-label" for="flexRadioDefault1">
                                     Nada Claro
                                     </label>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer1" v-if="answer.answer == '0'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer1" v-else disabled>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer2" v-if="answer.answer == '1'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer2" v-else disabled>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer3" v-if="answer.answer == '2'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer3" v-else disabled>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4" v-if="answer.answer == '3'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4" v-else disabled>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5" v-if="answer.answer == '4'" disabled checked>
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5" v-else disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" v-if="answer.answer == '1'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" v-else disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" v-if="answer.answer == '2'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" v-else disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" v-if="answer.answer == '3'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" v-else disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" v-if="answer.answer == '4'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" v-else disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" v-if="answer.answer == '5'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" v-else disabled>
                                     <label class="form-check-label" for="flexRadioDefault1">
-                                        Muy Claro
+                                    Muy Claro
                                     </label>
                                 </div>
                             </div>
                         </div>
-                        <div class="question-container" v-if=" survey.type == '3' && answer.id == survey.id">
+                    </div>
+                    <div class="for" v-for="(answerFile, j) in answerFileList" :key="j">
+                        <div class="question-container" v-if=" survey.question_type == '3' && answerFile.id_question == survey.id && answerFile.date == currentDate">
                             <div class="file-container">
-                                <label for="formFile" class="form-label">{{ survey.question}}</label>
-                                <a class="file-link" :href="answer.answer"> Descargar: {{answer.answer}}</a>
+                                <label for="formFile" class="form-label">{{ survey.question }}</label>
+                                <label class="form-check-label"> Descargar: </label>
+                                <a class="file-link" :href="answerFile.file" target="_blank"> {{formatFileName(answerFile.file)}}</a>
                             </div>
                         </div>
                     </div>

@@ -204,7 +204,7 @@ export default defineComponent({
                             <label class="form-check-label" for="flexRadioDefault1">
                                 {{ choice.choice }} 
                             </label> <br>
-                        </div> 
+                            </div> 
                         </div> 
                     </div>
                 </div>
