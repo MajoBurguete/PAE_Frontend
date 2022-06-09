@@ -31,9 +31,8 @@ export default defineComponent({
             input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
             table.style.color = "#6F9492";
         }
-        this.preSelectedClass = localStorage.getItem("classesSelected")
+
         localStorage.setItem("classesSelected", JSON.stringify([]))
-        console.log(this.preSelectedClass)
         
     },
     props: {
@@ -56,7 +55,6 @@ export default defineComponent({
     },
     data() {
         return {
-            preSelectedClass: [],
             subjectList: subjects,
             selectedClass: [],
             firstMount: true,
@@ -81,7 +79,7 @@ export default defineComponent({
                 } 
             }
 
-            let classNameId = JSON.parse(localStorage.getItem("className"));
+            let classNameId = localStorage.getItem("className");
 
             if(classNameId != null && classNameId.length != 0){
                 const inputCheck = document.getElementById(classNameId);
@@ -216,7 +214,7 @@ export default defineComponent({
 
         },
         fillChecks(){
-            const lcSelectedClass = this.preSelectedClass;
+            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
             console.log(lcSelectedClass);
             console.log(this.selectedClassC)
             const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
@@ -248,11 +246,11 @@ export default defineComponent({
                 localStorage.setItem("classId", classSelected.value);
                 localStorage.setItem("className", classSelected.id);
 
-                let response = await axios.get(api + 'available_sessions/?subject=' + localStorage.getItem("classId") + '&user='+localStorage.getItem("userID"))
+                let response = await axios.get(api + 'available_sessions/?subject='+ localStorage.getItem("classId"))
                 this.sessions = response.data
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 for(var i=0; i<this.sessions.length; i++) {
-                    sk.push(this.sessions[i].day_hour)
+                    sk.push(this.sessions[i].id_tutor__schedule__day_hour)
                 } 
 
                 if(sk.length == 0){
