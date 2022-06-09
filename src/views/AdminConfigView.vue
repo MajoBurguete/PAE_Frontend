@@ -403,6 +403,9 @@
                     semester.value = ""
                     career.value = ""
                 }
+            },
+            sendEditSurvey(){
+                router.push("/edit-survey")
             }
 
         }
@@ -482,7 +485,7 @@
                             Eliminar UF </button>
                     </div>
                 </div>
-                <button id="edit-survey-button"> Editar encuesta </button>
+                <button id="edit-survey-button" @click="sendEditSurvey"> Editar encuesta </button>
             </div>
         </div>
         <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
