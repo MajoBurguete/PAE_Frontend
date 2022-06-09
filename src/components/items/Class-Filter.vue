@@ -250,7 +250,7 @@ export default defineComponent({
                 this.sessions = response.data
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 for(var i=0; i<this.sessions.length; i++) {
-                    sk.push(this.sessions[i].id_tutor__schedule__day_hour)
+                    sk.push(this.sessions[i].day_hour)
                 } 
 
                 if(sk.length == 0){
