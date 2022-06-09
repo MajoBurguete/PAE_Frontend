@@ -14,10 +14,6 @@ export default defineComponent({
         this,this.updateSessionL = this.sessionL;
     },
     props: {
-        tutorStudentSwitch: {
-            type: String,
-            default: "Tutor"
-        },
         sessionL: {
             type: Array,
             default: []
@@ -59,10 +55,11 @@ export default defineComponent({
     <div class="container-record">
         <h3>Historial de asesorías</h3>
             <div class="table-container">
-                 <table class="table">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th id="cornerTL"><h1>{{tutorStudentSwitch}}</h1></th>
+                            <th id="cornerTL"><h1>Estudiante</h1></th>
+                            <th><h1>Tutor</h1></th>
                             <th><h1>Materia</h1></th>
                             <th><h1>Fecha</h1></th>
                             <th id="cornerTR"><h1>Estatus</h1></th>
@@ -70,8 +67,8 @@ export default defineComponent({
                     </thead>
                     <tbody>
                         <tr v-for="(session, i) in sessionList" :key="i">
-                            <td v-if="tutorStudentSwitch == 'Estudiante'"><h2>{{ session.id_student__id__first_name }}</h2></td>
-                            <td v-else><h2>{{ session.id_tutor__id__first_name }}</h2></td>
+                            <td><h2>{{ session.id_student__id__first_name }}</h2></td>
+                            <td><h2>{{ session.id_tutor__id__first_name }}</h2></td>
                             <td><h2>{{ session.id_subject__name }}</h2></td>
                             <td><h2>{{ formatDate(session.date) }}</h2></td>
                             <td><h2>{{ formatStatus(session.status) }}</h2></td>
