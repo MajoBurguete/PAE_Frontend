@@ -311,7 +311,6 @@
                     })
                     .then(result => {
                         console.log(result.data);
-                        localStorage.setItem("displayToast", "signupStudent");
                         this.$forceUpdate()
                         this.getAdminNames()
                     })
