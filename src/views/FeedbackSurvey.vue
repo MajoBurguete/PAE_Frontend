@@ -1,68 +1,214 @@
 <script lang="ts">
-import NavBar from "../components/Navbar.vue"
-import { defineComponent} from "vue";
+import router from '@/router';
+import axios from 'axios';
+import { defineComponent } from "vue";
+
+const api = 'http://localhost:8000/api/'
+const user_type = localStorage.getItem('userType')
 
 export default defineComponent({
     data() {
         return{
-            surveyList: [
-                {question: "Pregunta Abierta", type: "0", id: "1"},
-                {question: "Pregunta Cerrada Multiple", type: "1", id: "2"},
-                {question: "Pregunta Escala", type: "2", id: "3"},
-                {question: "Pregunta", type: "3", id: "4"}
-            ],
+            surveyList: [],
+            choicesList: [],
+            id_student: '',
+            id_tutor: '', 
+            answer: {},
+            fileObject: null
         }
     },
-    components: {
-        NavBar
+    mounted(){
+        this.getQuestions()
+    },
+    
+    methods: {
+        async getQuestions() {
+            var id_survey = 0
+
+            if(user_type == '0') {
+                await axios
+                .get(api + 'most_recent_survey_for_students/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                await axios
+                .get(api + 'most_recent_survey_for_tutors/')
+                .then(result => {
+                    id_survey = result.data[0].id
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+
+            await axios
+            .get(api + 'questions_of_specific_survey/?survey=' + id_survey)
+            .then(result => {
+                this.surveyList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+            axios
+            .get(api + 'choices/')
+            .then(result => {
+                this.choicesList = result.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+
+        saveFile(event) {
+            this.fileObject = event.target.files[0]
+        },
+
+        async submitAnswer() {
+           const id_user = localStorage.getItem('userID')
+           const now = new Date();
+           const now2 = now.toISOString()
+
+           if(user_type == '0') {
+               await axios
+               .get(api + 'recent_completed_session/?student=' + id_user)
+               .then(result => {
+                   this.id_tutor = result.data[0].id_tutor
+               })
+               this.id_student = id_user
+           } else {
+               await axios
+               .get(api + 'recent_completed_session/?tutor=' + id_user)
+               .then(result => {
+                   console.log(result.data)
+                   this.id_student = result.data[0].id_student
+               })
+               this.id_tutor = id_user
+           }
+
+            var input = document.getElementById('') as HTMLInputElement;
+            var index = ''
+
+            for(let j = 0; j < this.surveyList.length; j++) {
+                if(this.surveyList[j].question_type == 0) {
+                    index = 'comment' + j.toString()
+                    input = document.getElementById(index) as HTMLInputElement;
+
+                    await axios
+                    .post(api + 'answers/', {
+                        id_question:  this.surveyList[j].id,
+                        id_student: this.id_student,
+                        id_tutor: this.id_tutor,
+                        date: now2,
+                        answer: input.value
+                    })
+                    .then(result => {
+                        console.log(result.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                } else if(this.surveyList[j].question_type == 1) {
+                    for(let i = 0; i < this.choicesList.length; i++) {
+                        if(this.surveyList[j].id == this.choicesList[i].id_question) {
+                            index = 'closedAnswer' + i.toString()
+                            input = document.getElementById(index) as HTMLInputElement;
+                            
+                            if(input.checked) {        
+                                await axios
+                                .post(api + 'answers/', {
+                                    id_question:  this.surveyList[j].id,
+                                    id_student: this.id_student,
+                                    id_tutor: this.id_tutor,
+                                    date: now2,
+                                    answer: input.value
+                                })
+                                .then(result => {
+                                    console.log(result.data)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
+                            }
+                        }
+                    }
+                } else if(this.surveyList[j].question_type == 2) {
+                    for(let i = 1; i < 6; i++) {
+                        index = 'scaleAnswer' + i.toString() + j.toString()
+                        input = document.getElementById(index) as HTMLInputElement;
+                        if(input.checked) {                            
+                            await axios
+                            .post(api + 'answers/', {
+                                id_question:  this.surveyList[j].id,
+                                id_student: this.id_student,
+                                id_tutor: this.id_tutor,
+                                date: now2,
+                                answer: input.value
+                            })
+                            .then(result => {
+                                console.log(result.data)
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                        }
+                    }
+                } else {
+                    index = 'formFile' + j.toString() 
+                    let formData = new FormData();
+                    formData.append('id_question', this.surveyList[j].id)
+                    formData.append('id_student', this.id_student)
+                    formData.append('id_tutor', this.id_tutor)
+                    formData.append('date', now2)
+                    formData.append('file', this.fileObject)
+                    
+                    await axios
+                    .post(api + 'answer_files/', formData)
+                    .then(result => {
+                        console.log(result.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                }
+            }
+
+            router.push('/home')
+        }
     }
 })
 </script>
 
 <template>
-    <header>
-        <NavBar/>
-    </header>
     <div class="container">
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
             </div>
-        <div class="form-container" v-for="( survey, i) in surveyList" :key="i">
-            <form>
-                <div class="question-container" v-if=" survey.type == '0'">
+        <form name="form" @submit.prevent="submitAnswer">
+            <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
+                <div class="question-container" v-if=" survey.question_type == '0'">
                     <label for="openQuestion" class="form-label">{{survey.question}}</label>
-                    <textarea type="form-control" class="form-control" id="comments" rows="3"></textarea>
+                    <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3"></textarea>
                 </div>
-                <div class="question-container"  v-if=" survey.type == '1'">
+                <div class="question-container"  v-if=" survey.question_type == '1'">
                     <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="answer-container">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer1">
+                        <div v-for="(choice, j) in choicesList" :key="j" >
+                            <div  v-if="choice.id_question == survey.id" class="form-check">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice>
                             <label class="form-check-label" for="flexRadioDefault1">
-                                20 minutos
+                                {{ choice.choice }} 
                             </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer2">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                30 minutos
-                            </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer3">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                40 minutos
-                            </label> <br>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="closedAnswer4">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                45 minutos
-                            </label>
-                        </div>   
+                            </div> 
+                        </div> 
                     </div>
                 </div>
-                <div class="question-container" v-if=" survey.type == '2'">
+                <div class="question-container" v-if=" survey.question_type == '2'">
                     <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="scale-container">
                         <label for="scaleQuestion" class="form-step">1</label>
@@ -76,26 +222,26 @@ export default defineComponent({
                             <label class="form-check-label" for="flexRadioDefault1">
                             Nada Claro
                             </label>
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer1">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer2">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer3">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer4">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="scaleAnswer5">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5">
                             <label class="form-check-label" for="flexRadioDefault1">
-                                Muy Claro
+                            Muy Claro
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="question-container"  v-if=" survey.type == '3'">
+                <div class="question-container"  v-if=" survey.question_type == '3'">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">{{survey.question}}</label>
-                        <input class="form-control" type="file" id="formFile">
+                        <input class="form-control" type="file" @change="saveFile($event)" :id="'formFile' + i">
                     </div>
                 </div>
-            </form>
-        </div>
-       <a href="home">Enviar</a>
+            </div>
+            <button>Enviar</button>
+        </form>
     </div>
 </template>
 
@@ -173,7 +319,8 @@ export default defineComponent({
     margin: 1vh 1.5vw;
     font-size: 3vh;
 }
-a {
+
+button {
     font-family: "Ubuntu";
     font-weight: normal;
     color: white;

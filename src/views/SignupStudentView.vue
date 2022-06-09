@@ -84,7 +84,7 @@ export default defineComponent({
                 email: this.userMail,
                 first_name: this.username
             })
-            .then( result => {
+            .then(result => {
                 const userNumId = result.data.id
 
                 axios

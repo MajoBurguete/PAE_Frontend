@@ -284,7 +284,6 @@ export default defineComponent({
             } else {
                 password.type = "password";
                 eye.src = "src/assets/img/visibility.png";
-
             }
         }
     }

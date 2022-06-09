@@ -14,10 +14,7 @@ const date = ref (localStorage.getItem("sessionSelected"))
 const id_tutor = ref (0)
 const id_student = ref (localStorage.getItem("userID"))
 const status = ref (0)
-const spot = ref (null)
 const request_time = ref (now.toISOString())
-const verify_time = ref (null)
-const id_admin_verify = ref (null)
 
 
 export default defineComponent({
