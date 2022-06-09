@@ -53,6 +53,11 @@ export default defineComponent({
         this.getHours()
 
         this.testMethod()
+        var myModal = new bootstrap.Modal(document.getElementById('survey-modal'))
+            
+            if(this.surveyCheck == "true"){
+                myModal.show()
+            }
     },
     updated(){
         if(this.changeFirstPass){
@@ -268,6 +273,9 @@ export default defineComponent({
         sendFeedback() {
             router.push('http://localhost:3000/feedback-survey');
         },
+        logout() {
+            router.push('http://localhost:3000/');
+        },
         getReferenceDate() {
             var date = new Date();
             const currentDay = date.getDay();
@@ -474,8 +482,7 @@ export default defineComponent({
     <body>
         <div class="container">
             <div class="card-container">
-                <a v-if="surveyCheck == 'true'" id="date-and-class-a" data-bs-toggle="modal" data-bs-target="#survey-modal"> Agendar nueva asesoría </a>
-                <a href="date-and-class" v-else id="date-and-class-a"> Agendar nueva asesoría </a>
+                <a href="date-and-class" id="date-and-class-a"> Agendar nueva asesoría </a>
                 <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" v-on:cancel-session-event="" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
             </div>
             <div class="schedule-container">
@@ -536,7 +543,7 @@ export default defineComponent({
                     <h4>Contesta tu encuesta para poder agendar una nueva asesoría</h4>
                     <div class="button-container">
                         <button id="cancel-button" @click="sendFeedback" data-bs-dismiss="modal" aria-label="Close"> Ir a encuesta </button>
-                        <button id="save-button" data-bs-dismiss="modal" aria-label="Close"> Regresar </button>
+                        <button id="save-button" @click="logout" data-bs-dismiss="modal" aria-label="Close"> Cerrar Sesión </button>
                     </div>
                 </div>
             </div>
@@ -871,7 +878,7 @@ export default defineComponent({
         font-weight: normal;
         color: white;
         font-size: 3vh;
-        padding: 1vh 4vw;
+        padding: 1vh 2.5vw;
         border-radius: 15px;
         border: 2.5px solid #00000000;
         background-color: #96CCC9;
@@ -885,7 +892,7 @@ export default defineComponent({
         font-weight: normal;
         color: white;
         font-size: 3vh;
-        padding: 1vh 4vw;
+        padding: 1vh 2.5vw;
         border-radius: 15px;
         border: 2.5px solid #00000000;
         background-color: #F75E0B;
