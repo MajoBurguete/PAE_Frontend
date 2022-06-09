@@ -46,7 +46,7 @@ export default defineComponent({
             descriptionTxt: "",
             fileName: "",
             fileURL: "",
-            surveyCheck: "true"
+            surveyCheck: localStorage.getItem("userStatus")
         }
     },
     mounted() {
@@ -55,7 +55,7 @@ export default defineComponent({
         this.testMethod()
         var myModal = new bootstrap.Modal(document.getElementById('survey-modal'))
             
-            if(this.surveyCheck == "true"){
+            if(this.surveyCheck == "1"){
                 myModal.show()
             }
     },
@@ -274,7 +274,20 @@ export default defineComponent({
             router.push('http://localhost:3000/feedback-survey');
         },
         logout() {
-            router.push('http://localhost:3000/');
+            localStorage.removeItem("user-token");
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("hoursSelectedT");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classesSelected");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("tutorSesId");
+            localStorage.removeItem("userType");
+            localStorage.removeItem("hoursAvailable");
+            localStorage.removeItem("userID");
+            localStorage.removeItem("userStatus");
+
+            router.push('/');
         },
         getReferenceDate() {
             var date = new Date();
@@ -540,7 +553,7 @@ export default defineComponent({
         <div class="modal fade" id="survey-modal" tabindex="-1" aria-labelledby="surveyModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg modal-dialog-centered" id="survey-modal-lg">
                 <div class="modal-content" id="survey-modal-content">
-                    <h4>Contesta tu encuesta para poder agendar una nueva asesoría</h4>
+                    <h4>Contesta tu encuesta para seguir usando la plataforma</h4>
                     <div class="button-container">
                         <button id="cancel-button" @click="sendFeedback" data-bs-dismiss="modal" aria-label="Close"> Ir a encuesta </button>
                         <button id="save-button" @click="logout" data-bs-dismiss="modal" aria-label="Close"> Cerrar Sesión </button>
