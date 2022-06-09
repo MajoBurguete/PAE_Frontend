@@ -97,6 +97,7 @@
         },
         methods: {
             async getAdminNames() {
+                const button = document.getElementById("admin-delete-btn") as HTMLInputElement;
                 await axios
                 .get(api + 'admins/')
                 .then(result => {
@@ -106,9 +107,12 @@
 
                 if(this.adminList.length < 2) {
                     this.disableDeleteAdminBtn = true
+                    button.style.opacity = "0.6"
+
                 }
                 else {
                     this.disableDeleteAdminBtn = false
+                    button.style.opacity = "1"
                 }
                 const admin = document.getElementById("admin-radio") as HTMLInputElement;
                 admin.checked = true;
@@ -267,6 +271,7 @@
                     list[i].checked = true;
                     this.selection = this.subjectList[i];
                 }
+                this.clearInputs()
             },
             async editAdmin() {
                 const input = document.getElementById('admin-name') as HTMLInputElement;
@@ -363,6 +368,9 @@
                         console.log(error)
                     })
                 }
+                this.clearInputs()
+            },
+            clearInputs() {
                 this.subjectName = ''
                 this.subjectCareer = ''
                 this.subjectSemester = ''
@@ -441,7 +449,7 @@
                     <div class="admin-btn-container">
                         <button class="table-button" data-bs-toggle="modal" data-bs-target="#create-admin-modal"> Crear
                             administrador </button>
-                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal" :disabled="disableDeleteAdminBtn">
+                        <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal" :disabled="disableDeleteAdminBtn" id="admin-delete-btn">
                             Eliminar administrador </button>
                     </div>
                 </div>
@@ -563,8 +571,8 @@
                         </select>
                     </div>
                     <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
-                            id="cancel-action-btn-blue"> Cancelar</button>
+                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"
+                         @click="clearInputs" > Cancelar</button>
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
                             @click="saveSubject"> Guardar</button>
                     </div>
@@ -695,7 +703,7 @@
     td {
         width: 40vw;
         display: flex;
-        gap: 0vw;
+        gap: 1vw;
     }
 
     tr {
@@ -790,6 +798,8 @@
     /* Buttons in table */
 
     .edit-btn{
+        width: 2vw;
+        height: 2vw;
         border-radius: 100%;
         background-position: center;
         background-color: #6F9492;
@@ -853,8 +863,10 @@
 
     .h1-modal,
     .user-h1-modal{
+        color: #6F9492;
         font-size: 4.5vh;
         margin: 0 0 1.5vh 0;
+        text-align: center;
     }
     .h2-modal {
         font-family: "Catamaran";
