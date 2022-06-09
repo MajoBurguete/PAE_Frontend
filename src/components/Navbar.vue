@@ -16,6 +16,7 @@ export default defineComponent({
             localStorage.removeItem("userType");
             localStorage.removeItem("hoursAvailable");
             localStorage.removeItem("userID");
+            localStorage.removeItem("userStatus");
 
             router.push('/');
         },

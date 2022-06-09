@@ -4,6 +4,7 @@ import ScheduleItem from "../components/items/Home-Schedule-Item.vue"
 import SessionCard from "../components/items/Session-Card.vue"
 import CancelModal from "../components/items/Cancel-Modal.vue"
 import NavBar from "../components/Navbar.vue"
+import router from "../router";
 import axios from 'axios';
 
 const api = 'http://localhost:8000/api/'
@@ -44,13 +45,19 @@ export default defineComponent({
             instructionTxtV: "No cuentas con ninguna asesoría registrada.",
             descriptionTxt: "",
             fileName: "",
-            fileURL: ""
+            fileURL: "",
+            surveyCheck: localStorage.getItem("userStatus")
         }
     },
     mounted() {
         this.getHours()
 
         this.testMethod()
+        var myModal = new bootstrap.Modal(document.getElementById('survey-modal'))
+            
+            if(this.surveyCheck == "1"){
+                myModal.show()
+            }
     },
     updated(){
         if(this.changeFirstPass){
@@ -262,6 +269,25 @@ export default defineComponent({
             .catch( error => {
                 console.log(error)
             })
+        },
+        sendFeedback() {
+            router.push('http://localhost:3000/feedback-survey');
+        },
+        logout() {
+            localStorage.removeItem("user-token");
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("hoursSelectedT");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classesSelected");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("tutorSesId");
+            localStorage.removeItem("userType");
+            localStorage.removeItem("hoursAvailable");
+            localStorage.removeItem("userID");
+            localStorage.removeItem("userStatus");
+
+            router.push('/');
         },
         getReferenceDate() {
             var date = new Date();
@@ -524,6 +550,17 @@ export default defineComponent({
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="survey-modal" tabindex="-1" aria-labelledby="surveyModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg modal-dialog-centered" id="survey-modal-lg">
+                <div class="modal-content" id="survey-modal-content">
+                    <h4>Contesta tu encuesta para seguir usando la plataforma</h4>
+                    <div class="button-container">
+                        <button id="cancel-button" @click="sendFeedback" data-bs-dismiss="modal" aria-label="Close"> Ir a encuesta </button>
+                        <button id="save-button" @click="logout" data-bs-dismiss="modal" aria-label="Close"> Cerrar Sesión </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </template>
 
@@ -582,6 +619,13 @@ export default defineComponent({
         font-family: "Montserrat";
         font-weight: bolder;
         font-size: 4vh;
+    }
+    h4{
+        font-family: "Montserrat";
+        font-weight: 50;
+        color: #6F9492;
+        text-align: center;
+        font-size: 5vh;
     }
 
     img{
@@ -723,6 +767,9 @@ export default defineComponent({
         font-weight: bold;
         text-align: center;
     }
+    h4 {
+        
+    }
 
     .class-name,
     .session-sel,
@@ -762,6 +809,17 @@ export default defineComponent({
     }
 
     #cancel-modal-content {
+        background-color: #E1F0EA;
+        border: 2.5px solid #96BECC;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 20px;
+        padding: 7vh 2vw;
+        gap: 3vh;
+    }
+
+    #survey-modal-content {
         background-color: #E1F0EA;
         border: 2.5px solid #96BECC;
         display: flex;
@@ -817,5 +875,49 @@ export default defineComponent({
 
     #confirm-button-modal{
         background-color: #365295;
+    }
+    .button-container {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    button:hover{
+        border-color: transparent;
+        transition: all 0.3s ease 0s;
+    }
+
+    #cancel-button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 3vh;
+        padding: 1vh 2.5vw;
+        border-radius: 15px;
+        border: 2.5px solid #00000000;
+        background-color: #96CCC9;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+
+    #save-button {
+        width: 15vw;
+        font-family: "Ubuntu";
+        font-weight: normal;
+        color: white;
+        font-size: 3vh;
+        padding: 1vh 2.5vw;
+        border-radius: 15px;
+        border: 2.5px solid #00000000;
+        background-color: #F75E0B;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+
+    #save-button:hover{
+        box-shadow: 0px 0px 0px 4px #EBA37C;
+    }
+
+    #cancel-button:hover{
+        box-shadow: 0px 0px 0px 4px #c3eae8;
     }
 </style>

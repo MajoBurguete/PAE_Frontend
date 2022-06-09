@@ -58,7 +58,7 @@
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.username)
                 .then( result => {
-                    this.storeUserInfo(result.data[0].id ,result.data[0].user_type)
+                    this.storeUserInfo(result.data[0].id, result.data[0].user_type, result.data[0].status)
                     if(result.data[0].user_type == 2){
                         router.push('http://localhost:3000/admin-home');
                     }
@@ -77,9 +77,10 @@
                     console.log(error);
                 })
             },
-            storeUserInfo(userId: string, userT: string){
+            storeUserInfo(userId: string, userT: string, userS: string){
                 localStorage.setItem("userID", userId);
                 localStorage.setItem("userType", userT);
+                localStorage.setItem("userStatus", userS);
             },
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
