@@ -4,6 +4,8 @@
     import axios from "axios";
     import NavBar from "../components/Navbar.vue";
 
+    declare var bootstrap: any;
+
     const api = 'http://localhost:8000/api/'
 
     export default defineComponent({
@@ -332,6 +334,8 @@
                 }
             },
             async saveSubject() {
+                const myModal = new bootstrap.Modal(document.getElementById('subject-modal'))
+                myModal.hide()
                 const name = document.getElementById('subject-new-name') as HTMLInputElement;
                 const id = document.getElementById('subject-id') as HTMLInputElement;
                 const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
@@ -546,40 +550,41 @@
         <div class="modal fade" id="subject-modal" tabindex="-1" aria-labelledby="createsubjectModal"
             aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content" id="subject-modal-content">
-                    <h1 class="h2-modal"> Nombre</h1>
-                    <input type="text" class="form-control" id="subject-new-name" v-model="subjectName" minlength="1"
-                        maxlength="100" required>
-                    <h1 class="h2-modal"> Clave</h1>
-                    <input type="text" class="form-control" id="subject-id" v-model="subjectID" minlength="1"
-                        maxlength="100" required>
-                    <h1 class="h2-modal"> Semestre</h1>
-                    <div class="input-group">
-                        <select class="form-select" id="subject-new-semester" v-model="subjectSemester" required>
-                            <option value="1">1º</option>
-                            <option value="2">2º</option>
-                            <option value="3">3º</option>
-                            <option value="4">4º</option>
-                            <option value="5">5º</option>
-                            <option value="6">6º</option>
-                            <option value="7">7º</option>
-                            <option value="8">8º</option>
-                            <option value="9">9º</option>
-                        </select>
+                <form name="form" @submit.prevent="saveSubject">
+                    <div class="modal-content" id="subject-modal-content">
+                        <h1 class="h2-modal"> Nombre</h1>
+                        <input type="text" class="form-control" id="subject-new-name" v-model="subjectName" minlength="1"
+                            maxlength="100" required>
+                        <h1 class="h2-modal"> Clave</h1>
+                        <input type="text" class="form-control" id="subject-id" v-model="subjectID" minlength="1"
+                            maxlength="100" required>
+                        <h1 class="h2-modal"> Semestre</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject-new-semester" v-model="subjectSemester" required>
+                                <option value="1">1º</option>
+                                <option value="2">2º</option>
+                                <option value="3">3º</option>
+                                <option value="4">4º</option>
+                                <option value="5">5º</option>
+                                <option value="6">6º</option>
+                                <option value="7">7º</option>
+                                <option value="8">8º</option>
+                                <option value="9">9º</option>
+                            </select>
+                        </div>
+                        <h1 class="h2-modal"> Carrera</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject-new-career" v-model="subjectCareer" required>
+                                <option v-for="(career, i) in careerList" :key="i">{{ career.id }}</option>
+                            </select>
+                        </div>
+                        <div class="modal-button-container">
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"
+                            @click="clearInputs" > Cancelar</button>
+                            <button class="option-button" id="save-action-btn"> Guardar</button>
+                        </div>
                     </div>
-                    <h1 class="h2-modal"> Carrera</h1>
-                    <div class="input-group">
-                        <select class="form-select" id="subject-new-career" v-model="subjectCareer" required>
-                            <option v-for="(career, i) in careerList" :key="i">{{ career.id }}</option>
-                        </select>
-                    </div>
-                    <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"
-                         @click="clearInputs" > Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
-                            @click="saveSubject"> Guardar</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </body>
