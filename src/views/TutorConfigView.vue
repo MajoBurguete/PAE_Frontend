@@ -118,18 +118,22 @@
             async saveChanges() {
                 const tutor = localStorage.getItem('userID')
                 const newClasses = JSON.parse(localStorage.getItem('classesSelected'));
-                //const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
+                var flag1 = 0
+                var limit1 = -1
+                var flag2 = 0
+                var limit2 = newClasses.length
+                var flag3 = 0
                 
                 if(newClasses.length > 0) {
                     await axios
                     .get(api + 'subjects_by_tutor/?tutor=' + tutor)
                     .then(result => {
+                        limit1 = limit1 + result.data.length + 1
                         for(let i = 0; i < result.data.length; i++) {
                             axios
                             .delete(api + 'tutor_subjects/' + result.data[i].id)
                             .then(result2 => {
-                                console.log(result2.data)
-                                this.getSubjectsAndSchedule()
+                                flag1 = flag1 + 1
                             })
                             .catch(error => {
                                 console.log(error)
@@ -147,17 +151,21 @@
                             id_subject: newClasses[i]
                         })
                         .then(result => {
-                            console.log(result.data);
-                            this.getSubjectsAndSchedule()
+                            flag2 = flag2 + 1
                         })
                         .catch(error => {
-                            console.log(error);
+                            console.log(error)
                         })
                     }
                     this.tutorSubjects = newClasses
                 }
+                while(flag3 != 1) {
+                    if(flag1 == limit1 && flag2 == limit2) {
+                        this.getSubjectsAndSchedule()
+                        flag3 = 1
+                    }
+                }
                 this.$forceUpdate()
-                //window.location.reload()
             }
         },
 
