@@ -230,6 +230,12 @@ export default defineComponent({
         addOption(event : Event, idQuestion : number) {
             event.preventDefault()
             this.tempChoicesList.push({choice: 'op1', id_question: idQuestion})
+        },
+
+        deleteOption(event : Event, idOption : number) {
+            event.preventDefault()
+            console.log(idOption)
+            this.tempChoicesList.splice(idOption,1)
         }
     },
 })
@@ -284,13 +290,14 @@ export default defineComponent({
                             required @input="checkForm"><br>
                         <div class="answer-container">
                             <div v-for="(choice, j) in tempChoicesList" :key="j">
-                                <div class="form-check">
+                                <div class="form-check" id="form-check-option">
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i"
                                         :id="'closedAnswer' + j" :value="choice" disabled>
-                                    <input class="form-check-label" for="flexRadioDefault1"><br>
+                                    <input class="question-input" id="option-input" for="flexRadioDefault1">
+                                    <button class="delete-button" id ="delete-option" type="button" @click="deleteOption($event,j)"></button><br>
                                 </div>
                             </div>
-                            <button @click="addOption($event, subject.id)">añadir opcion</button>
+                            <button @click="addOption($event, subject.id)" class="add-option-button"></button>
                         </div>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
@@ -341,7 +348,9 @@ export default defineComponent({
                 </div>
             </form>
         </div>
-        <a @click="checkForm">Guardar cambios</a>
+        <a @click="checkForm">
+            <h4>Guardar cambios</h4>
+        </a>
         <div class="add-question-container">
             <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#question-modal"></button>
             <h1>añadir pregunta</h1>
@@ -490,6 +499,10 @@ export default defineComponent({
     align-items: left;
     justify-content: left;
 }
+#form-check-option {
+     align-items: center;
+    justify-content: center;
+}
 
 .form-check-label {
     font-size: 2.5vh;
@@ -540,6 +553,10 @@ export default defineComponent({
     background-size: 70%;
     margin: 2vh 0 0 95%;
 }
+#delete-option {
+    margin: 0 0 2vh 2vw;
+    background-position: 0.49vw 0.78vh;
+}
 
 .add-question-button {
     border-style: hidden;
@@ -551,6 +568,18 @@ export default defineComponent({
     background-repeat: no-repeat;
     /* Do not repeat the icon image */
     background-size: 100%;
+}
+.add-option-button {
+    border-style: hidden;
+    background-color: #26408B;
+    border-radius: 100%;
+    height: 6vh;
+    width: 6vh;
+    background-image: url('src/assets/img/plus-icon.png');
+    background-repeat: no-repeat;
+    /* Do not repeat the icon image */
+    background-size: 100%;
+    margin: 2vh 0 0 1vw;
 }
 
 .form-check-input:disabled~.form-check-label,
@@ -571,6 +600,9 @@ a {
     margin: 3vh;
     text-decoration: none;
 }
+h4 {
+    color: white;
+}
 
 .question-input {
     font-family: "Catamaran";
@@ -582,6 +614,11 @@ a {
     padding: 1vh 1vw;
     margin-bottom: 1vh;
     width: 100%;
+}
+#option-input{
+    border-color: #616161;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .add-question-container {
