@@ -128,7 +128,7 @@
                     await axios
                     .get(api + 'subjects_by_tutor/?tutor=' + tutor)
                     .then(result => {
-                        limit1 = limit1 + result.data.length + 1
+                        limit1 = result.data.length
                         for(let i = 0; i < result.data.length; i++) {
                             axios
                             .delete(api + 'tutor_subjects/' + result.data[i].id)
@@ -158,11 +158,11 @@
                         })
                     }
                     this.tutorSubjects = newClasses
-                }
-                while(flag3 != 1) {
-                    if(flag1 == limit1 && flag2 == limit2) {
-                        this.getSubjectsAndSchedule()
-                        flag3 = 1
+                    while (flag3 != 1) {
+                        if (flag1 == limit1 && flag2 == limit2) {
+                            this.getSubjectsAndSchedule()
+                            flag3 = 1
+                        }
                     }
                 }
                 this.$forceUpdate()
