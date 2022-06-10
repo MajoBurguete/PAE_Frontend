@@ -73,18 +73,17 @@ export default defineComponent({
             tutorList: [],
             studentList: [],
             choicesList: [],
-            tempChoicesList: [{choice: 'op1', id_question: 1}, {choice: 'op2', id_question: 1}],
+            tempChoicesList: [],
             tab: "student",
             deleteIndex: -1,
-            disableDeleteBtn: false
+            disableDeleteBtn: false,
         }
     },
     methods: {
         checkForm() {
             for (let i = 0; i < this.surveyList.length; i++) {
                 if(this.surveyList[i].new == true) {
-                    console.log('kill me')
-                    /* axios
+                    axios
                     .post(api + 'questions/', this.surveyList[i])
                     .then(result => {
                         if (this.surveyList[i].question_type == 1) {
@@ -93,12 +92,17 @@ export default defineComponent({
                                 choice: '',
                                 id_question: result.data.id
                             })
-                        }
-
+                        }   
                     })
                     .catch(error => {
                         console.log(error)
-                    }) */
+                    }) 
+                } else {
+                    axios
+                    .put(api + 'questions/' + this.surveyList[i].id + '/', this.surveyList[i])
+                    .catch(error => {
+                        console.log(error)
+                    }) 
                 }
             }
         },
@@ -131,11 +135,22 @@ export default defineComponent({
             }
         },
         addQuestion(type: string) {
-            if (this.changeTabC == 'student') {
-                this.surveyList.push({ question: "Pregunta", question_type: type, id_survey: this.updateSurveyIdS, new: true })
-            } else {
-                this.surveyList.push({ question: "Pregunta", question_type: type, id_survey: this.updateSurveyIdT, new: true })
+            var question = {
+                question: 'Pregunta', 
+                question_type: type, 
+                id_survey: 0, 
+                new: true,
+                index: this.surveyList.length
             }
+
+            if (this.changeTabC == 'student') {
+                question.id_survey = this.updateSurveyIdS
+            } else {
+                question.id_survey = this.updateSurveyIdT
+            }
+
+            this.surveyList.push(question)
+            console.log(question.index)
 
             if (this.surveyList.length > 1) {
                 const list = document.getElementsByClassName('delete-button')
@@ -145,23 +160,28 @@ export default defineComponent({
                 this.updateDeleteBtn = false
             }
         },
+
         deleteQuestion(place: number, questionId: number) {
+            if(!this.surveyList[place].new) {
+                axios
+                .delete(api + 'questions/' + questionId)
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+
             this.surveyList.splice(place, 1)
             if (this.surveyList.length < 2) {
                 const list = document.getElementsByClassName('delete-button')
                 list[0].style.opacity = 0.6
                 this.updateDeleteBtn = true
             }
-
-            axios
-                .delete(api + 'questions/' + questionId)
-                .catch(error => {
-                    console.log(error)
-                })
         },
+
         setIndex(place: number) {
             this.deleteIndex = place;
         },
+
         async getTutorSurvey() {
             await axios
                 .get(api + 'most_recent_survey_for_tutors/')
@@ -223,28 +243,41 @@ export default defineComponent({
             this.studentList = questionList
             this.surveyList = this.studentList;
         },
+
         setSelection(i: number) {
             this.selection = i;
         },
 
         addOption(event : Event, idQuestion : number) {
+            console.log(idQuestion)
             event.preventDefault()
             this.tempChoicesList.push({choice: 'op1', id_question: idQuestion})
         },
 
         deleteOption(event : Event, idOption : number) {
             event.preventDefault()
-            console.log(idOption)
             this.tempChoicesList.splice(idOption,1)
+        },
+
+        updateQuestionInput(index : number) {
+            const questionId = 'question' + index.toString()
+            const questionInput = document.getElementById(questionId) as HTMLInputElement;
+            this.surveyList[index].question = questionInput.value
+        },
+
+        updateChoiceInput(index : number) {
+            const choiceId = 'choice' + index.toString()
+            const choiceInput = document.getElementsByName(choiceId);
+            this.tempChoicesList[index].choice = choiceInput[0].value
         }
     },
 })
 </script>
 
 <template>
-    <!-- <header>
+    <header>
         <NavBar/>
-    </header> -->
+    </header>
     <div class="container">
         <div class="head-container">
             <div class="table-tabs">
@@ -259,8 +292,7 @@ export default defineComponent({
             <form>
                 <div class="survey-container" v-for="(subject, i) in surveyList" :key="i">
                     <div class="question-container" v-if="subject.question_type == '0'">
-                        <input type="text" for="openQuestion" class="question-input" :value="subject.question" required
-                            @input="checkForm">
+                        <input type="text" for="openQuestion" class="question-input" :value="subject.question" :id="'question' + i" @input="updateQuestionInput(i)" required>
                         <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3"
                             disabled></textarea>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
@@ -269,15 +301,14 @@ export default defineComponent({
                     </div>
                     <div class="question-container" v-if="subject.question_type == '1' && subject.new != true">
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
-                            required @input="checkForm"><br>
+                            required :id="'question' + i" @input="updateQuestionInput(i)"><br>
                         <div class="answer-container">
                             <div v-for="(choice, j) in choicesList" :key="j">
                                 <div v-if="choice.id_question == subject.id" class="form-check">
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i"
-                                        :id="'closedAnswer' + j" disabled>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" disabled>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         {{ choice.choice }}
-                                    </label> <br>
+                                    </label><br>
                                 </div>
                             </div>
                         </div>
@@ -285,27 +316,25 @@ export default defineComponent({
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
                             :disabled="disableDeleteBtn"></button>
                     </div>
-                    <div class="question-container" v-else-if="subject.question_type == '1' && subject.new == true">
+                    <div class="question-container" v-else-if="subject.question_type == '1' && subject.new == true" >
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
-                            required @input="checkForm"><br>
+                            required :id="'question' + i" @input="updateQuestionInput(i)"><br>
                         <div class="answer-container">
                             <div v-for="(choice, j) in tempChoicesList" :key="j">
-                                <div class="form-check" id="form-check-option">
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i"
-                                        :id="'closedAnswer' + j" :value="choice" disabled>
-                                    <input class="question-input" id="option-input" for="flexRadioDefault1">
+                                <div class="form-check" id="form-check-option" v-if="choice.id_question == subject.index">
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :value="choice" disabled>
+                                    <input class="question-input" id="option-input" for="flexRadioDefault1" :name="'choice' + j" @input="updateChoiceInput(j)">
                                     <button class="delete-button" id ="delete-option" type="button" @click="deleteOption($event,j)"></button><br>
                                 </div>
                             </div>
-                            <button @click="addOption($event, subject.id)" class="add-option-button"></button>
+                            <button @click="addOption($event, i)" class="add-option-button"></button>
                         </div>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
                             :disabled="disableDeleteBtn"></button>
                     </div>
                     <div class="question-container" v-if="subject.question_type == '2'">
-                        <input type="text" for="scaleQuestion" class="question-input" :value="subject.question" required
-                            @input="checkForm"><br>
+                        <input type="text" for="scaleQuestion" class="question-input" :value="subject.question" :id="'question' + i" @input="updateQuestionInput(i)" required><br>
                         <div class="scale-container">
                             <label for="scaleQuestion" class="form-step">1</label>
                             <label for="scaleQuestion" class="form-step">2</label>
@@ -316,7 +345,7 @@ export default defineComponent({
                         <div class="answer-container">
                             <div class="form-check-scale">
                                 <label class="form-check-label" for="flexRadioDefault1">
-                                    Nada Claro
+                                    En desacuerdo
                                 </label>
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer1"
                                     disabled>
@@ -329,7 +358,7 @@ export default defineComponent({
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="scaleAnswer5"
                                     disabled>
                                 <label class="form-check-label" for="flexRadioDefault1">
-                                    Muy Claro
+                                    De acuerdo
                                 </label>
                             </div>
                         </div>
@@ -338,8 +367,7 @@ export default defineComponent({
                             :disabled="disableDeleteBtn"></button>
                     </div>
                     <div class="question-container" v-if="subject.question_type == '3'">
-                        <input type="text" for="formFile" class="question-input" :value="subject.question" required
-                            @input="checkForm"><br>
+                        <input type="text" for="formFile" class="question-input" :value="subject.question" required :id="'question' + i" @input="updateQuestionInput(i)"><br>
                         <input class="form-control" type="file" id="formFile" disabled>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
