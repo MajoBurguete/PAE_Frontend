@@ -73,6 +73,7 @@ export default defineComponent({
             tutorList: [],
             studentList: [],
             choicesList: [],
+            tempChoicesList: [{choice: 'op1', id_question: 1}, {choice: 'op2', id_question: 1}],
             tab: "student",
             deleteIndex: -1,
             disableDeleteBtn: false
@@ -224,6 +225,11 @@ export default defineComponent({
         },
         setSelection(i: number) {
             this.selection = i;
+        },
+
+        addOption(event : Event, idQuestion : number) {
+            event.preventDefault()
+            this.tempChoicesList.push({choice: 'op1', id_question: idQuestion})
         }
     },
 })
@@ -255,7 +261,7 @@ export default defineComponent({
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
                             :disabled="disableDeleteBtn"></button>
                     </div>
-                    <div class="question-container" v-if="subject.question_type == '1'">
+                    <div class="question-container" v-if="subject.question_type == '1' && subject.new != true">
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
                             required @input="checkForm"><br>
                         <div class="answer-container">
@@ -268,6 +274,23 @@ export default defineComponent({
                                     </label> <br>
                                 </div>
                             </div>
+                        </div>
+                        <button class="delete-button" type="button" data-bs-toggle="modal"
+                            data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
+                            :disabled="disableDeleteBtn"></button>
+                    </div>
+                    <div class="question-container" v-else-if="subject.question_type == '1' && subject.new == true">
+                        <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
+                            required @input="checkForm"><br>
+                        <div class="answer-container">
+                            <div v-for="(choice, j) in tempChoicesList" :key="j">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i"
+                                        :id="'closedAnswer' + j" :value="choice" disabled>
+                                    <input class="form-check-label" for="flexRadioDefault1"><br>
+                                </div>
+                            </div>
+                            <button @click="addOption($event, subject.id)">añadir opcion</button>
                         </div>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
@@ -359,7 +382,7 @@ export default defineComponent({
                     <div class="button-modal-container">
                         <button class="close-button" data-bs-dismiss="modal" aria-label="Close">No, regresar</button>
                         <button class="confirm-button" data-bs-dismiss="modal" aria-label="Close"
-                            @click="deleteQuestion(deleteIndex, selection)">Si, eliminar</button>
+                            @click="deleteQuestion(deleteIndex, selection)">Sí, eliminar</button>
                     </div>
                 </div>
             </div>
