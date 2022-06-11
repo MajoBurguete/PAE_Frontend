@@ -86,12 +86,19 @@ export default defineComponent({
                     axios
                     .post(api + 'questions/', this.surveyList[i])
                     .then(result => {
-                        if (this.surveyList[i].question_type == 1) {
-                            axios
-                            .post(api + 'choices/', {
-                                choice: '',
-                                id_question: result.data.id
-                            })
+                        if(result.data.question_type == 1) {
+                            for(let j = 0; j < this.tempChoicesList.length; j++) {
+                                if(this.surveyList[i].index == this.tempChoicesList[j].id_question) {
+                                    axios
+                                    .post(api + 'choices/', {
+                                        choice: this.tempChoicesList[j].choice,
+                                        id_question: result.data.id
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    }) 
+                                }
+                            }
                         }   
                     })
                     .catch(error => {
@@ -150,7 +157,6 @@ export default defineComponent({
             }
 
             this.surveyList.push(question)
-            console.log(question.index)
 
             if (this.surveyList.length > 1) {
                 const list = document.getElementsByClassName('delete-button')
@@ -249,7 +255,6 @@ export default defineComponent({
         },
 
         addOption(event : Event, idQuestion : number) {
-            console.log(idQuestion)
             event.preventDefault()
             this.tempChoicesList.push({choice: 'op1', id_question: idQuestion})
         },
