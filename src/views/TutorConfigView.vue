@@ -2,7 +2,7 @@
     import axios from 'axios';
     import { defineComponent, ref } from "vue";
     import router from "../router"
-    import ScheduleItem from "../components/items/Schedule-Item.vue";
+    import ScheduleItem from "../components/items/Config-Schedule-Item.vue";
     import ClassModal from '../components/items/Class-Modal.vue';
     import NavBar from "../components/Navbar.vue"
 
@@ -14,6 +14,10 @@
             ScheduleItem,
             ClassModal,
             NavBar
+        },
+        
+        mounted() {
+            this.getTutorData()
         },
 
         data(){
@@ -61,7 +65,12 @@
                 await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
-                    this.tutorSchedule = result.data
+                    var aux = []
+                    for(var i = 0; i < result.data.length; i++){
+                        aux.push(result.data[i].day_hour);
+                    }
+
+                    this.tutorSchedule = aux;
                 })
                 .catch(error => {
                     console.log(error)
@@ -108,7 +117,13 @@
                 await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
-                    this.tutorSchedule = result.data
+                    var aux = [];
+
+                    for(var i = 0; i < result.data.length; i++){
+                        aux.push(result.data[i].day_hour);
+                    }
+
+                    this.tutorSchedule = aux;
                 })
                 .catch(error => {
                     console.log(error)
@@ -167,10 +182,6 @@
                 }
                 this.$forceUpdate()
             }
-        },
-
-        mounted() {
-            this.getTutorData()
         }
     })
 </script>
@@ -209,7 +220,7 @@
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
                         <h3 class="schedule-h3">Edita tu horario o Unidades de Formación cuando lo necesites y recuerda guardar tus cambios</h3>
-                        <ScheduleItem :userScheduledHours="tutorSchedule" fromHomeAdmin="true" lock-schedule="home-active" showDate="inactive"/>
+                        <ScheduleItem :scheduledHours="tutorSchedule" lock-schedule="home-active" showDate="inactive"/>
                         <!-- <ScheduleItem base-color="#769ABA" hover-color="#A9BFD2" lock-schedule="active" showDate="inactive"/> -->
                     </div>
                 </div>
