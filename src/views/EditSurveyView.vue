@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
+import router from '@/router';
 
 const api = 'http://localhost:8000/api/'
 
@@ -12,7 +13,6 @@ export default defineComponent({
                 return this.tab;
             },
             set(val) {
-                console.log(val)
                 this.tab = val;
             }
         },
@@ -80,10 +80,10 @@ export default defineComponent({
         }
     },
     methods: {
-        checkForm() {
+        async checkForm() {
             for (let i = 0; i < this.surveyList.length; i++) {
                 if(this.surveyList[i].new == true) {
-                    axios
+                    await axios
                     .post(api + 'questions/', this.surveyList[i])
                     .then(result => {
                         if(result.data.question_type == 1) {
@@ -105,13 +105,15 @@ export default defineComponent({
                         console.log(error)
                     }) 
                 } else {
-                    axios
+                    await axios
                     .put(api + 'questions/' + this.surveyList[i].id + '/', this.surveyList[i])
                     .catch(error => {
                         console.log(error)
                     }) 
                 }
             }
+
+            router.push('/admin-home')
         },
         toStudentsTab() {
             const studentTab = document.getElementById("students-tab") as HTMLInputElement;
@@ -167,7 +169,8 @@ export default defineComponent({
             }
         },
 
-        deleteQuestion(place: number, questionId: number) {
+        deleteQuestion(place: number, questionId: number, event: Event) {
+            event.preventDefault()
             if(!this.surveyList[place].new) {
                 axios
                 .delete(api + 'questions/' + questionId)
@@ -256,7 +259,7 @@ export default defineComponent({
 
         addOption(event : Event, idQuestion : number) {
             event.preventDefault()
-            this.tempChoicesList.push({choice: 'op1', id_question: idQuestion})
+            this.tempChoicesList.push({choice: '', id_question: idQuestion})
         },
 
         deleteOption(event : Event, idOption : number) {
@@ -328,11 +331,11 @@ export default defineComponent({
                             <div v-for="(choice, j) in tempChoicesList" :key="j">
                                 <div class="form-check" id="form-check-option" v-if="choice.id_question == subject.index">
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :value="choice" disabled>
-                                    <input class="question-input" id="option-input" for="flexRadioDefault1" :name="'choice' + j" @input="updateChoiceInput(j)">
+                                    <input class="question-input" id="option-input" for="flexRadioDefault1" :name="'choice' + j" @input="updateChoiceInput(j)" :value="choice.choice">
                                     <button class="delete-button" id ="delete-option" type="button" @click="deleteOption($event,j)"></button><br>
                                 </div>
                             </div>
-                            <button @click="addOption($event, i)" class="add-option-button"></button>
+                            <button @click="addOption($event, subject.index)" class="add-option-button"></button>
                         </div>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
@@ -382,7 +385,7 @@ export default defineComponent({
             </form>
         </div>
         <a @click="checkForm">
-            <h4>Guardar cambios</h4>
+            <h4>Guardar y salir</h4>
         </a>
         <div class="add-question-container">
             <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#question-modal"></button>
@@ -424,7 +427,7 @@ export default defineComponent({
                     <div class="button-modal-container">
                         <button class="close-button" data-bs-dismiss="modal" aria-label="Close">No, regresar</button>
                         <button class="confirm-button" data-bs-dismiss="modal" aria-label="Close"
-                            @click="deleteQuestion(deleteIndex, selection)">Sí, eliminar</button>
+                            @click="deleteQuestion(deleteIndex, selection, $event)">Sí, eliminar</button>
                     </div>
                 </div>
             </div>
