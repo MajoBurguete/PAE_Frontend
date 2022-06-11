@@ -3,6 +3,7 @@
     import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
     import router from "../router";
+    import emailjs from 'emailjs-com';
     /* const user = ref({
         username: '',
         password: ''
@@ -18,7 +19,8 @@
                 password: '',
                 token: localStorage.getItem('user-token') || null,
                 modalMessage: "Tu cuenta ha sido creada con éxito",
-                errorMessage: "Tu usuario o tu contraseña es incorrecto"
+                errorMessage: "Tu usuario o tu contraseña es incorrecto",
+                idRecoverPassword: ""
             }
         },
         mounted(){
@@ -302,6 +304,33 @@
                         form.classList.add('was-validated')
                     }, false)
                 }) */
+            },
+            async sendEmail() {
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    console.log(result.data.length)
+                    if (result.data.length > 0){
+                        console.log("Alo")
+                        var templateParams = {
+                            user_email: result.data[0].id__email,
+                            link: 'localhost:3000/recover-password/LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
+                        };
+                        emailjs
+                            .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
+                            .then(response => {
+                                console.log('SUCCESS!', response.status, response.text);
+                            }, function (error) {
+                                console.log('FAILED...', error);
+                            });
+                    }
+                    else {
+                        console.log("Nel")
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
         }
     })
@@ -309,6 +338,7 @@
 
 
 <template>
+
     <body>
         <div class="flexContainer">
             <div class="section-login" id="section-login">
@@ -318,22 +348,26 @@
                     <h3> ¿Aún no te has registrado? </h3>
                 </div>
                 <div class="form-container" id="form-container">
-                    <div class="account-selection" id="account-selection"> 
+                    <div class="account-selection" id="account-selection">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground" @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
-                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img" alt="...">
+                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground"
+                                        @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
+                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img"
+                                            alt="...">
                                         <div class="card-body" id="card-student-body">
                                             <h5 class="card-title" id="student-title">Estudiante</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground" @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
-                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img" alt="...">
+                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground"
+                                        @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
+                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img"
+                                            alt="...">
                                         <div class="card-body" id="card-tutor-body">
                                             <h5 class="card-title" id="tutor-title">Asesor</h5>
                                         </div>
@@ -347,31 +381,35 @@
 
             <div class="section-signup" id="section-signup">
                 <div class="container-login" id="container-login">
-                    <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
+                    <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate @submit.prevent="checkForm">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" id="user_email_login" v-model="username" placeholder="A0XXXXXXX"  @input="checkForm" required>
+                                <input type="text" class="form-control" id="user_email_login" v-model="username"
+                                    placeholder="A0XXXXXXX" @input="checkForm" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="user_password_login"  v-model="password" placeholder="Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="user_password_login"
+                                        v-model="password" placeholder="Contraseña" @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                                alt="visibility eye" id="visibility_password_image_login">
                                         </span>
                                     </div>
                                 </div>
                                 <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
-                            <a class="login-question-h3" data-bs-toggle="modal" data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
+                            <a class="login-question-h3" data-bs-toggle="modal"
+                                data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
                         </div>
                         <button id="signin-button" type="submit" @click="login">Iniciar Sesión</button>
                     </div>
@@ -391,14 +429,17 @@
         <div class="modal fade" id="password-modal" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
-                    <h4>Ingresa tu correo institucional para recuperar tu cuenta</h4>
+                    <h4>Ingresa tu matrícula para recuperar tu cuenta</h4>
                     <form>
-                        <label class="modal-label">correo</label>
-                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required @input="checkForm">
+                        <label class="modal-label">Matrícula</label>
+                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX"
+                            pattern="^(A0)[0-9]{7}$" v-model="idRecoverPassword" required @input="checkForm">
                     </form>
                     <div class="password-button-container">
-                        <button class="return-password-button" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
-                        <button class="new-password-button" type="submit" data-bs-target="#password-modal1" data-bs-toggle="modal">Recuperar Cuenta</button>
+                        <button class="return-password-button" data-bs-dismiss="modal"
+                            aria-label="Close">Regresar</button>
+                        <button class="new-password-button" type="submit" data-bs-target="#password-modal1"
+                            data-bs-toggle="modal" @click="sendEmail">Recuperar Cuenta</button>
                     </div>
                 </div>
             </div>
@@ -407,7 +448,8 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
                     <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
-                    <button class="return-password-button-modal" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
+                    <button class="return-password-button-modal" data-bs-dismiss="modal"
+                        aria-label="Close">Regresar</button>
                 </div>
             </div>
         </div>

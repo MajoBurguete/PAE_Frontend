@@ -138,28 +138,246 @@
                         form.classList.add('was-validated')
                     }, false)
                 }) */
+            },
+            async recoverPassword() {
+                var limit1 = -1
+                var flag1 = 0
+                var limit2 = -1
+                var flag2 = 0
+                var limit3 = -1
+                var flag3 = 0
+                var limit4 = -1
+                var flag4 = 0
+                var limit5 = -1
+                var flag5 = 0
+                var limit6 = -1
+                var flag6 = 0
+                var limit7 = -1
+                var flag7 = 0
+                var limit8 = -1
+                var flag8 = 0
+                var flag9 = 0
+                await axios
+                .get(api + "find_user/?schoolID=" + this.username)
+                .then(async result => {
+                    result.data[0].id__username = "TemporalUsername"
+                    const userID = result.data[0].id
+                    await axios
+                    .put(api + "users/" + userID + "/", {
+                        id: userID,
+                        username: result.data[0].id__username,
+                        password: result.data[0].id__password,
+                        email: result.data[0].id__email,
+                    })
+                    .then(async result2 => {
+                        await axios
+                        .post(api + "users/", {
+                            username: this.username,
+                            password: this.password,
+                            email: result2.data.email,
+                            first_name: result2.data.first_name
+                        })
+                        .then(async result3 => {
+                            const newUserID = result3.data.id
+                            await axios
+                            .post(api + "pae_users/", {
+                                id: newUserID,
+                                semester: result.data[0].semester,
+                                career: result.data[0].career,
+                                user_type: result.data[0].user_type,
+                                status: result.data[0].status
+                            })
+                            .then(async result4 => {
+                                await axios
+                                .get(api + "subjects_by_user/?user=" + userID)
+                                .then(async result5 => {
+                                    limit1 = result5.data.length
+                                    for (let i = 0; i < result5.data.length; i ++) {
+                                        result5.data[i].id_tutor = newUserID
+                                        await axios
+                                        .put(api + "tutor_subjects/" + result5.data[i].id + "/", result5.data[i])
+                                        .then(async result6 => {
+                                            flag1 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "schedule_by_tutor/?tutor=" + userID)
+                                .then(async result7 => {
+                                    limit2 = result7.data.length
+                                    for (let i = 0; i < result7.data.length; i ++) {
+                                        result7.data[i].id_user = newUserID
+                                        await axios
+                                        .put(api + "schedules/" + result7.data[i].id + "/", result7.data[i])
+                                        .then(async result8 => {
+                                            flag2 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "answers_by_user/?student=" + userID)
+                                .then(async result9 => {
+                                    limit3 = result9.data.length
+                                    for (let i = 0; i < result9.data.length; i ++) {
+                                        result9.data[i].id_student = newUserID
+                                        await axios
+                                        .put(api + "answers/" + result9.data[i].id + "/", result9.data[i])
+                                        .then(async result10 => {
+                                            flag3 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "answers_by_user/?tutor=" + userID)
+                                .then(async result11 => {
+                                    limit4 = result11.data.length
+                                    for (let i = 0; i < result11.data.length; i ++) {
+                                        result11.data[i].id_tutor = newUserID
+                                        await axios
+                                        .put(api + "answers/" + result11.data[i].id + "/", result11.data[i])
+                                        .then(async result12 => {
+                                            flag4 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "files_answers_about_user/?student=" + userID)
+                                .then(async result13 => {
+                                    limit5 = result13.data.length
+                                    for (let i = 0; i < result13.data.length; i ++) {
+                                        result13.data[i].id_student = newUserID
+                                        await axios
+                                        .put(api + "answer_files/" + result13.data[i].id + "/", result13.data[i])
+                                        .then(async result14 => {
+                                            flag5 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "files_answers_about_user/?tutor=" + userID)
+                                .then(async result15 => {
+                                    limit6 = result15.data.length
+                                    for (let i = 0; i < result15.data.length; i ++) {
+                                        result15.data[i].id_tutor = newUserID
+                                        await axios
+                                        .put(api + "answer_files/" + result15.data[i].id + "/", result15.data[i])
+                                        .then(async result16 => {
+                                            flag6 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "sessions_by_user/?student=" + userID)
+                                .then(async result17 => {
+                                    limit7 = result17.data.length
+                                    for (let i = 0; i < result17.data.length; i ++) {
+                                        result17.data[i].id_student = newUserID
+                                        await axios
+                                        .put(api + "sessions/" + result17.data[i].id + "/", result17.data[i])
+                                        .then(async result18 => {
+                                            flag7 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                await axios
+                                .get(api + "sessions_by_user/?tutor=" + userID)
+                                .then(async result19 => {
+                                    limit8 = result19.data.length
+                                    for (let i = 0; i < result19.data.length; i++) {
+                                        result19.data[i].id_tutor = newUserID
+                                        await axios
+                                        .put(api + "sessions/" + result19.data[i].id + "/", result19.data[i])
+                                        .then(async result20 => {
+                                            flag8 ++
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                    }
+                                })
+                                while(flag9 != 1) {
+                                    if (flag1 == limit1 && flag2 == limit2 && flag3 == limit3 && flag4 == limit4 && flag5 == limit5 && flag6 == limit6 && flag7 == limit7 && flag8 == limit8) {
+                                        await axios
+                                        .delete(api + "users/" + userID + "/")
+                                        .then(result21 => {
+                                            console.log("Todo bien al parecer...")
+                                        })
+                                        .catch(error => {
+                                            console.log(error)
+                                        })
+                                        flag9 = 1
+                                    }
+                                }
+                            })
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
-        }
-    })
+    }})
 </script> 
 <template>
+
     <body>
         <div class="flexContainer">
             <div class="section-signup" id="section-signup">
                 <div class="container-login" id="container-login">
-                    <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
+                    <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                 </div>
-                <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate @submit.prevent="checkForm">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
+                                <label class="form-label">Matrícula</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" v-model="username"
+                                        placeholder="A0XXXXXXX"
+                                        pattern="^(A0)[0-9]{7}$"
+                                        @input="checkForm" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Nueva Contraseña</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="new_password" v-model="username" placeholder="Nueva Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="new_password" v-model="password"
+                                        placeholder="Nueva Contraseña"
+                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$"
+                                        onkeyup="form.confirm_password.pattern = this.value;" @input="checkForm"
+                                        required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showNewPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_new_password_image">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                                alt="visibility eye" id="visibility_new_password_image">
                                         </span>
                                     </div>
                                 </div>
@@ -167,17 +385,20 @@
                             <div class="mb-3">
                                 <label class="form-label">Confirma Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="confirm_password"  v-model="password" placeholder="Confirma Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="confirm_password" v-model="password"
+                                        placeholder="Confirma Contraseña"
+                                        onkeyup="this.pattern = form.new_password.value;" @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showConfirmPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                                alt="visibility eye" id="visibility_confirm_password_image">
                                         </span>
                                     </div>
                                 </div>
                                 <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
                         </div>
-                        <button id="signin-button" type="submit" @click="login">Cambiar Contraseña</button>
+                        <button id="signin-button" type="submit" @click="recoverPassword">Cambiar Contraseña</button>
                     </div>
                 </form>
             </div>
@@ -254,7 +475,7 @@
         width: 25vw;
     }
 
-    /*Flexbox which contains two divs (section-login y section-signup*/
+    /*Flexbox which contains two divs (section-recoverPassword y section-signup*/
     .flexContainer {
         display: flex;
         background-image: url("src/assets/img/patternF7.png");
@@ -263,7 +484,7 @@
         background-size: cover;
     }
 
-    .section-login {
+    .section-recoverPassword {
         box-sizing: border-box;
         flex: 1;
         width: 40vw;
@@ -285,12 +506,12 @@
         position: relative;
     }
 
-    .login-message {
+    .recoverPassword-message {
         text-align:end;
         margin: 0 -8vw 0 0;
     }
-    /*Contenedor del lado izquierdo (container-login) */
-    .container-login{
+    /*Contenedor del lado izquierdo (container-recoverPassword) */
+    .container-recoverPassword{
         margin: 32vh 0 0 0;
         right: -30vw;
         box-sizing: border-box;
@@ -299,7 +520,7 @@
         padding: 5vh;
     }
 
-    .container-login {
+    .container-recoverPassword {
         position: absolute;
         width: 90%;
         visibility: solid;
