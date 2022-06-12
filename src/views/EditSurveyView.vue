@@ -297,7 +297,7 @@ export default defineComponent({
             </div>
         </div>
         <div class="form-container">
-            <form class="needs-validation" novalidate @submit.prevent="checkForm">
+            <form  name="form" class="needs-validation" id="form-edit" novalidate @submit.prevent="checkForm">
                 <div class="survey-container" v-for="(subject, i) in surveyList" :key="i">
                     <div class="question-container" v-if="subject.question_type == '0'">
                         <input type="text" for="openQuestion" class="question-input" :value="subject.question" :id="'question' + i" @input="updateQuestionInput(i)" required>
@@ -309,7 +309,7 @@ export default defineComponent({
                     </div>
                     <div class="question-container" v-if="subject.question_type == '1' && subject.new != true">
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
-                            required :id="'question' + i" @input="updateQuestionInput(i)"><br>
+                             :id="'question' + i" @input="updateQuestionInput(i)" required><br>
                         <div class="answer-container">
                             <div v-for="(choice, j) in choicesList" :key="j">
                                 <div v-if="choice.id_question == subject.id" class="form-check">
@@ -326,12 +326,12 @@ export default defineComponent({
                     </div>
                     <div class="question-container" v-else-if="subject.question_type == '1' && subject.new == true" >
                         <input type="text" for="closedQuestion" class="question-input" :value="subject.question"
-                            required :id="'question' + i" @input="updateQuestionInput(i)"><br>
+                             :id="'question' + i" @input="updateQuestionInput(i)" required><br>
                         <div class="answer-container">
                             <div v-for="(choice, j) in tempChoicesList" :key="j">
                                 <div class="form-check" id="form-check-option" v-if="choice.id_question == subject.index">
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :value="choice" disabled>
-                                    <input class="question-input" id="option-input" for="flexRadioDefault1" :name="'choice' + j" @input="updateChoiceInput(j)" :value="choice.choice">
+                                    <input class="question-input" id="option-input" for="flexRadioDefault1" :name="'choice' + j" @input="updateChoiceInput(j)" :value="choice.choice" required>
                                     <button class="delete-button" id ="delete-option" type="button" @click="deleteOption($event,j)"></button><br>
                                 </div>
                             </div>
@@ -375,7 +375,7 @@ export default defineComponent({
                             :disabled="disableDeleteBtn"></button>
                     </div>
                     <div class="question-container" v-if="subject.question_type == '3'">
-                        <input type="text" for="formFile" class="question-input" :value="subject.question" required :id="'question' + i" @input="updateQuestionInput(i)"><br>
+                        <input type="text" for="formFile" class="question-input" :value="subject.question" :id="'question' + i" @input="updateQuestionInput(i)" required><br>
                         <input class="form-control" type="file" id="formFile" disabled>
                         <button class="delete-button" type="button" data-bs-toggle="modal"
                             data-bs-target="#delete-modal" @click="setIndex(i), setSelection(subject.id)"
@@ -490,6 +490,13 @@ export default defineComponent({
     padding: 1.5vh 22vw;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+}
+
 .question-container {
     font-family: "Catamaran";
     font-weight: medium;
@@ -507,6 +514,7 @@ export default defineComponent({
 #save-exit-btn{
     font-family: "Ubuntu";
     font-weight: normal;
+    width: 20vw;
     color: white;
     font-size: 3.5vh;
     padding: 1vh 4vw;
