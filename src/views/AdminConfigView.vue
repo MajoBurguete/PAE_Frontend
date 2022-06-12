@@ -464,23 +464,6 @@
                     id.disabled = true
                     id.placeholder = this.selection.id
                     name.placeholder = this.selection.name
-                    
-                    for(var i = 0; i < 9; i++) {
-                        if(i+1 == this.selection.semester) {
-                            semester.selectedIndex = i;
-                            break; 
-                        }
-                    }
-                    for(var i = 0; i < this.careerList.length; i++) {
-                        const careerOption = document.getElementById('career-option' + i) as HTMLInputElement;
-                        for(var j = 0; j < this.careerList.length; j++) {
-                            console.log(this.selection.id_career[i], careerOption.value)
-                            if(careerOption.value == this.selection.id_career[j]) {
-                                career.selectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
                 }
                 else {
                     this.subjectSwitch = 0;
