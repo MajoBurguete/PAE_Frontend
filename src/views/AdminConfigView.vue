@@ -335,7 +335,6 @@
                 this.clearInputs()
             },
             async editAdmin() {
-                const input = document.getElementById('admin-name') as HTMLInputElement;
                 const item = this.adminList[this.index]
                 var info = {
                     'first_name': this.AdminName,
@@ -357,7 +356,9 @@
             },
             async saveAdmin() {
                 console.log(this.adminSwitch)
-                if(this.adminSwitch == 1){
+                const input = document.getElementById('admin_name') as HTMLInputElement;
+                if(this.adminSwitch == 1 && input.value != ""){
+                    console.log("Jajajaja")
                     this.editAdmin()
                 }
                 else {
@@ -411,6 +412,7 @@
                 }
                 subjectCareerList.push(this.subjectCareer)
                 if (this.subjectSwitch == 1) {
+                    console.log("UwuUwu")
                     axios
                     .put(api + "subjects/" + this.selection.id + "/", info)
                     .then(result => {
@@ -506,7 +508,7 @@
                     id.disabled = true
                     password.disabled = true
                     email.disabled = true
-                    id.placeholder = this.selection.id
+                    id.placeholder = this.selection.id__username
                     password.placeholder = "************"
                     password.type = "text"
                     email.placeholder = this.selection.id__email
