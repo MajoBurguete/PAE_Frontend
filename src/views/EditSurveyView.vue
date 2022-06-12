@@ -55,7 +55,7 @@ export default defineComponent({
             set(val) {
                 this.surveyIdS = val;
             }
-        },
+        }
     },
     components: {
         NavBar
@@ -76,7 +76,7 @@ export default defineComponent({
             tempChoicesList: [],
             tab: "student",
             deleteIndex: -1,
-            disableDeleteBtn: false,
+            disableDeleteBtn: false
         }
     },
     methods: {
@@ -297,7 +297,7 @@ export default defineComponent({
             </div>
         </div>
         <div class="form-container">
-            <form>
+            <form class="needs-validation" novalidate @submit.prevent="checkForm">
                 <div class="survey-container" v-for="(subject, i) in surveyList" :key="i">
                     <div class="question-container" v-if="subject.question_type == '0'">
                         <input type="text" for="openQuestion" class="question-input" :value="subject.question" :id="'question' + i" @input="updateQuestionInput(i)" required>
@@ -382,11 +382,11 @@ export default defineComponent({
                             :disabled="disableDeleteBtn"></button>
                     </div>
                 </div>
+                <button id="save-exit-btn" type="submit">
+                    Guardar y salir
+                </button>
             </form>
         </div>
-        <a @click="checkForm">
-            <h4>Guardar y salir</h4>
-        </a>
         <div class="add-question-container">
             <button class="add-question-button" data-bs-toggle="modal" data-bs-target="#question-modal"></button>
             <h1>añadir pregunta</h1>
@@ -502,6 +502,20 @@ export default defineComponent({
     margin-top: 2vh;
     padding-bottom: 0;
     width: 55vw;
+}
+
+#save-exit-btn{
+    font-family: "Ubuntu";
+    font-weight: normal;
+    color: white;
+    font-size: 3.5vh;
+    padding: 1vh 4vw;
+    border-radius: 15px;
+    border: 2.5px solid #00000000;
+    background-color: #26408B;
+    box-sizing: border-box;
+    margin: 3vh;
+    text-decoration: none;
 }
 
 .answer-container {
@@ -636,6 +650,7 @@ a {
     margin: 3vh;
     text-decoration: none;
 }
+
 h4 {
     color: white;
 }
