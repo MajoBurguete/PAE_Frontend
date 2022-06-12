@@ -55,17 +55,27 @@ export default defineComponent({
             set(val) {
                 this.surveyIdS = val;
             }
+        },
+        isEmpty: {
+            get() {
+                return this.empty;
+            },
+            set(val) {
+                this.empty = val;
+            }
         }
     },
     components: {
         NavBar
     },
     mounted() {
+        console.log(this.isEmpty)
         this.getStudentSurvey()
         this.getTutorSurvey()
     },
     data() {
         return {
+            empty: true,
             selection: -1,
             surveyIdT: -1,
             surveyIdS: -1,
@@ -382,7 +392,7 @@ export default defineComponent({
                             :disabled="disableDeleteBtn"></button>
                     </div>
                 </div>
-                <button id="save-exit-btn" type="submit">
+                <button id="save-exit-btn" type="submit" :disabled="isEmpty">
                     Guardar y salir
                 </button>
             </form>
@@ -767,5 +777,10 @@ h3 {
     display: flex;
     gap: 2vw;
     margin-top: 2vh;
+}
+
+button:disabled {
+    background-color: #3d46608d;
+    color: #ffffffaa;
 }
 </style>
