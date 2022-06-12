@@ -220,7 +220,7 @@ export default defineComponent({
                     <div class="answer-container">
                         <div class="form-check-scale">
                             <label class="form-check-label" for="flexRadioDefault1">
-                            Nada Claro
+                            En desacuerdo
                             </label>
                             <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" required>
                             <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" required>
@@ -228,7 +228,7 @@ export default defineComponent({
                             <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" required>
                             <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" required>
                             <label class="form-check-label" for="flexRadioDefault1">
-                            Muy Claro
+                            De acuerdo
                             </label>
                         </div>
                     </div>
@@ -246,7 +246,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+
 .container{
+    margin-top: 3vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -287,7 +290,7 @@ export default defineComponent({
     flex-direction: row;
 }
 .scale-container{
-    margin: 0vh 0vw;
+    margin: 0vh 0vw 0 1.5vw;
     text-align: center;
 }
 .form-check-input{
@@ -310,6 +313,13 @@ export default defineComponent({
 .form-check-label{
     font-size: 2.5vh;
     align-content: center;
+}
+form {
+    margin-top: 4vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
 }
 .form-label{
     font-size: 3vh;
