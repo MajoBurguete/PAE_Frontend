@@ -177,7 +177,7 @@ export default defineComponent({
                     })
                 }
             }
-
+            localStorage.setItem("userStatus", "0")
             router.push('/home')
         }
     }
