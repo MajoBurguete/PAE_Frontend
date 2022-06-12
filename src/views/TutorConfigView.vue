@@ -28,6 +28,10 @@
                 hours: "",
                 classList: [],
                 tutorS: [],
+                updt: false,
+                firstPass: true,
+                classesComplete: false,
+                scheduleComplete: false
             }
         },
 
@@ -47,7 +51,45 @@
                 set(val){
                     this.classList = val;
                 }
+            },
+            updateVarN: {
+                get(){
+                    return this.updt;
+                },
+                set(val){
+                    this.updt = val;
+                }
+            },
+            updateFirstP: {
+                get(){
+                    return this.firstPass;
+                },
+                set(val){
+                    this.firstPass = val;
+                }
+            },
+
+            changeClassFiltStatus: {
+                get(){
+                    return this.classesComplete;
+                },
+                set(val){
+                    this.classesComplete = val;
+                }
+            },
+
+            changeScheduleStatus: {
+                get(){
+                    return this.scheduleComplete;
+                },
+                set(val){
+                    this.scheduleComplete = val;
+                }
             }
+        },
+
+        updated(){
+            console.log("updateVarN: " + this.updateVarN)
         },
 
         methods: {
@@ -104,6 +146,8 @@
                 }
 
                 localStorage.setItem("classesSelected", JSON.stringify(sk))
+
+                this.updateVarN = true;
 
                 await axios
                 .get(api + 'service_hours/?tutor=' + user)
@@ -176,10 +220,42 @@
                     while (flag3 != 1) {
                         if (flag1 == limit1 && flag2 == limit2) {
                             this.getSubjectsAndSchedule()
+                            console.log("khe")
                             flag3 = 1
                         }
                     }
                 }
+
+                this.returnToOriginalClass();
+            },
+
+            receivedUpdateModal(){
+                this.updateVarN = false;
+                this.$forceUpdate();
+            },
+
+            classFilterCompleteOnChange(){
+                this.changeClassFiltStatus = true;
+                this.$forceUpdate();
+            },
+            
+            classFilterIncompleteOnChange(){
+                this.changeClassFiltStatus = false;
+                this.$forceUpdate();
+            },
+
+             scheduleCompleteOnChange(){
+                this.changeScheduleStatus = true;
+                this.$forceUpdate();
+            },
+
+            scheduleIncompleteOnChange(){
+                this.changeScheduleStatus = false;
+                this.$forceUpdate();
+            },
+
+            returnToOriginalClass(){
+                this.updateVarN = true;
                 this.$forceUpdate()
             }
         }
@@ -220,15 +296,14 @@
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
                         <h3 class="schedule-h3">Edita tu horario o Unidades de Formación cuando lo necesites y recuerda guardar tus cambios</h3>
-                        <ScheduleItem :scheduledHours="tutorSchedule" lock-schedule="home-active" showDate="inactive"/>
-                        <!-- <ScheduleItem base-color="#769ABA" hover-color="#A9BFD2" lock-schedule="active" showDate="inactive"/> -->
+                        <ScheduleItem v-on:schedule-complete = "scheduleCompleteOnChange" v-on:schedule-incomplete = "scheduleIncompleteOnChange" :scheduledHours="tutorSchedule" lock-schedule="home-active" showDate="inactive"/>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+            <div class="modal fade" id="class-modal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
-                        <ClassModal/>
+                        <ClassModal v-on:disable-classes="classFilterIncompleteOnChange" v-on:enable-classes="classFilterCompleteOnChange" v-on:modal-update="receivedUpdateModal" v-on:cancel-click-btn="returnToOriginalClass" :callUpdate="updateVarN"/>
                     </div>
                 </div>
             </div>
