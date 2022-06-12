@@ -85,7 +85,7 @@ const router = createRouter({
       component: () => import('../views/SurveyRecordView.vue')
     },
     {
-      path: "/recover-password/LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998",
+      path: "/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998",
       name: "recoverPassword",
       component: () => import('../views/RecoverPasswordView.vue')
     }

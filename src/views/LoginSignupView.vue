@@ -12,9 +12,11 @@
     const api = 'http://localhost:8000/api/'
     declare var bootstrap: any;
 
+
     export default defineComponent({
         data() {
             return {
+                idMatch: true,
                 username: '',
                 password: '',
                 token: localStorage.getItem('user-token') || null,
@@ -37,6 +39,9 @@
                 localStorage.setItem("displayToast", "empty")
             }
         },
+        updated(){
+            this.checkMatch()
+        },
         computed: {
             updateModalMess: {
                 get(){
@@ -56,6 +61,22 @@
             },
         },
         methods:{
+            async checkMatch(){
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    console.log(result.data.length)
+                    const message = document.getElementById('no-match') as HTMLInputElement;
+                    if (result.data.length > 0){
+                        message.style.display = "none"
+                        this.idMatch = false
+                    }
+                    else{
+                        message.style.display = "flex"
+                        this.idMatch = true;
+                    }
+                })
+            },
             async detectUserType(){
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.username)
@@ -305,28 +326,25 @@
                     }, false)
                 }) */
             },
-            async sendEmail() {
+            async sendEmail(event: Event) {
+                event.preventDefault()
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
                 .then(result => {
                     console.log(result.data.length)
-                    if (result.data.length > 0){
-                        console.log("Alo")
-                        var templateParams = {
-                            user_email: result.data[0].id__email,
-                            link: 'localhost:3000/recover-password/LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
-                        };
-                        emailjs
-                            .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
-                            .then(response => {
-                                console.log('SUCCESS!', response.status, response.text);
-                            }, function (error) {
-                                console.log('FAILED...', error);
-                            });
-                    }
-                    else {
-                        console.log("Nel")
-                    }
+                    var templateParams = {
+                        user_email: result.data[0].id__email,
+                        link: 'localhost:3000/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
+                    };
+                    emailjs
+                        .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
+                        .then(response => {
+                            console.log('SUCCESS!', response.status, response.text);
+                        }, function (error) {
+                            console.log('FAILED...', error);
+                        });
+
+                    
                 })
                 .catch(error => {
                     console.log(error)
@@ -430,26 +448,27 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
                     <h4>Ingresa tu matrícula para recuperar tu cuenta</h4>
-                    <form>
+                    <form class="needs-validation" novalidate>
                         <label class="modal-label">Matrícula</label>
+                        <h6 id="no-match"> No existe un perfil registrado con esa matrícula </h6>
                         <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX"
-                            pattern="^(A0)[0-9]{7}$" v-model="idRecoverPassword" required @input="checkForm">
+                            v-model="idRecoverPassword" required @input="checkForm">
+                        <div class="password-button-container">
+                            <button class="return-password-button" data-bs-dismiss="modal"
+                                aria-label="Close">Regresar</button>
+                            <button class="new-password-button" type="submit" data-bs-target="#message-modal"
+                                data-bs-toggle="modal" @click="sendEmail($event)" :disabled="idMatch">Recuperar Cuenta</button>
+                        </div>
                     </form>
-                    <div class="password-button-container">
-                        <button class="return-password-button" data-bs-dismiss="modal"
-                            aria-label="Close">Regresar</button>
-                        <button class="new-password-button" type="submit" data-bs-target="#password-modal1"
-                            data-bs-toggle="modal" @click="sendEmail">Recuperar Cuenta</button>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="password-modal1" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
+        <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="messageModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
                     <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
                     <button class="return-password-button-modal" data-bs-dismiss="modal"
-                        aria-label="Close">Regresar</button>
+                        aria-label="Close" @click="createUser">Regresar</button>
                 </div>
             </div>
         </div>
@@ -513,6 +532,16 @@
     img{
         width: 35%;
         height: 35%;
+    }
+    button:disabled {
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+    h6 {
+        color: rgb(192, 21, 21);
+        display: none;
+        font-family: "Catamaran";
+        font-weight: lighter;
     }
     h4 {
         font-family: 'Montserrat';

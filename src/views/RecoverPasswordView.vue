@@ -10,10 +10,12 @@
 
     const api = 'http://localhost:8000/api/'
     declare var bootstrap: any;
+    let dsb = true
 
     export default defineComponent({
         data() {
             return {
+                disabledF: true,
                 username: '',
                 password: '',
                 token: localStorage.getItem('user-token') || null,
@@ -21,6 +23,30 @@
                 errorMessage: "Tu usuario o tu contraseña es incorrecto"
             }
         },
+        /* updated(){
+            const forms = document.querySelectorAll('.needs-validation');
+            console.log("checking")
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                console.log("checking")
+                let newPassword = form.new_password
+                let confirmPassword = form.confirm_password
+                if ((form.id_input.checkValidity() && form.new_password.checkValidity() && form.confirm_password.checkValidity() && newPassword.value == confirmPassword.value)) {
+                    dsb = false
+                    console.log("all good")
+                }
+                else {
+                    dsb = true
+                    console.log("nope")
+                }
+
+                form.classList.add('was-validated')
+            })
+
+            this.isDisabled = dsb;
+        }, */
         mounted(){
             let messToast = localStorage.getItem("displayToast");
             var myModal = new bootstrap.Modal(document.getElementById('feedback-modal'))
@@ -36,6 +62,14 @@
             }
         },
         computed: {
+            isDisabled: {
+                get(){
+                    return this.disabledF;
+                },
+                set(val){
+                    this.disabledF = val;
+                }
+            },
             updateModalMess: {
                 get(){
                     return this.modalMessage;
@@ -121,25 +155,9 @@
                 userPassword.value = "";
 
             },
-            checkForm(){
-                /* 'use strict'
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
-
-                // Loop over them and prevent submission
-                Array.prototype.slice.call(forms)
-                    .forEach(function (form) {
-                    form.addEventListener('submit', function (event: Event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                }) */
-            },
             async recoverPassword() {
+                const backMessage = document.getElementById('back-message') as HTMLInputElement;
+                backMessage.style.display = "flex"
                 var limit1 = -1
                 var flag1 = 0
                 var limit2 = -1
@@ -329,6 +347,7 @@
                                         flag9 = 1
                                     }
                                 }
+                                backMessage.textContent = "Tu contraseña a sido cambiada de manera exitosa"
                             })
                         })
                         .catch(error => {
@@ -353,27 +372,26 @@
                 <div class="container-login" id="container-login">
                     <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                 </div>
-                <form class="needs-validation" novalidate @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate id="new-form">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
+                        <h4 id="back-message">Tu solicitud se esta procesando</h4>
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" v-model="username"
-                                        placeholder="A0XXXXXXX"
-                                        pattern="^(A0)[0-9]{7}$"
-                                        @input="checkForm" required>
+                                        placeholder="A0XXXXXXX" minlength="1" maxlength="10"
+                                        id="id_input" required>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Nueva Contraseña</label>
+                                <h2>Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número.</h2>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="new_password" v-model="password"
                                         placeholder="Nueva Contraseña"
-                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$"
-                                        onkeyup="form.confirm_password.pattern = this.value;" @input="checkForm"
-                                        required>
+                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showNewPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid"
@@ -384,10 +402,10 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Confirma Contraseña</label>
+                                <h2>Ambos campos deben de coincidir.</h2>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="confirm_password" v-model="password"
-                                        placeholder="Confirma Contraseña"
-                                        onkeyup="this.pattern = form.new_password.value;" @input="checkForm" required>
+                                        placeholder="Confirma Contraseña" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showConfirmPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid"
@@ -410,10 +428,19 @@
     /* General styles */
     h1 {
         color: white;
+        position: fixed;
         font-size: 9vh;
         font-family: "Montserrat";
         font-weight: bold;
+        right: 4vw;
+        top: 40vh;
         margin: 0 0 5vh 0;
+    }
+    h2 {
+        font-family: "Catamaran";
+        font-weight: bold;
+        color:#0f2051;
+        font-size: 1.7vh;
     }
     h3 {
         font-family: "Montserrat";
@@ -421,6 +448,14 @@
         font-size: 2vh;
         color: white;
         margin: 1.5vh 0 0 0;
+    }
+    h4 {
+        font-family: "Montserrat";
+        font-weight: bold;
+        display: none;
+        font-size: 3.5vh;
+        color:#26408B;
+        margin: 1.5vh 0 -6vh 0;
     }
     button {
         font-family: "Ubuntu";
@@ -443,7 +478,7 @@
         height: 35%;
     }
     input {
-        width: 25vw;
+        width: 40vw;
         height: 6vh;
         border: 2px solid;
         border-radius: 1vh;
@@ -472,7 +507,7 @@
         align-items: center;
         justify-items: center;
         margin: 1.3vh 0 0 0;
-        width: 25vw;
+        width: 30vw;
     }
 
     /*Flexbox which contains two divs (section-recoverPassword y section-signup*/
@@ -528,7 +563,7 @@
 
 
     .login-form {
-        margin: 12vh 0 0 0;
+        margin: 10vh 0 0 0;
         display: flex;
         align-items: center;
         flex-direction: column;
@@ -555,6 +590,10 @@
         box-shadow: 0px 0px 0px 4px #7690CE;
         transition: all 0.3s ease 0s;
     }
+     #signin-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
 
     .login-h3,
     label {
@@ -562,7 +601,7 @@
         font-weight: bold;
         color:#26408B;
         font-size: 2.5vh;
-        margin: 3.5vh 0 0 0;
+        margin: 3vh 0 0 0;
     }
 
     .error-message{
