@@ -75,7 +75,7 @@ export default defineComponent({
     },
     data() {
         return {
-            empty: true,
+            empty: false,
             selection: -1,
             surveyIdT: -1,
             surveyIdS: -1,
@@ -269,6 +269,7 @@ export default defineComponent({
 
         addOption(event : Event, idQuestion : number) {
             event.preventDefault()
+            this.isEmpty = true
             this.tempChoicesList.push({choice: '', id_question: idQuestion})
         },
 
@@ -280,12 +281,24 @@ export default defineComponent({
         updateQuestionInput(index : number) {
             const questionId = 'question' + index.toString()
             const questionInput = document.getElementById(questionId) as HTMLInputElement;
+            if(questionInput.value.length > 0) {
+                this.isEmpty = false
+            }
+            else {
+                this.isEmpty = true
+            }
             this.surveyList[index].question = questionInput.value
         },
 
         updateChoiceInput(index : number) {
             const choiceId = 'choice' + index.toString()
             const choiceInput = document.getElementsByName(choiceId);
+            if (choiceInput[0].value.length > 0) {
+                this.isEmpty = false
+            }
+            else {
+                this.isEmpty = true
+            }
             this.tempChoicesList[index].choice = choiceInput[0].value
         }
     },
@@ -446,6 +459,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
 .container {
     margin-top: 5vh;
     display: flex;
@@ -544,7 +558,7 @@ form {
 }
 
 .scale-container {
-    margin: 0vh 0vw;
+    margin: 0vh 0vw 0 1.5vw;
     text-align: center;
 }
 
@@ -779,7 +793,7 @@ h3 {
     margin-top: 2vh;
 }
 
-button:disabled {
+#save-exit-btn:disabled {
     background-color: #3d46608d;
     color: #ffffffaa;
 }
