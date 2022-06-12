@@ -38,6 +38,11 @@
                 myModal.show()
                 localStorage.setItem("displayToast", "empty")
             }
+            else if (messToast == "recoverPassword"){
+                this.updateModalMess = "Tu contraseña ha sido cambiada con éxito"
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
         },
         updated(){
             this.checkMatch()
@@ -484,6 +489,7 @@
         font-weight: bold;
         margin: 0 0 5vh 0;
     }
+
     h3 {
         font-family: "Montserrat";
         font-weight: normal;
@@ -491,6 +497,7 @@
         color: white;
         margin: 1.5vh 0 0 0;
     }
+
     button {
         font-family: "Ubuntu";
         font-weight: normal;
@@ -507,6 +514,7 @@
         box-shadow: 0px 0px 0px 4px #ffffffb5;
         transition: all 0.3s ease 0s;
     }
+
     .new-password-button {
         background-color: #365295;
         font-size: 2.5vh;
@@ -514,6 +522,7 @@
         color: white;
         width: 15vw;
     }
+    
     .return-password-button {
         background-color: #769ABA;
         font-size: 2.5vh;
@@ -521,6 +530,7 @@
         color: white;
         width: 15vw;
     }
+
     .return-password-button-modal {
         background-color: #365295;
         font-size: 3vh;
@@ -533,16 +543,25 @@
         width: 35%;
         height: 35%;
     }
+
     button:disabled {
         background-color: #3d46608d;
         color: #ffffffaa;
     }
+
+    button:disabled:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
     h6 {
         color: rgb(192, 21, 21);
         display: none;
         font-family: "Catamaran";
         font-weight: lighter;
     }
+
     h4 {
         font-family: 'Montserrat';
         font-style: normal;
@@ -550,6 +569,7 @@
         text-align: center;
         font-size: 3vh;
     }
+
     #password-modal-container {
         display: flex;
         flex-direction: column;

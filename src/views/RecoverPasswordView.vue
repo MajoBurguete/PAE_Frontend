@@ -9,7 +9,6 @@
     }) */
 
     const api = 'http://localhost:8000/api/'
-    declare var bootstrap: any;
     let dsb = true
 
     export default defineComponent({
@@ -18,48 +17,31 @@
                 disabledF: true,
                 username: '',
                 password: '',
+                confirmPass: '',
                 token: localStorage.getItem('user-token') || null,
                 modalMessage: "Tu cuenta ha sido creada con éxito",
                 errorMessage: "Tu usuario o tu contraseña es incorrecto"
             }
         },
-        /* updated(){
+        updated(){
             const forms = document.querySelectorAll('.needs-validation');
-            console.log("checking")
 
             // Loop over them and prevent submission
             Array.prototype.slice.call(forms)
             .forEach(function (form) {
-                console.log("checking")
                 let newPassword = form.new_password
                 let confirmPassword = form.confirm_password
-                if ((form.id_input.checkValidity() && form.new_password.checkValidity() && form.confirm_password.checkValidity() && newPassword.value == confirmPassword.value)) {
+                if ((form.id_input.checkValidity() && form.new_password.checkValidity() && newPassword.value == confirmPassword.value)) {
                     dsb = false
-                    console.log("all good")
                 }
                 else {
                     dsb = true
-                    console.log("nope")
                 }
 
                 form.classList.add('was-validated')
             })
 
             this.isDisabled = dsb;
-        }, */
-        mounted(){
-            let messToast = localStorage.getItem("displayToast");
-            var myModal = new bootstrap.Modal(document.getElementById('feedback-modal'))
-            
-            if(messToast == "signupStudent"){
-                myModal.show()
-                localStorage.setItem("displayToast", "empty")
-            }
-            else if(messToast == "signupTutor"){
-                this.updateModalMess = "Te has registrado correctamente, te llegará un correo una vez que tu cuenta haya sido revisada."
-                myModal.show()
-                localStorage.setItem("displayToast", "empty")
-            }
         },
         computed: {
             isDisabled: {
@@ -88,29 +70,6 @@
             },
         },
         methods:{
-            async detectUserType(){
-                await axios
-                .get(api + "current_user_data/?schoolID=" + this.username)
-                .then( result => {
-                    this.storeUserInfo(result.data[0].id ,result.data[0].user_type)
-                    if(result.data[0].user_type == 2){
-                        router.push('http://localhost:3000/admin-home');
-                    }
-                    else if(result.data[0].user_type == 1 && result.data[0].status == 2){
-                        const errorMess = document.getElementById('login-error') as HTMLInputElement;
-                        
-                        this.updateErrorMess = "Tu cuenta aún no ha sido aprobada"
-                        errorMess.style.display = "flex"
-
-                    }
-                    else{
-                        router.push('http://localhost:3000/home')
-                    }
-                })
-                .catch( error => {
-                    console.log(error);
-                })
-            },
             storeUserInfo(userId: string, userT: string){
                 localStorage.setItem("userID", userId);
                 localStorage.setItem("userType", userT);
@@ -339,7 +298,8 @@
                                         await axios
                                         .delete(api + "users/" + userID + "/")
                                         .then(result21 => {
-                                            console.log("Todo bien al parecer...")
+                                            localStorage.setItem("displayToast", "recoverPassword");
+                                            router.push("/")
                                         })
                                         .catch(error => {
                                             console.log(error)
@@ -347,7 +307,6 @@
                                         flag9 = 1
                                     }
                                 }
-                                backMessage.textContent = "Tu contraseña a sido cambiada de manera exitosa"
                             })
                         })
                         .catch(error => {
@@ -363,7 +322,8 @@
                 })
             }
     }})
-</script> 
+</script>
+
 <template>
 
     <body>
@@ -372,10 +332,10 @@
                 <div class="container-login" id="container-login">
                     <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                 </div>
-                <form class="needs-validation" novalidate id="new-form">
+                <form class="needs-validation" novalidate id="new-form" @submit.prevent="recoverPassword">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-                        <h4 id="back-message">Tu solicitud se esta procesando</h4>
+                        <h4 id="back-message">Tu solicitud se está procesando</h4>
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
@@ -391,7 +351,7 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="new_password" v-model="password"
                                         placeholder="Nueva Contraseña"
-                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.confirm_password.pattern = this.value;" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showNewPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid"
@@ -404,8 +364,8 @@
                                 <label class="form-label">Confirma Contraseña</label>
                                 <h2>Ambos campos deben de coincidir.</h2>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="confirm_password" v-model="password"
-                                        placeholder="Confirma Contraseña" required>
+                                    <input type="password" class="form-control" id="confirm_password" v-model="confirmPass"
+                                        placeholder="Confirma Contraseña" onkeyup="this.pattern = form.new_password.value;"  required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showConfirmPassword">
                                             <img src="src/assets/img/visibility.png" class="img-fluid"
@@ -416,7 +376,7 @@
                                 <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
                         </div>
-                        <button id="signin-button" type="submit" @click="recoverPassword">Cambiar Contraseña</button>
+                        <button id="signin-button" type="submit" :disabled="isDisabled">Cambiar Contraseña</button>
                     </div>
                 </form>
             </div>
@@ -436,12 +396,14 @@
         top: 40vh;
         margin: 0 0 5vh 0;
     }
+
     h2 {
         font-family: "Catamaran";
         font-weight: bold;
         color:#0f2051;
         font-size: 1.7vh;
     }
+
     h3 {
         font-family: "Montserrat";
         font-weight: normal;
@@ -449,6 +411,7 @@
         color: white;
         margin: 1.5vh 0 0 0;
     }
+
     h4 {
         font-family: "Montserrat";
         font-weight: bold;
@@ -457,6 +420,7 @@
         color:#26408B;
         margin: 1.5vh 0 -6vh 0;
     }
+
     button {
         font-family: "Ubuntu";
         font-weight: normal;
@@ -473,10 +437,23 @@
         box-shadow: 0px 0px 0px 4px #ffffffb5;
         transition: all 0.3s ease 0s;
     }
+
+    button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+
+    button:disabled:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
     img{
         width: 35%;
         height: 35%;
     }
+
     input {
         width: 40vw;
         height: 6vh;
@@ -491,16 +468,19 @@
         border-width: 0.25vh;
         border-radius: 0.65vh;
     }
+
     span{
         height: 6.2vh;
         width: 3.5vw;
         justify-content: center;
     }
+
     .input-group-text{
         height: 6.2vh;
         width: 3.5vw;
         padding: 0.5vh;
     }
+
     .input-group {
         display: flex;
         flex-wrap: nowrap;
@@ -563,7 +543,7 @@
 
 
     .login-form {
-        margin: 10vh 0 0 0;
+        margin: 4vh 0 0 0;
         display: flex;
         align-items: center;
         flex-direction: column;
