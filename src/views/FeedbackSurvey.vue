@@ -177,7 +177,7 @@ export default defineComponent({
                     })
                 }
             }
-
+            localStorage.setItem("userStatus", "0")
             router.push('/home')
         }
     }
@@ -193,14 +193,14 @@ export default defineComponent({
             <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
                 <div class="question-container" v-if=" survey.question_type == '0'">
                     <label for="openQuestion" class="form-label">{{survey.question}}</label>
-                    <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3"></textarea>
+                    <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3" required></textarea>
                 </div>
                 <div class="question-container"  v-if=" survey.question_type == '1'">
                     <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
                     <div class="answer-container">
                         <div v-for="(choice, j) in choicesList" :key="j" >
                             <div  v-if="choice.id_question == survey.id" class="form-check">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice>
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" required :value=choice.choice>
                             <label class="form-check-label" for="flexRadioDefault1">
                                 {{ choice.choice }} 
                             </label> <br>
@@ -220,15 +220,15 @@ export default defineComponent({
                     <div class="answer-container">
                         <div class="form-check-scale">
                             <label class="form-check-label" for="flexRadioDefault1">
-                            Nada Claro
+                            En desacuerdo
                             </label>
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" required>
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" required>
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" required>
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" required>
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" required>
                             <label class="form-check-label" for="flexRadioDefault1">
-                            Muy Claro
+                            De acuerdo
                             </label>
                         </div>
                     </div>
@@ -236,7 +236,7 @@ export default defineComponent({
                 <div class="question-container"  v-if=" survey.question_type == '3'">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">{{survey.question}}</label>
-                        <input class="form-control" type="file" @change="saveFile($event)" :id="'formFile' + i">
+                        <input class="form-control" type="file" @change="saveFile($event)" :id="'formFile' + i" required>
                     </div>
                 </div>
             </div>
@@ -246,7 +246,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+
 .container{
+    margin-top: 3vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -287,7 +290,7 @@ export default defineComponent({
     flex-direction: row;
 }
 .scale-container{
-    margin: 0vh 0vw;
+    margin: 0vh 0vw 0 1.5vw;
     text-align: center;
 }
 .form-check-input{
@@ -310,6 +313,13 @@ export default defineComponent({
 .form-check-label{
     font-size: 2.5vh;
     align-content: center;
+}
+form {
+    margin-top: 4vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
 }
 .form-label{
     font-size: 3vh;
