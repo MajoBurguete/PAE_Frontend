@@ -4,7 +4,10 @@
     import axios from "axios";
     import NavBar from "../components/Navbar.vue";
 
+
     const api = 'http://localhost:8000/api/'
+    let dsbS = true;
+    let dsbA = true;
 
     export default defineComponent({
         components: {
@@ -12,19 +15,21 @@
         },
         data(){
             return{
+                subjectDisabled: true,
+                adminDisabled: true,
                 tab:"admin",
                 selection:"",
                 index: 0,
                 disableDeleteAdminBtn: false,
                 subjectSwitch: 0,
+                adminSwitch: 0,
                 careerList: [],
                 adminList: [],
                 subjectList: [],
-                createAdminName: '',
-                createAdminEmail: '',
-                createAdminPassword: '',
-                createAdminMat: '',
-                editAdminName: '',
+                AdminName: '',
+                AdminEmail: '',
+                AdminPassword: '',
+                AdminMat: '',
                 subjectName: '',
                 subjectID: '',
                 subjectSemester: '',
@@ -37,7 +42,52 @@
             this.getSubjectNames()
             this.getCareers()
         },
+         updated(){
+            const formS = document.querySelectorAll('.subject-needs-validation');
+            const formA = document.querySelectorAll('.admin-needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(formS)
+            .forEach(function (form) {
+                if ((form.subject_name.checkValidity() && form.subject_id.checkValidity() && form.subject_semester.checkValidity() && form.subject_career.checkValidity())) {
+                    dsbS = false
+                }
+                else {
+                    dsbS = true
+                }
+                form.classList.add('was-validated')
+            })
+            Array.prototype.slice.call(formA)
+            .forEach(function (form) {
+                if ((form.admin_name.checkValidity() && form.admin_id.checkValidity() && form.admin_password.checkValidity() && form.admin_email.checkValidity())) {
+                    dsbA = false
+                }
+                else {
+                    dsbA = true
+                }
+                form.classList.add('was-validated')
+            })
+
+            this.updateSubjectDisabled = dsbS;
+            this.updateAdminDisabled = dsbA;
+        },
         computed: {
+            updateSubjectDisabled: {
+                get() {
+                    return this.subjectDisabled;
+                },
+                set(val) {
+                    this.subjectDisabled = val;
+                }
+            },
+            updateAdminDisabled: {
+                get() {
+                    return this.adminDisabled;
+                },
+                set(val) {
+                    this.adminDisabled = val;
+                }
+            },
             updateDeleteAdminBtn: {
                 get() {
                     return this.disableDeleteAdminBtn;
@@ -96,6 +146,17 @@
             }
         },
         methods: {
+            showPassword(passwordID: string, imageID: string){
+                const password = document.getElementById(passwordID) as HTMLInputElement;
+                const eye = document.getElementById(imageID) as HTMLImageElement;
+                if (password.type == "password") {
+                    password.type = "text";
+                    eye.src = "src/assets/img/no-visibility.png";
+                } else {
+                    password.type = "password";
+                    eye.src = "src/assets/img/visibility.png";
+                }
+            },
             async getAdminNames() {
                 const button = document.getElementById("admin-delete-btn") as HTMLInputElement;
                 await axios
@@ -142,7 +203,7 @@
             },
 
             toAdminTab() {
-                this.selection = this.adminList[0].id__first_name;
+                this.selection = this.adminList[0];
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
                 const input = document.getElementById('search-admin-input') as HTMLInputElement;
@@ -168,7 +229,7 @@
 
             },
             toSubjectsTab() {
-                this.selection = this.subjectList[0].name;
+                this.selection = this.subjectList[0];
                 const adminTab = document.getElementById("admin-tab") as HTMLInputElement;
                 const subjectsTab = document.getElementById("subjects-tab") as HTMLInputElement;
                 const input = document.getElementById('search-subject-input') as HTMLInputElement;
@@ -265,7 +326,7 @@
                 if (this.changeTabC == "admin"){
                     const list = document.getElementsByClassName('admin-list');
                     list[i].checked = true;
-                    this.selection = this.adminList[i].id__first_name;
+                    this.selection = this.adminList[i];
                 }
                 else {
                     list[i].checked = true;
@@ -274,10 +335,9 @@
                 this.clearInputs()
             },
             async editAdmin() {
-                const input = document.getElementById('admin-name') as HTMLInputElement;
                 const item = this.adminList[this.index]
                 var info = {
-                    'first_name': this.editAdminName,
+                    'first_name': this.AdminName,
                     'email': item.id__email,
                     'password': item.id__password,
                     'username': item.id__username
@@ -286,56 +346,62 @@
                 .put(api + "users/" + item.id + "/", info)
                 .then(result => {
                     console.log(result.data)
-                    this.editAdminName = ''
+                    this.AdminName = ''
+                    this.$forceUpdate()
                     this.getAdminNames()
                 })
                 .catch(error => {
                     console.log(error)
                 })
             },
-            async createAdmin() {
-                //const input = document.getElementById('admin-new-name') as HTMLInputElement;
-                const list = document.getElementsByClassName('form-control');
-
-                await axios
-                .post(api + 'users/', {
-                    username: this.createAdminMat,
-                    password: this.createAdminPassword,
-                    email: this.createAdminEmail,
-                    first_name: this.createAdminName
-                })
-                .then(result => {
-                    const userNumId = result.data.id
-                    axios
-                    .post(api + "pae_users/", {
-                        id: userNumId,
-                        semester: 0,
-                        career: 'ITC',
-                        user_type: 2,
-                        status: 0
+            async saveAdmin() {
+                console.log(this.adminSwitch)
+                const input = document.getElementById('admin_name') as HTMLInputElement;
+                if(this.adminSwitch == 1 && input.value != ""){
+                    console.log("Jajajaja")
+                    this.editAdmin()
+                }
+                else {
+                    console.log("me estoy creando")
+                    await axios
+                    .post(api + 'users/', {
+                        username: this.AdminMat,
+                        password: this.AdminPassword,
+                        email: this.AdminEmail,
+                        first_name: this.AdminName
                     })
                     .then(result => {
-                        console.log(result.data);
-                        this.$forceUpdate()
-                        this.getAdminNames()
+                        const userNumId = result.data.id
+                        axios
+                        .post(api + "pae_users/", {
+                            id: userNumId,
+                            semester: 0,
+                            career: 'ITC',
+                            user_type: 2,
+                            status: 0
+                        })
+                        .then(result => {
+                            console.log(result.data);
+                            this.$forceUpdate()
+                            this.getAdminNames()
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                     })
                     .catch(error => {
                         console.log(error)
                     })
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                //this.adminList.push(input.value)
-                for(let i = 0; i < list.length; i++){
-                    list[i].value = ""
                 }
+                this.clearInputs()
+                //const input = document.getElementById('admin-new-name') as HTMLInputElement;
+
             },
             async saveSubject() {
-                const name = document.getElementById('subject-new-name') as HTMLInputElement;
-                const id = document.getElementById('subject-id') as HTMLInputElement;
-                const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
-                const career = document.getElementById('subject-new-career') as HTMLInputElement;
+                const name = document.getElementById('subject_name') as HTMLInputElement;
+                const id = document.getElementById('subject_id') as HTMLInputElement;
+                const semester = document.getElementById('subject_semester') as HTMLInputElement;
+                const career = document.getElementById('subject_career') as HTMLInputElement;
                 const list = document.getElementsByClassName('form-control');
                 let subjectCareerList = []
                 var info = {
@@ -346,6 +412,7 @@
                 }
                 subjectCareerList.push(this.subjectCareer)
                 if (this.subjectSwitch == 1) {
+                    console.log("UwuUwu")
                     axios
                     .put(api + "subjects/" + this.selection.id + "/", info)
                     .then(result => {
@@ -371,37 +438,76 @@
                 this.clearInputs()
             },
             clearInputs() {
+                this.AdminName =  '',
+                this.AdminEmail = '',
+                this.AdminPassword = '',
+                this.AdminMat = '',
+                this.AdminName = '',
                 this.subjectName = ''
                 this.subjectCareer = ''
                 this.subjectSemester = ''
                 this.subjectID = ''
             },
-            setSubjectModal(index: number) {
-                const id = document.getElementById('subject-id') as HTMLInputElement;
-                const name = document.getElementById('subject-new-name') as HTMLInputElement;
-                const semester = document.getElementById('subject-new-semester') as HTMLInputElement;
-                const career = document.getElementById('subject-new-career') as HTMLInputElement;
-                const list = document.getElementsByClassName('form-control');
+            setSubjectModal(index: number, i: number) {
+                console.log("1" + this.selection.id , this.selection.id_career[0], this.selection.semester, this.selection.name)
+                const id = document.getElementById('subject_id') as HTMLInputElement;
+                const name = document.getElementById('subject_name') as HTMLInputElement;
+                const semester = document.getElementById('subject_semester') as HTMLInputElement;
+                const career = document.getElementById('subject_career') as HTMLInputElement;
+                const list = document.getElementsByClassName('subject-list');
+                
+
                 if (index == 0){
+                    list[i].checked = true;
+                    this.selection = this.subjectList[i];
                     this.subjectSwitch = 1;
                     id.disabled = true
                     id.placeholder = this.selection.id
                     name.placeholder = this.selection.name
-                    semester.placeholder = this.selection.semester
-                    career.placeholder = this.selection.id_career[0]
                 }
                 else {
                     this.subjectSwitch = 0;
                     id.disabled = false
                     id.placeholder = "XXXXXXX"
                     name.placeholder = "Nombre De Materia"
-                    semester.placeholder = this.selection.semester
-                    career.placeholder = this.selection.id_career[0]
-                    for(let i = 0; i < list.length; i++){
-                        list[i].value = ""
-                    }
+                    this.clearInputs()
                     semester.value = ""
                     career.value = ""
+                }
+            },
+            setAdminModal(index: number, i: number) {
+                const id = document.getElementById('admin_id') as HTMLInputElement;
+                const name = document.getElementById('admin_name') as HTMLInputElement;
+                const password = document.getElementById('admin_password') as HTMLInputElement;
+                const email = document.getElementById('admin_email') as HTMLInputElement;
+                const list = document.getElementsByClassName('admin-list');
+
+                if (index == 0){
+                    console.log("alo policia")
+                    list[i].checked = true;
+                    this.selection = this.adminList[i];
+                    console.log(this.selection)
+                    this.adminSwitch = 1;
+                    id.disabled = true
+                    password.disabled = true
+                    email.disabled = true
+                    id.placeholder = this.selection.id__username
+                    password.placeholder = "************"
+                    password.type = "text"
+                    email.placeholder = this.selection.id__email
+                    name.placeholder = this.selection.id__first_name
+                    
+                }
+                else {
+                    this.adminSwitch = 0;
+                    id.disabled = false
+                    password.disabled = false
+                    email.disabled = false
+                    email.placeholder = "correo@tec.mx"
+                    id.placeholder = "L0XXXXXXX"
+                    name.placeholder = "Nombre De Administrador"
+                    password.placeholder = "Contraseña para el nuevo administrador"
+                    this.clearInputs()
                 }
             },
             sendEditSurvey(){
@@ -443,14 +549,14 @@
                                             <h2 class="filter-h1-admin"> {{admin.id__first_name}} </h2>
                                         </label>
                                     </div>
-                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#name-modal"
-                                        @click="assignDelete(i)"></button>
+                                    <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#admin-modal"
+                                        @click="assignDelete(i),setAdminModal(0,i)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="admin-btn-container">
-                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#create-admin-modal"> Crear
+                        <button class="table-button" data-bs-toggle="modal" data-bs-target="#admin-modal"  @click="setAdminModal(1,0)"> Crear
                             administrador </button>
                         <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal" :disabled="disableDeleteAdminBtn" id="admin-delete-btn">
                             Eliminar administrador </button>
@@ -473,14 +579,14 @@
                                         </label>
                                     </div>
                                     <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#subject-modal"
-                                        @click="assignDelete(i), setSubjectModal(0)"></button>
+                                        @click="setSubjectModal(0,i)"></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="subject-btn-container">
                         <button class="table-button" data-bs-toggle="modal" data-bs-target="#subject-modal"
-                            @click="setSubjectModal(1)"> Crear UF </button>
+                            @click="setSubjectModal(1,0)"> Crear UF </button>
                         <button class="table-button delete" data-bs-toggle="modal" data-bs-target="#delete-modal">
                             Eliminar UF </button>
                     </div>
@@ -492,7 +598,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="delete-modal-content">
                     <h1 class="h1-modal"> Eliminar: </h1>
-                    <h1 class="user-h1-modal" v-if="this.changeTabC==='admin'"> {{selection}} </h1>
+                    <h1 class="user-h1-modal" v-if="tab == 'admin'"> {{selection.id__first_name}} </h1>
                     <h1 class="user-h1-modal" v-else> {{selection.name}} </h1>
                     <div class=" modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn">
@@ -503,83 +609,84 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="name-modal" tabindex="-1" aria-labelledby="nameModal" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content" id="name-modal-content">
-                    <h1 class="h2-modal"> Nombre: </h1>
-                    <input type="text" class="form-control" id="admin-name" v-model="editAdminName"
-                        :placeholder="selection" minlength="1" maxlength="100" required>
-                    <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
-                            id="cancel-action-btn-blue"> Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
-                            @click="editAdmin"> Guardar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="create-admin-modal" tabindex="-1" aria-labelledby="createAdminModal"
+        <div class="modal fade" id="admin-modal" tabindex="-1" aria-labelledby="adminModal"
             aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content" id="create-admin-modal-content">
-                    <h1 class="h2-modal"> Nombre </h1>
-                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminName"
-                        placeholder="Nombre Completo" minlength="1" maxlength="100" required>
-                    <h1 class="h2-modal"> Matrícula o nómina </h1>
-                    <input type="text" class="form-control" id="admin-new-name" v-model="createAdminMat"
-                        placeholder="L0XXXXXXX" minlength="1" maxlength="10" required>
-                    <h1 class="h2-modal"> Correo </h1>
-                    <input type="email" class="form-control" id="admin-email" v-model="createAdminEmail"
-                        placeholder="L0XXXXXXX@tec.mx" minlength="1" maxlength="100" required>
-                    <h1 class="h2-modal"> Contraseña </h1>
-                    <input type="password" class="form-control" id="admin-password" v-model="createAdminPassword"
-                        placeholder="Contraseña" minlength="1" maxlength="100" required>
-                    <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
-                            id="cancel-action-btn-blue"> Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
-                            @click="createAdmin"> Guardar</button>
+                <form name="form-admin" class="admin-needs-validation"  id="form-admin-id" novalidate @submit.prevent="saveAdmin">
+                    <div class="modal-content" id="admin-modal-content">
+                        <h1 class="h2-modal"> Nombre </h1>
+                        <h3>Máximo 100 caracteres, sin números ni caracteres especiales.</h3>
+                        <input type="text" class="form-control" id="admin_name" v-model="AdminName"
+                            placeholder="Nombre Completo" minlength="1" maxlength="100" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" required>
+                        <h1 class="h2-modal"> Matrícula o nómina </h1>
+                        <h3>Identificador de máximo 10 caracteres.</h3>
+                        <input type="text" class="form-control" id="admin_id" v-model="AdminMat"
+                            placeholder="L0XXXXXXX" minlength="1" maxlength="10" required>
+                        <h1 class="h2-modal"> Correo </h1>
+                        <h3>Correo válido dentro del dominio “@tec” o “@itesm”.</h3>
+                        <input type="email" class="form-control" id="admin_email" v-model="AdminEmail"
+                            placeholder="L0XXXXXXX@tec.mx" minlength="1" maxlength="50" pattern="^[^@]{1,}@(itesm|tec).mx$" required>
+                        <h1 class="h2-modal"> Contraseña </h1>
+                        <h3>Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número.</h3>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="admin_password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" v-model="AdminPassword"
+                            placeholder="Contraseña" minlength="1" maxlength="100" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" @click="showPassword('admin_password','visibility_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="modal-button-container">
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button"
+                                id="cancel-action-btn-blue" @click="clearInputs" > Cancelar</button>
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
+                                :disabled="updateAdminDisabled"> Guardar</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <div class="modal fade" id="subject-modal" tabindex="-1" aria-labelledby="createsubjectModal"
             aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content" id="subject-modal-content">
-                    <h1 class="h2-modal"> Nombre</h1>
-                    <input type="text" class="form-control" id="subject-new-name" v-model="subjectName" minlength="1"
-                        maxlength="100" required>
-                    <h1 class="h2-modal"> Clave</h1>
-                    <input type="text" class="form-control" id="subject-id" v-model="subjectID" minlength="1"
-                        maxlength="100" required>
-                    <h1 class="h2-modal"> Semestre</h1>
-                    <div class="input-group">
-                        <select class="form-select" id="subject-new-semester" v-model="subjectSemester" required>
-                            <option value="1">1º</option>
-                            <option value="2">2º</option>
-                            <option value="3">3º</option>
-                            <option value="4">4º</option>
-                            <option value="5">5º</option>
-                            <option value="6">6º</option>
-                            <option value="7">7º</option>
-                            <option value="8">8º</option>
-                            <option value="9">9º</option>
-                        </select>
+                <form name="form" class="subject-needs-validation" id="form-subject-id" novalidate @submit.prevent="saveSubject">
+                    <div class="modal-content" id="subject-modal-content">
+                        <h1 class="h2-modal"> Nombre</h1>
+                        <h3>Máximo 200 caracteres</h3>
+                        <input type="text" class="form-control" id="subject_name" v-model="subjectName" minlength="1"
+                            maxlength="200" required>
+                        <h1 class="h2-modal"> Clave</h1>
+                        <h3>Identificador de máximo 10 caracteres.</h3>
+                        <input type="text" class="form-control" id="subject_id" v-model="subjectID" minlength="1"
+                            maxlength="10" required>
+                        <h1 class="h2-modal"> Semestre</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject_semester" v-model="subjectSemester" required>
+                                <option class="option-semester" :value="1">1º</option>
+                                <option class="option-semester" :value="2">2º</option>
+                                <option class="option-semester" :value="3">3º</option>
+                                <option class="option-semester" :value="4">4º</option>
+                                <option class="option-semester" :value="5">5º</option>
+                                <option class="option-semester" :value="6">6º</option>
+                                <option class="option-semester" :value="7">7º</option>
+                                <option class="option-semester" :value="8">8º</option>
+                                <option class="option-semester" :value="9">9º</option>
+                            </select>
+                        </div>
+                        <h1 class="h2-modal"> Carrera</h1>
+                        <div class="input-group">
+                            <select class="form-select" id="subject_career" v-model="subjectCareer" default required>
+                                <option v-for="(career, i) in careerList" :key="i" :id="'career-option' + i">{{ career.id }}</option>
+                            </select>
+                        </div>
+                        <div class="modal-button-container">
+                            <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"
+                            @click="clearInputs" > Cancelar</button>
+                            <button class="option-button" id="save-action-btn" data-bs-dismiss="modal" aria-label="Close" :disabled="updateSubjectDisabled"> Guardar</button>
+                        </div>
                     </div>
-                    <h1 class="h2-modal"> Carrera</h1>
-                    <div class="input-group">
-                        <select class="form-select" id="subject-new-career" v-model="subjectCareer" required>
-                            <option v-for="(career, i) in careerList" :key="i">{{ career.id }}</option>
-                        </select>
-                    </div>
-                    <div class="modal-button-container">
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn-blue"
-                         @click="clearInputs" > Cancelar</button>
-                        <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="save-action-btn"
-                            @click="saveSubject"> Guardar</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </body>
@@ -607,6 +714,15 @@
         font-size: 2.5vh;
         margin: 0;
         color: #6F9492;
+    }
+    h3 {
+        font-family: "Catamaran";
+        font-weight: bold;
+        font-size: 1.5vh;
+        margin: 0;
+        color: #122251;
+        margin-top: -1vh;
+        margin-bottom: -1vh;
     }
 
     button{
@@ -689,6 +805,14 @@
 
     thead {
         height: 3vw;
+    }
+    #eye-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+    #admin_password {
+        width: 25vh;
     }
 
     tbody { 
@@ -793,6 +917,15 @@
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 3%;
     }
+    img {
+        width: 2vw;
+        height: auto;
+    }
+    span{
+        height: 6.6vh;
+        margin-bottom: -0.8vh;
+        width: 4vw;
+    }
 
     #search-input:active{
         border-style: hidden;
@@ -889,6 +1022,10 @@
         display: flex;
         justify-content: space-around;
         margin-top: 2vh;
+    }
+    #save-action-btn:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
     }
 
     .option-button{
