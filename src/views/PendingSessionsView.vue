@@ -4,6 +4,9 @@ import { defineComponent } from 'vue'
 import SessionCard from "../components/items/Session-Card.vue"
 import router from "../router"
 import NavBar from "../components/Navbar.vue"
+import CancelModal from "../components/items/Cancel-Modal.vue"
+
+declare var bootstrap: any;
 
 
 const api = 'http://localhost:8000/api/'
@@ -11,6 +14,7 @@ const api = 'http://localhost:8000/api/'
 export default defineComponent({
     components: {
         SessionCard,
+        CancelModal,
         NavBar
     },
     mounted() {
@@ -22,7 +26,15 @@ export default defineComponent({
             subjectList: [],
             firstHalf: [],
             secondHalf: [],
-            dsb: true
+            dsb: true,
+            originalDate: "",
+            requestTimeC: "",
+            descriptionTxt: "",
+            placeC: "",
+            sessionIdC: "",
+            tutorIdC: "",
+            studentIdC: "",
+            classNameC: ""
         }
     },
     computed: {
@@ -32,6 +44,70 @@ export default defineComponent({
             },
             set(val){
                 this.dsb = val;
+            }
+        },
+        updateDescriptionTxt: {
+            get(){
+                return this.descriptionTxt;
+            },
+            set(val){
+                this.descriptionTxt = val;
+            }
+        },
+        updateRequestT:{
+            get(){
+                return this.requestTimeC;
+            },
+            set(val){
+                this.requestTimeC = val;
+            }
+        },
+        updateSessionI:{
+            get(){
+                return this.sessionIdC;
+            },
+            set(val){
+                this.sessionIdC = val;
+            }
+        },
+        updateOriginalDate:{
+            get(){
+                return this.originalDate;
+            },
+            set(val){
+                this.originalDate = val;
+            }
+        },
+        updateClassN: {
+            get(){
+                return this.classNameC;
+            },
+            set(val){
+                this.classNameC = val;
+            }
+        },
+        updateTutorID: {
+            get(){
+                return this.tutorIdC;
+            },
+            set(val){
+                this.tutorIdC = val;
+            }
+        },
+        updateStudentID: {
+            get(){
+                return this.studentIdC;
+            },
+            set(val){
+                this.studentIdC = val;
+            }
+        },
+        updatePlace: {
+            get(){
+                return this.placeC;
+            },
+            set(val){
+                this.placeC = val;
             }
         }
     },
@@ -159,6 +235,27 @@ export default defineComponent({
             .catch(error => {
                 console.log(error)
             })
+        },
+
+        cancelSession(){
+            let actualSession;
+
+            if(localStorage.getItem("sessionPlacement") == "firstHalf"){
+                actualSession = this.firstHalf[Number(localStorage.getItem("sessionIndex"))]
+            }
+            else{
+                actualSession = this.secondHalf[Number(localStorage.getItem("sessionIndex"))]
+            }
+
+            this.updateOriginalDate = actualSession.date
+            this.updateDescriptionTxt = actualSession.description;
+            this.updateRequestT = actualSession.request_time;
+            this.updateSessionI = actualSession.id;
+            this.updateClassN = actualSession.id_subject__name;
+            this.updateTutorID = actualSession.id_tutor__id__email;
+            this.updateStudentID = actualSession.id_student__id__email;
+            this.updatePlace = actualSession.spot; 
+
         }
 
     }
@@ -174,12 +271,12 @@ export default defineComponent({
             <div class="row" v-for="n in Math.round(subjectList.length/2)" :key="n">
                 <div class="col" >
                     <div class="card-container" id="left" v-for="(subject, i) in firstHalf" :key="i" >
-                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-if="i+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="i" listPlacement="firstHalf" ></SessionCard>
+                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-on:cancel-session-event="cancelSession" v-if="i+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="i" listPlacement="firstHalf" ></SessionCard>
                     </div>
                 </div>
                 <div class="col" id="right">
                     <div class="card-container" id="right" v-for="(subject, j) in secondHalf" :key="j">
-                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-if="j+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="j" listPlacement="secondHalf" ></SessionCard>
+                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-on:cancel-session-event="cancelSession" v-if="j+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="j" listPlacement="secondHalf" ></SessionCard>
                     </div>
                 </div>
             </div>
@@ -197,6 +294,14 @@ export default defineComponent({
                         </div>
                     </div>
                 </div>
+        </div>
+
+        <div class="modal fade" id="cancel-modal" aria-labelledby="cancelModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" id="cancel-modal-lg">
+                <div class="modal-content" id="cancel-modal-content">
+                    <CancelModal v-on:session-canceled-event="updateCards" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI" :tutorEmail="updateTutorID" :studentEmail="updateStudentID" :className="updateClassN"/>
+                </div>
+            </div>
         </div>
     </body>
 </template>
@@ -303,6 +408,24 @@ export default defineComponent({
     #confirm-btn-modal:disabled:hover{
         box-shadow: none;
     }
+
+    /* Cancel Modal */
+
+    #cancel-modal-lg{
+        width: 50vw;
+    }
+
+    #cancel-modal-content {
+        background-color: #E1F0EA;
+        border: 2.5px solid #96BECC;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 20px;
+        padding: 7vh 2vw;
+        gap: 3vh;
+    }
+    
 
 
 </style>

@@ -210,6 +210,14 @@ export default defineComponent({
                 this.studentNameC = val;
             }
         },
+        updateTutorID: {
+            get(){
+                return this.tutorIdC;
+            },
+            set(val){
+                this.tutorIdC = val;
+            }
+        },
         updateStudentID: {
             get(){
                 return this.studentIdC;
@@ -474,11 +482,6 @@ export default defineComponent({
             }
         },
 
-        cancelSession(){
-            var myModal = new bootstrap.Modal(document.getElementById('cancel-modal'));
-            myModal.show()
-        },
-
         updatePage(){
             this.updateInstructionBool = true;
             this.updateInstructionText = "Escoge una asesoría para ver sus detalles"
@@ -496,7 +499,7 @@ export default defineComponent({
         <div class="container">
             <div class="card-container">
                 <a href="date-and-class" id="date-and-class-a"> Agendar nueva asesoría </a>
-                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" v-on:cancel-session-event="" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
+                <SessionCard showAllButtons="inactive" :showInstructions="updateInstructionBool" :instructionsTxt="updateInstructionText" :status="updateStatus" :class-name="updateClassN" :date="updateDate" :place="updatePlace" :tutor-name="updateTutorN" :tutor-id="updateTutorID" :student-name="updateStudentN" :student-id="updateStudentID" :cancelBtn="updateCancelVal"/>
             </div>
             <div class="schedule-container">
                 <div class="dropdown-center">
@@ -546,7 +549,7 @@ export default defineComponent({
         <div class="modal fade" id="cancel-modal" tabindex="-1" aria-labelledby="cancelModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" id="cancel-modal-lg">
                 <div class="modal-content" id="cancel-modal-content">
-                    <CancelModal v-on:session-canceled-event="updatePage" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI"/>
+                    <CancelModal v-on:session-canceled-event="updatePage" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI" :tutorEmail="updateTutorID" :studentEmail="updateStudentID" :className="updateClassN"/>
                 </div>
             </div>
         </div>
@@ -855,7 +858,6 @@ export default defineComponent({
         font-size: 2.8vh;
     }
     
-
     #confirm-button-modal,
     #edit-button-modal{
         font-family: "Ubuntu";

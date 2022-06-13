@@ -1,6 +1,7 @@
 <script lang="ts">
 
 import { defineComponent } from "vue";
+import emailjs from 'emailjs-com';
 
 export default defineComponent({
     props: {
@@ -150,11 +151,28 @@ export default defineComponent({
             localStorage.setItem("sessionId", this.sessionId)
             localStorage.setItem("sessionIndex", this.indexSession)
             localStorage.setItem("sessionPlacement", this.listPlacement)
+        },
+        editSession(){
+            this.storageInfo();
             this.$emit("edit-session-event")
         },
         confirmSession(){
             this.storageInfo()
             this.$emit("confirm-session-event")
+            var templateParams = {
+                tutor_email: this.tutorId,
+                student_email: this.studentId,
+                session_date: this.date,
+                session_subject: this.className
+            };
+
+            emailjs
+            .send('service_2efcuwp', 'template_87wpyd9', templateParams, 'LPBuS8HK51bdTE-9Y')
+            .then(response => {
+                console.log('SUCCESS!', response.status, response.text);
+            }, function(error) {
+                console.log('FAILED...', error);
+            });
         },
         cancelSession(){
             this.storageInfo()
@@ -193,7 +211,7 @@ export default defineComponent({
             <div class="button-container">
                 <button id="details-button" data-bs-toggle="modal" data-bs-target="#information-modal"> Ver detalles </button>
                 <button id="confirm-button" :disabled="isDisabled" @click="confirmSession">Confirmar Asesor&iacute;a</button>
-                <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="storageInfo">Editar Asesor&iacute;a</button>
+                <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="editSession">Editar Asesor&iacute;a</button>
                 <button id="cancel-button" :disabled="isCancelDisabled" data-bs-toggle="modal" data-bs-target="#cancel-modal" @click="cancelSession">Cancelar Asesor&iacute;a</button>
             </div>
             <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>

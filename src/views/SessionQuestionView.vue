@@ -3,9 +3,9 @@ import { defineComponent, ref } from "vue";
 import router from "../router"
 import axios from "axios";
 import NavBar from "../components/Navbar.vue"
+import emailjs from 'emailjs-com';
 
 const now = new Date();
-const scheduleR = ref()
 
 const api = 'http://localhost:8000/api/'
 var id_subject = ref (localStorage.getItem("classId"))
@@ -39,7 +39,8 @@ export default defineComponent({
             fileName: "",
             fileUpdated: [],
             dsb: true,
-            fileObject: null
+            fileObject: null,
+            adminEmails: ""
         }
     },
     updated(){
@@ -160,8 +161,41 @@ export default defineComponent({
 
             await axios
             .post('http://localhost:8000/api/sessions/', formData)
-            .then(result => {
-                console.log(result.data)
+            .then(async result => {
+                var emails = []
+                var emailString = ""
+
+                await axios
+                .get(api + 'admins_emails/')
+                .then(result => {
+                    emails = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                for(let i = 0; i < emails.length - 1; i++) {
+                    emailString += emails[i].id__email
+                    emailString += ', '
+                }
+
+                emailString += emails[emails.length-1].id__email
+
+                this.adminEmails = emailString
+
+                var templateParams = {
+                    admin_emails: this.adminEmails,
+                    message: 'Hay una nueva solicitud de asesoría. Entra a la plataforma para completar los detalles y confirmarla.'
+                };
+
+                emailjs
+                .send('service_2efcuwp', 'template_ctjjkkc', templateParams, 'LPBuS8HK51bdTE-9Y')
+                .then(response => {
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                });
+
                 localStorage.removeItem("className")
                 localStorage.removeItem("classId")
                 localStorage.removeItem("tutorSesId")

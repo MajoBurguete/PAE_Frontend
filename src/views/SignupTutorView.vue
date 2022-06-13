@@ -6,6 +6,7 @@ import ClassModal from '../components/items/Class-Modal.vue'
 import ClassFilter from "../components/items/Class-Filter.vue"
 import router from "../router";
 import axios from "axios";
+import emailjs from 'emailjs-com';
 
 const api = 'http://localhost:8000/api/'
 const careers = ref([]);
@@ -44,7 +45,8 @@ export default defineComponent({
             disabledV: true,
             updateModal: false,
             scheduleComplete: false,
-            classesComplete: false
+            classesComplete: false,
+            adminEmails: ""
         }
     },
     updated(){
@@ -158,7 +160,7 @@ export default defineComponent({
                     user_type: 1,
                     status: 2
                 })
-                .then(result => {
+                .then(async result => {
                     const tutorScheduleS = JSON.parse(localStorage.getItem('hoursSelectedT'));
                     const subjectsSelected = JSON.parse(localStorage.getItem('classesSelected'));
     
@@ -190,7 +192,41 @@ export default defineComponent({
                             console.log(error);
                         })
                     }
-    
+                    
+                    var emails = []
+                    var emailString = ""
+
+                    await axios
+                    .get(api + 'admins_emails/')
+                    .then(result => {
+                        emails = result.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                    for(let i = 0; i < emails.length - 1; i++) {
+                        emailString += emails[i].id__email
+                        emailString += ', '
+                    }
+
+                    emailString += emails[emails.length-1].id__email
+
+                    this.adminEmails = emailString
+
+                    var templateParams = {
+                        admin_emails: this.adminEmails,
+                        message: 'Un nuevo tutor se ha registrado en el sistema. Entra a la plataforma de PAE para revisar sus datos y aprobarlo.'
+                    };
+
+                    emailjs
+                    .send('service_2efcuwp', 'template_ctjjkkc', templateParams, 'LPBuS8HK51bdTE-9Y')
+                    .then(response => {
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        console.log('FAILED...', error);
+                    });
+
                     localStorage.setItem("displayToast", "signupTutor");
                     router.push("/")
                 })
