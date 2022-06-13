@@ -14,7 +14,7 @@ export default defineComponent({
             id_student: '',
             id_tutor: '', 
             answer: {},
-            fileObject: null
+            fileObject: null,
         }
     },
     mounted(){
