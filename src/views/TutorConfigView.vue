@@ -3,7 +3,7 @@
     import { defineComponent, ref } from "vue";
     import router from "../router"
     import ScheduleItem from "../components/items/Schedule-Item.vue";
-    import ClassModal from '@/components/items/Class-Modal.vue';
+    import ClassModal from '../components/items/Class-Modal.vue';
     import NavBar from "../components/Navbar.vue"
 
     const api = 'http://localhost:8000/api/'
@@ -23,7 +23,7 @@
                 semesterP: "",
                 hours: "",
                 classList: [],
-                tutorS: []
+                tutorS: [],
             }
         },
 
@@ -35,14 +35,41 @@
                 set(val){
                     this.tutorS = val;
                 }
+            },
+            tutorSubjects: {
+                get(){
+                    return this.classList;
+                },
+                set(val){
+                    this.classList = val;
+                }
             }
         },
 
         methods: {
+            async getSubjectsAndSchedule() {
+                const user = localStorage.getItem('userID')
+                await axios
+                .get(api + 'subjects_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.classList = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+                await axios
+                .get(api + 'schedule_by_tutor/?tutor=' + user)
+                .then(result => {
+                    this.tutorSchedule = result.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            },
             async getTutorData() {
                 const user = localStorage.getItem('userID')
-
-                axios
+                await axios
                 .get(api + 'tutors/?tutor=' + user)
                 .then(result => {
                     this.usernameP = result.data[0].id__first_name
@@ -53,7 +80,7 @@
                     console.log(error)
                 })
 
-                axios
+                await axios
                 .get(api + 'subjects_by_tutor/?tutor=' + user)
                 .then(result => {
                     this.classList = result.data   
@@ -62,7 +89,14 @@
                     console.log(error)
                 })
 
-                axios
+                var sk = []
+                for(let i = 0; i < this.classList.length; i++) {
+                    sk.push(this.classList[i].id_subject__id)
+                }
+
+                localStorage.setItem("classesSelected", JSON.stringify(sk))
+
+                await axios
                 .get(api + 'service_hours/?tutor=' + user)
                 .then(result => {
                     this.hours = result.data[0].service_hours
@@ -71,7 +105,7 @@
                     console.log(error)
                 })
 
-                axios
+                await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
                     this.tutorSchedule = result.data
@@ -79,6 +113,59 @@
                 .catch(error => {
                     console.log(error)
                 })
+            },
+
+            async saveChanges() {
+                const tutor = localStorage.getItem('userID')
+                const newClasses = JSON.parse(localStorage.getItem('classesSelected'));
+                var flag1 = 0
+                var limit1 = -1
+                var flag2 = 0
+                var limit2 = newClasses.length
+                var flag3 = 0
+                
+                if(newClasses.length > 0) {
+                    await axios
+                    .get(api + 'subjects_by_tutor/?tutor=' + tutor)
+                    .then(result => {
+                        limit1 = result.data.length
+                        for(let i = 0; i < result.data.length; i++) {
+                            axios
+                            .delete(api + 'tutor_subjects/' + result.data[i].id)
+                            .then(result2 => {
+                                flag1 = flag1 + 1
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                    for(var i = 0; i < newClasses.length; i++) {
+                        await axios
+                        .post(api + 'tutor_subjects/', {
+                            id_tutor: tutor,
+                            id_subject: newClasses[i]
+                        })
+                        .then(result => {
+                            flag2 = flag2 + 1
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    }
+                    this.tutorSubjects = newClasses
+                    while (flag3 != 1) {
+                        if (flag1 == limit1 && flag2 == limit2) {
+                            this.getSubjectsAndSchedule()
+                            flag3 = 1
+                        }
+                    }
+                }
+                this.$forceUpdate()
             }
         },
 
@@ -114,14 +201,14 @@
                         <div class="button-container">
                             <a class="btn-cont" href="tutor-session-record"> Historial </a>
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#class-modal"> Editar UFs </button>
-                            <button class="btn-cont"> Guardar Cambios </button>
+                            <button class="btn-cont" @click="saveChanges()"> Guardar Cambios </button>
                         </div>
                     </div>
                 </div>
                 <div class="user-schedule">
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
-                        <h3 class="schedule-h3">Edita tu horario cuando lo necesites y recuerda guardar tus cambios</h3>
+                        <h3 class="schedule-h3">Edita tu horario o Unidades de Formación cuando lo necesites y recuerda guardar tus cambios</h3>
                         <ScheduleItem :userScheduledHours="tutorSchedule" fromHomeAdmin="true" lock-schedule="home-active" showDate="inactive"/>
                         <!-- <ScheduleItem base-color="#769ABA" hover-color="#A9BFD2" lock-schedule="active" showDate="inactive"/> -->
                     </div>

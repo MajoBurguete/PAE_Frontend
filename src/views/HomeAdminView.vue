@@ -53,7 +53,7 @@
                 noTutors: false,
                 noStudents: false,
                 messageWarn: "No existen tutores aprobados en el sistema",
-                firstPass: true
+                firstPass: true,
             }
 
         },
@@ -173,6 +173,7 @@
         },
         methods: {
             toStudentsTab() {
+                const timeLabel = document.getElementById("time-label") as HTMLInputElement;
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
                 const input = document.getElementById('search-input') as HTMLInputElement;
@@ -184,6 +185,8 @@
                 const recentTutorsL = document.getElementById('recent-tutors-list');
 
                 this.getStudentListB()
+
+                timeLabel.textContent = "Asesorías Agendadas";
 
                 ufList.style.display = "none";
                 recentTutorsL.style.display = "flex";
@@ -221,6 +224,7 @@
 
             },
             toTutorsTab() {
+                const timeLabel = document.getElementById("time-label") as HTMLInputElement;
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
                 const input = document.getElementById('search-input') as HTMLInputElement;
@@ -232,6 +236,8 @@
                 const recentTutorsL = document.getElementById('recent-tutors-list');
 
                 this.getTutorListB();
+
+                timeLabel.textContent = "Horario Disponible";
 
                 ufList.style.display = "";
                 recentTutorsL.style.display = "none";
@@ -412,6 +418,72 @@
                     console.log(error);
                 })
             },
+            getReferenceDate() {
+                var date = new Date();
+                const currentDay = date.getDay();
+                if (currentDay != 0 && currentDay != 6) {
+                    date.setDate(date.getDate() + (5 + (7 - currentDay)) % 7)
+                    date.setHours(23, 59, 59)
+                }
+                return date;
+            },
+            async getScheduledHoursByStudent(studentS: string) {
+                var dates = []
+
+                await axios
+                .get(api + 'schedule_of_student/?student=' + studentS)
+                .then(result => {
+                    this.updateScheduledHours = [];
+                    dates = result.data
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+
+                let sk = []
+                let currentWeekHours = []
+                let nextWeekHours = []
+                for(let i = 0; i < dates.length; i++) {
+                    var objectD = {
+                        day_hour: '',
+                    }
+                    const date = new Date(dates[i].date)
+                    const day = date.getDay()
+                    const weekendDate = this.getReferenceDate()
+                    const dateS = date.toString()
+                    let dateString = ''
+
+                    if(day == 1) {
+                        dateString += 'm'
+                    } else if(day == 2) {
+                        dateString += 't'
+                    } else if(day == 3) {
+                        dateString += 'w'
+                    } else if(day == 4) {
+                        dateString += 'th'
+                    } else {
+                        dateString += 'f'
+                    }
+                    if(dateS[16] != '0') {
+                        dateString += dateS[16]
+                        dateString += dateS[17]
+                    } else {
+                        dateString += dateS[17]
+                    }
+                    if(date < weekendDate) {
+                        currentWeekHours.push(dateString)
+                    } else {
+                        nextWeekHours.push(dateString)
+                    }
+                    
+                    objectD.day_hour = dateString
+                    sk.push(objectD)
+                }
+
+                this.updateScheduledHours = sk;
+                console.log('hours: ' + this.scheduledHours)
+            },
+
             async getRecentTutors(studentS: string) {
                 await axios
                 .get(api + 'recent_tutors_of_student/?student=' + studentS)
@@ -470,7 +542,7 @@
                 this.updateSemester = studentS.semester;
 
                 this.getRecentTutors(studentS.id);
-                this.updateScheduledHours = [];
+                this.getScheduledHoursByStudent(studentS.id);
             },
             deleteTutor(){
                 axios
@@ -496,6 +568,10 @@
                 .catch(error => {
                     console.log(error)
                 })
+            },
+            toSurveyRecord() {
+                localStorage.setItem('selectedUser', this.userId)
+                router.push("/survey-record")
             }
         }
     })
@@ -568,12 +644,12 @@
                         </div>
                         <div class="button-container">
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#delete-modal"  id="delete-user"> Baja de tutor </button>
-                            <button class="btn-cont"> Encuestas </button>
+                            <button class="btn-cont" @click="toSurveyRecord()"> Encuestas </button>
                         </div>
                     </div>
                     <div class="user-schedule">
                         <div class="schedule-item">
-                            <h1 class="schedule-h1"> Horario disponible </h1>
+                            <h1 class="schedule-h1" id="time-label"> Horario disponible </h1>
                             <ScheduleItem :userScheduledHours="updateScheduledHours" fromHomeAdmin="true" base-color="#C6E1D7" selectedColor="#6F9492" hover-color="transparent" lock-schedule="home-active" showDate="inactive"/>
                         </div>
                     </div>

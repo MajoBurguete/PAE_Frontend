@@ -84,7 +84,7 @@ export default defineComponent({
                 email: this.userMail,
                 first_name: this.username
             })
-            .then( result => {
+            .then(result => {
                 const userNumId = result.data.id
 
                 axios
@@ -205,7 +205,7 @@ export default defineComponent({
 <template>
     <body>
         <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-        <form class="needs-validation" novalidate  @submit.prevent="checkForm" id="student-form">
+        <form class="needs-validation" novalidate id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">

@@ -16,6 +16,7 @@ export default defineComponent({
             localStorage.removeItem("userType");
             localStorage.removeItem("hoursAvailable");
             localStorage.removeItem("userID");
+            localStorage.removeItem("userStatus");
 
             router.push('/');
         },
@@ -111,6 +112,9 @@ export default defineComponent({
     button:hover,
     a:hover {
         color: #A0BCFF;
+    }
+    .nav-item {
+        display: none;
     }
 
     button{
