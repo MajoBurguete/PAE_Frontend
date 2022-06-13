@@ -19,7 +19,7 @@
 @font-face {
   font-family: "Catamaran";
   src: url('src/assets/fonts/Catamaran-Medium.ttf');
-  font-weight: medium;
+  font-weight: 100;
 }
 @font-face {
   font-family: "Catamaran";
@@ -44,7 +44,7 @@
 @font-face {
   font-family: "Montserrat";
   src: url('src/assets/fonts/Montserrat-Medium.ttf');
-  font-weight: medium;
+  font-weight: 50;
 }
 @font-face {
   font-family: "Montserrat";

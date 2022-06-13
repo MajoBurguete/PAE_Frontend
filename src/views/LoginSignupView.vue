@@ -1,36 +1,118 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
-    import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
     import router from "../router";
+    import emailjs from 'emailjs-com';
 
-    /* const user = ref({
-        username: '',
-        password: ''
-    }) */
+    const api = 'http://localhost:8000/api/'
+    declare var bootstrap: any;
+
 
     export default defineComponent({
         data() {
             return {
+                idMatch: true,
                 username: '',
                 password: '',
-                token: localStorage.getItem('user-token') || null
+                token: localStorage.getItem('user-token') || null,
+                modalMessage: "Tu cuenta ha sido creada con éxito",
+                errorMessage: "Tu usuario o tu contraseña es incorrecto",
+                idRecoverPassword: ""
             }
         },
+        mounted(){
+            let messToast = localStorage.getItem("displayToast");
+            var myModal = new bootstrap.Modal(document.getElementById('feedback-modal'))
+            
+            if(messToast == "signupStudent"){
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
+            else if(messToast == "signupTutor"){
+                this.updateModalMess = "Te has registrado correctamente, te llegará un correo una vez que tu cuenta haya sido revisada."
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
+            else if (messToast == "recoverPassword"){
+                this.updateModalMess = "Tu contraseña ha sido cambiada con éxito"
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
+        },
+        updated(){
+            this.checkMatch()
+        },
+        computed: {
+            updateModalMess: {
+                get(){
+                    return this.modalMessage;
+                },
+                set(val){
+                    this.modalMessage = val;
+                }
+            },
+            updateErrorMess: {
+                get(){
+                    return this.errorMessage;
+                },
+                set(val){
+                    this.errorMessage = val;
+                }
+            },
+        },
         methods:{
+            async checkMatch(){
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    const message = document.getElementById('no-match') as HTMLInputElement;
+                    if (result.data.length > 0){
+                        message.style.display = "none"
+                        this.idMatch = false
+                    }
+                    else{
+                        message.style.display = "flex"
+                        this.idMatch = true;
+                    }
+                })
+            },
+            async detectUserType(){
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.username)
+                .then( result => {
+                    this.storeUserInfo(result.data[0].id, result.data[0].user_type, result.data[0].status)
+                    if(result.data[0].user_type == 2){
+                        router.push('http://localhost:3000/admin-home');
+                    }
+                    else if(result.data[0].user_type == 1 && result.data[0].status == 2){
+                        const errorMess = document.getElementById('login-error') as HTMLInputElement;
+                        
+                        this.updateErrorMess = "Tu cuenta aún no ha sido aprobada"
+                        errorMess.style.display = "flex"
+
+                    }
+                    else{
+                        router.push('http://localhost:3000/home')
+                    }
+                })
+                .catch( error => {
+                    console.log(error);
+                })
+            },
+            storeUserInfo(userId: string, userT: string, userS: string){
+                localStorage.setItem("userID", userId);
+                localStorage.setItem("userType", userT);
+                localStorage.setItem("userStatus", userS);
+            },
             showPassword(){
                 const password = document.getElementById("user_password_login") as HTMLInputElement;
                 const eye = document.getElementById("visibility_password_image_login") as HTMLImageElement;
                 if (password.type == "password") {
                     password.type = "text";
                     eye.src = "src/assets/img/no-visibility.png";
-                    console.log(password.type);
-                    console.log(eye.src);
                 } else {
                     password.type = "password";
-                    console.log(password.type);
                     eye.src = "src/assets/img/visibility.png";
-                    console.log(eye.src);
 
                 }
             },
@@ -111,15 +193,19 @@
                     password: this.password
                 })
                 .then(result => {
+                    errorMess.style.display = "none";
                     this.token = result.data.token
-                    console.log(this.token)
-                    localStorage.setItem('user-token', result.data.token)
-                    router.push('http://localhost:3000/home')
+                    localStorage.setItem('user-token', result.data.token);
+                    localStorage.removeItem("hoursSelectedT");
+                    localStorage.removeItem("classesSelected");
+                    this.detectUserType();
                 })
                 .catch(error => {
                     console.log(error)
                     localStorage.removeItem('user-token')
-                    errorMess.style.visibility = "visible"
+                    this.updateErrorMess = "Tu usuario o tu contraseña es incorrecto"
+
+                    errorMess.style.display = "flex"
                 })
             },
             toLogin() {
@@ -209,29 +295,36 @@
                 tutorCard.style.backgroundColor = "white";
                 tutorTitle.style.color = "black";
             },
+            
             toSignupTutorForm() {
                 router.push('http://localhost:3000/tutor-signup')
             },
+
             toSignupStudentForm() {
                 router.push('http://localhost:3000/student-signup')
             },
-            checkForm(){
-/*                 'use strict'
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
 
-                // Loop over them and prevent submission
-                Array.prototype.slice.call(forms)
-                    .forEach(function (form) {
-                    form.addEventListener('submit', function (event: Event) {
-                        if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                }) */
+            async sendEmail(event: Event) {
+                event.preventDefault()
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    var templateParams = {
+                        user_email: result.data[0].id__email,
+                        link: 'localhost:3000/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
+                    };
+                    emailjs
+                        .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
+                        .then(response => {
+                            console.log('SUCCESS!', response.status, response.text);
+                        }, function (error) {
+                            console.log('FAILED...', error);
+                        });
+                    
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
         }
     })
@@ -239,6 +332,7 @@
 
 
 <template>
+
     <body>
         <div class="flexContainer">
             <div class="section-login" id="section-login">
@@ -248,22 +342,26 @@
                     <h3> ¿Aún no te has registrado? </h3>
                 </div>
                 <div class="form-container" id="form-container">
-                    <div class="account-selection" id="account-selection"> 
+                    <div class="account-selection" id="account-selection">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground" @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
-                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img" alt="...">
+                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground"
+                                        @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
+                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img"
+                                            alt="...">
                                         <div class="card-body" id="card-student-body">
                                             <h5 class="card-title" id="student-title">Estudiante</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground" @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
-                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img" alt="...">
+                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground"
+                                        @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
+                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img"
+                                            alt="...">
                                         <div class="card-body" id="card-tutor-body">
                                             <h5 class="card-title" id="tutor-title">Asesor</h5>
                                         </div>
@@ -277,103 +375,220 @@
 
             <div class="section-signup" id="section-signup">
                 <div class="container-login" id="container-login">
-                    <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
+                    <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate @submit.prevent="checkForm">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" id="user_email_login" v-model="username" placeholder="A0XXXXXXX"  @input="checkForm" required>
+                                <input type="text" class="form-control" id="user_email_login" v-model="username"
+                                    placeholder="A0XXXXXXX" @input="checkForm" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="user_password_login"  v-model="password" placeholder="Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="user_password_login"
+                                        v-model="password" placeholder="Contraseña" @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                                alt="visibility eye" id="visibility_password_image_login">
                                         </span>
                                     </div>
                                 </div>
-                                <h3 class="error-message" id="login-error"> Tu usuario o tu contraseña es incorrecto </h3>
+                                <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
-                            <h3 class="login-question-h3">¿Olvidaste tu contraseña?</h3>
+                            <a class="login-question-h3" data-bs-toggle="modal"
+                                data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
                         </div>
                         <button id="signin-button" type="submit" @click="login">Iniciar Sesión</button>
                     </div>
                 </form>
             </div>
         </div>
+        <div class="modal fade" id="feedback-modal" tabindex="-1" aria-labelledby="feedbackModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <h1 class="h1-modal"> {{modalMessage}} </h1>
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" id="close-fmodal-btn"> Regresar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="password-modal" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="password-modal-container">
+                    <h4>Ingresa tu matrícula para recuperar tu cuenta</h4>
+                    <form class="needs-validation" novalidate>
+                        <label class="modal-label">Matrícula</label>
+                        <h6 id="no-match"> No existe un perfil registrado con esa matrícula </h6>
+                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX"
+                            v-model="idRecoverPassword" required @input="checkForm">
+                        <div class="password-button-container">
+                            <button class="return-password-button" data-bs-dismiss="modal"
+                                aria-label="Close">Regresar</button>
+                            <button class="new-password-button" type="submit" data-bs-target="#message-modal"
+                                data-bs-toggle="modal" @click="sendEmail($event)" :disabled="idMatch">Recuperar Cuenta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="messageModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" id="password-modal-container">
+                    <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
+                    <button class="return-password-button-modal" data-bs-dismiss="modal"
+                        aria-label="Close" @click="createUser">Regresar</button>
+                </div>
+            </div>
+        </div>
     </body>
 </template>
 
 <style scoped>
+    /* General styles */
+    h1 {
+        color: white;
+        font-size: 9vh;
+        font-family: "Montserrat";
+        font-weight: bold;
+        margin: 0 0 5vh 0;
+    }
 
-/* General styles */
-h1 {
-    color: white;
-    font-size: 9vh;
-    font-family: "Montserrat";
-    font-weight: bold;
-    margin: 0 0 5vh 0;
-}
-h3 {
-    font-family: "Montserrat";
-    font-weight: normal;
-    font-size: 2vh;
-    color: white;
-    margin: 1.5vh 0 0 0;
-}
-button {
-    font-family: "Ubuntu";
-    font-weight: normal;
-    background-color: white;
-    color: #0F084B;
-    border-radius: 12px;
-    border: transparent;
-    font-size: 5vh;
-    padding: 2vh 2vw;
-}
-.error-message{
-        color: rgb(221, 31, 31);
-        visibility: hidden;
+
+    h3 {
+        font-family: "Montserrat";
+        font-weight: normal;
+        font-size: 2vh;
+        color: white;
+        margin: 1.5vh 0 0 0;
+    }
+
+    button {
+        font-family: "Ubuntu";
+        font-weight: normal;
+        background-color: white;
+        color: #0F084B;
+        border-radius: 12px;
+        border: transparent;
+        font-size: 5vh;
+        padding: 2vh 2vw;
+    }
+
+    button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #ffffffb5;
+        transition: all 0.3s ease 0s;
+    }
+
+    .new-password-button {
+        background-color: #365295;
+        font-size: 2.5vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 15vw;
+    }
+    
+    .return-password-button {
+        background-color: #769ABA;
+        font-size: 2.5vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 15vw;
+    }
+
+    .return-password-button-modal {
+        background-color: #365295;
+        font-size: 3vh;
+        padding: 1vh 1vw;
+        color: white;
+        width: 30vw;
+    }
+
+    img{
+        width: 35%;
+        height: 35%;
+    }
+
+    button:disabled {
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+
+    button:disabled:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
+    h6 {
+        color: rgb(192, 21, 21);
+        display: none;
         font-family: "Catamaran";
         font-weight: lighter;
     }
-img{
-    width: 35%;
-    height: 35%;
-}
 
-input {
-    width: 25vw;
-    height: 6vh;
-    border: 2px solid;
-    border-radius: 1vh;
-    font-family: "Catamaran";
-    font-weight: normal;
-    font-size: 2.5vh;
-    padding: 0vh 0.4vw 0vh 0.4vw;
-    margin: 0;
-    border-color: black;
-    border-width: 0.25vh;
-    border-radius: 0.65vh;
-}
-span{
+    h4 {
+        font-family: 'Montserrat';
+        font-style: normal;
+        color: #26408B;
+        text-align: center;
+        font-size: 3vh;
+    }
+
+    #password-modal-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2vh;
+        background-color: #9EB2ED;
+        border-radius: 34px;
+        padding: 5vh;
+
+    }
+    .password-button-container {
+        display: flex;
+        justify-content: center;
+        gap: 1vw;
+        margin-top: 3vh;
+    }
+
+    input {
+        width: 25vw;
+        height: 6vh;
+        border: 2px solid;
+        border-radius: 1vh;
+        font-family: "Catamaran";
+        font-weight: normal;
+        font-size: 2.5vh;
+        padding: 0vh 0.4vw 0vh 0.4vw;
+        margin: 0;
+        border-color: black;
+        border-width: 0.25vh;
+        border-radius: 0.65vh;
+    }
+
+    #user_email_signup {
+        width: 32vw;
+    }
+
+    span{
         height: 6.2vh;
         width: 3.5vw;
         justify-content: center;
     }
-.input-group-text{
-    height: 6.2vh;
-    width: 3.5vw;
-    padding: 0.5vh;
-}
-.input-group {
+    .input-group-text{
+        height: 6.2vh;
+        width: 3.5vw;
+        padding: 0.5vh;
+    }
+    .input-group {
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
@@ -381,199 +596,248 @@ span{
         margin: 1.3vh 0 0 0;
         width: 25vw;
     }
-/*Flexbox which contains two divs (section-login y section-signup*/
-.flexContainer {
-    display: flex;
-    background-image: url("src/assets/img/patternF7.png");
-    width: 100vw;
-    height: 100vh;
-    background-size: cover;
-}
 
-.section-login {
-    box-sizing: border-box;
-    flex: 1;
-    width: 40vw;
-    height: 100%;
-    background-color: transparent;
-    display: flex;
-    position: relative;
-    align-items: center;
-    padding: 0 0 0 1.5vw;
-}
-/*Seccion que aparece en el lateral derecho durante el signup*/
-.section-signup {
-    padding: 5vh;
-    box-sizing: border-box;
-    background-color: white;
-    width:60vw;
-    height: 100%;
-    position: relative;
-}
-.login-message {
-    text-align:end;
-    margin: 0 -8vw 0 0;
-}
-/*Contenedor del lateral derecho (container-signup) y contenedor del 
-lado izquierdo (container-login) */
-.container-signup,
-.container-login{
-    margin: 32vh 0 0 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding: 5vh;
-    align-items: center;
-}
+    /*Flexbox which contains two divs (section-login y section-signup*/
+    .flexContainer {
+        display: flex;
+        background-image: url("src/assets/img/patternF7.png");
+        width: 100vw;
+        height: 100vh;
+        background-size: cover;
+    }
 
-.container-signup {
-    z-index: 9;
-}
-.container-login {
-    opacity: 0;
-    position: absolute;
-    width: 90%;
-    visibility: hidden;
-}
+    .section-login {
+        box-sizing: border-box;
+        flex: 1;
+        width: 40vw;
+        height: 100%;
+        background-color: transparent;
+        display: flex;
+        position: relative;
+        align-items: center;
+        padding: 0 0 0 1.5vw;
+    }
 
+    /*Seccion que aparece en el lateral derecho durante el signup*/
+    .section-signup {
+        padding: 5vh;
+        box-sizing: border-box;
+        background-color: white;
+        width:60vw;
+        height: 100%;
+        position: relative;
+    }
 
-.login-form {
-    margin: 15vh 0 0 0;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    z-index: 10;
-}
+    .login-message {
+        text-align:end;
+        margin: 0 -8vw 0 0;
+    }
+    /*Contenedor del lateral derecho (container-signup) y contenedor del 
+    lado izquierdo (container-login) */
+    .container-signup,
+    .container-login{
+        margin: 32vh 0 0 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        padding: 5vh;
+        align-items: center;
+    }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 5vh 0 0 0;
-}
-
-#signin-button {
-    font-size: 2.3vh;
-    background-color: #26408B;
-    color: white;
-    padding: 1vh 4vw;
-    margin: 3vh 0 0 0;
-}
-
-.login-h3,
-label {
-    font-family: "Catamaran";
-    font-weight: bold;
-    color:#26408B;
-    font-size: 2.5vh;
-    margin: 3.5vh 0 0 0;
-}
-.login-question-h3 {
-    font-family: "Catamaran";
-    font-weight: normal;
-    color:#26408B;
-    margin: 2vh 0 0 0;
-    text-decoration: underline;
-}
-.login-question-h3:hover{
-    cursor: pointer;
-    font-weight: bold;
-}
+    .container-signup {
+        z-index: 9;
+    }
+    .container-login {
+        opacity: 0;
+        position: absolute;
+        width: 90%;
+        visibility: hidden;
+    }
 
 
-/* Sección para crear una cuenta */
-.row {
-    gap: 5vw;
-    margin: 0 2.5vw;
-    z-index: 10;
-}
+    .login-form {
+        margin: 15vh 0 0 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+    }
 
-#account-type-h1 {
-    margin: 5vh 0;
-    font-weight: bolder;
-    font-size: 5vh;
-    color: black;
-}
+    .form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 5vh 0 0 0;
+    }
 
-.form-container {
-    height: 95%;
-    opacity: 0;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    visibility: hidden;
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
-.account-selection{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    #signin-button {
+        font-size: 2.3vh;
+        background-color: #26408B;
+        color: white;
+        padding: 1vh 4vw;
+        margin: 3vh 0 0 0;
+    }
 
-.election {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 7vh;
-}
+    #signin-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
 
-.card {
-    padding: 0;
-    border: 0;
-    border-radius: 1rem;
-}
+    .login-h3,
+    label {
+        font-family: "Catamaran";
+        font-weight: bold;
+        color:#26408B;
+        font-size: 2.5vh;
+        margin: 3.5vh 0 0 0;
+    }
+    .modal-label {
+        margin: 0;
+    }
+    .login-question-h3 {
+        font-family: "Catamaran";
+        font-weight: normal;
+        color:#26408B;
+        margin: 0 0 0 0;
+        text-decoration: underline;
+    }
+    .login-question-h3:hover{
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-.card-img-top{
-    width: 50%;
-    height: 40%;
-}
+    .error-message{
+        color: rgb(221, 31, 31);
+        display: none;
+        font-family: "Catamaran";
+        font-weight: lighter;
+    }
 
-#student-img{
-    margin: 6.3vh 5vw;
-}
 
-#tutor-img{
-    margin: 6vh 5vw;
-}
+    /* Sección para crear una cuenta */
+    .row {
+        gap: 5vw;
+        margin: 0 2.5vw;
+        z-index: 10;
+    }
 
-#card-student {
-    background-color: #A6CFD5;
-}
+    #account-type-h1 {
+        margin: 5vh 0;
+        font-weight: bolder;
+        font-size: 5vh;
+        color: black;
+    }
 
-#card-student-body,
-#card-tutor-body{
-    height: 45%;
-    background-color: white;
-    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.25);
-    border-radius: 0 0 1rem 1rem;
-    padding: 4vh 3vw;
-}
+    .form-container {
+        height: 95%;
+        opacity: 0;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        visibility: hidden;
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+    .account-selection{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-#card-tutor{
-    background-color: #A4B7E3;
-}
+    .election {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 7vh;
+    }
 
-.card-title{
-    font-family: "Montserrat";
-    font-weight: bold;
-    font-size: 4vh;
-    text-align: center;
-}
+    .card {
+        padding: 0;
+        border: 0;
+        border-radius: 1rem;
+    }
 
-/*Botón para ir al signup*/
-.signup{
-    margin: 11.5vh 0 0 0;
-}
-/*Botón para ir al login */
-.login-button {
-    margin: 5vh 0 0 0;
-}
-#visibility_password_image_login{
-    width: 2.5vw;
-    height: auto;
-}
+    .card-img-top{
+        width: 50%;
+        height: 40%;
+    }
+
+    #student-img{
+        margin: 6.3vh 5vw;
+    }
+
+    #tutor-img{
+        margin: 6vh 5vw;
+    }
+
+    #card-student {
+        background-color: #A6CFD5;
+    }
+
+    #card-student-body,
+    #card-tutor-body{
+        height: 45%;
+        background-color: white;
+        box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.25);
+        border-radius: 0 0 1rem 1rem;
+        padding: 4vh 3vw;
+    }
+
+    #card-tutor{
+        background-color: #A4B7E3;
+    }
+
+    .card-title{
+        font-family: "Montserrat";
+        font-weight: bold;
+        font-size: 4vh;
+        text-align: center;
+    }
+
+    /*Botón para ir al signup*/
+    .signup{
+        margin: 11.5vh 0 0 0;
+    }
+    /*Botón para ir al login */
+    .login-button {
+        margin: 5vh 0 0 0;
+    }
+
+    #visibility_password_image_login{
+        width: 2.5vw;
+        height: auto;
+    }
+
+    /* Modal */
+    
+    .modal-content{
+        background-color: #E1F0EA;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 3vh 2vw;
+        border-radius: 10px;
+    }
+    .modal-lg{
+        width: 40vw;
+    }
+
+    .h1-modal{
+        font-size: 5vh;
+        text-align: center;
+        font-weight: 50;
+        color: #6F9492;
+    }
+
+    #close-fmodal-btn{
+        background-color: #96CCC9;
+        font-size: 3vh;
+        width: 20vw;
+        padding: 1vh 2vw;
+        color: white;
+    }
 
 </style> 
 

@@ -1,11 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useStore } from '../../store'
 
 export default defineComponent({
-    setup () {
-        const store = useStore()
-    },
     props: {
         baseColor: {
             type: String,
@@ -35,28 +31,12 @@ export default defineComponent({
             type: Array,
             default: []
         },
-        userScheduledHours: {
-            type: Array,
-            default: []
-        },
-        fromSignupT:{
-            type: String,
-            default: "false"
-        },
-        fromHomeAdmin:{
-            type: String,
-            default: "false"
-        },
         alignItemsVal:{
             type: String,
             default: "center"
         }
     },
     mounted() {
-        const clearButton = document.getElementById('clear-button') as HTMLInputElement;
-        const squares = document.getElementsByClassName("locked") as HTMLCollection;
-
-
         const dates = document.getElementsByClassName("date") as HTMLCollection;
 
         if (this.showDate == "active"){
@@ -70,33 +50,40 @@ export default defineComponent({
             }
         }
 
-        if(this.lockSchedule == "inactive") {
-            clearButton.style.visibility = "visible"
-        } else {
-            this.lockedSchedule(clearButton); 
-            this.checkLockedSchedule(squares);
-            
-        } 
     },
-    updated() {
-        const squares = document.getElementsByClassName("locked") as HTMLCollection;
+    updated(){
 
-        /* It happens when the schedule is updated */
-        if(this.lockSchedule == "home-active" ){
-            this.clearLockedSchedule();
-            this.checkLockedSchedule(squares);
+        if(this.changeFirstPass){
+            const squares = document.getElementsByClassName("inactive") as HTMLCollection;
+            this.setScheduleHours = this.scheduledHours;
+
+            for(var i=0; i<this.scheduledHours.length; i++){
+                    this.hourCountC = "add";
+            }
+
+            this.fillSchedule(squares);
+
+            this.changeFirstPass = false;
         }
-        
-        
+
     },
     data(){
         return{
             selectedHoursT: [],
             hourCount: 0,
             errorMessage: "Has excedido las 5 horas permitidas por semana",
+            firstPass: true
         }
     },
     computed: {
+        changeFirstPass:{
+            get() {
+                return this.firstPass;
+            },
+            set(val){
+                this.firstPass = val;
+            }
+        },
         selectedHoursTC: {
             get() {
                 return this.selectedHoursT;
@@ -108,8 +95,17 @@ export default defineComponent({
                     this.hourCountC = "add";
                 } else {
                     this.selectedHoursT.splice(found, 1);
+                    console
                     this.hourCountC = "minus";
                 }
+            }
+        },
+        setScheduleHours: {
+            get() {
+                return this.selectedHoursT;
+            },
+            set(val){
+                this.selectedHoursT = val;
             }
         },
         clearSelectedHours(){
@@ -146,7 +142,7 @@ export default defineComponent({
         }
     },  
     methods:{
-        checkLockedSchedule(squares: HTMLCollection){
+        fillSchedule(squares: HTMLCollection){
 
             var i, j, k, n;
 
@@ -154,50 +150,26 @@ export default defineComponent({
 
             const listL = squares.length;
 
-            if(this.fromHomeAdmin == "true"){
-                for(i = 0; i < listL; i++){
-                    for(j = 0; j < this.userScheduledHours.length; j++){
-                        if(squares[n].id == this.userScheduledHours[j].day_hour){
-                            if (this.userScheduledHours[j].available){
-                                squares[n].className = "available";
-                            }
-                            else{
-                                squares[n].className = "unavailable";
-                            }
-                            this.userScheduledHours.splice(j,1);
-                            break;
-                        }
-                        else if(j == this.userScheduledHours.length-1){
-                            n++;
-                        }
+            for(i = 0; i < listL; i++){
+                for(j = 0; j < this.scheduledHours.length; j++){
+                    if(squares[n].id == this.scheduledHours[j]){
+                        squares[n].className = "active";
+                        break;
                     }
-                }
-            }
-            else{
-                for(i = 0; i < listL; i++){
-                    for(j = 0; j < this.scheduledHours.length; j++){
-                        if(squares[n].id == this.scheduledHours[j]){
-                            this.scheduledHours.splice(j,1);
-                            squares[n].className = "active";
-                            break;
-                        }
-                        else if(j == this.scheduledHours.length-1){
-                            n++;
-                        }
+                    else if(j == this.scheduledHours.length-1){
+                        n++;
                     }
                 }
             }
         },
         //Function to change the div color when it's been selected or unselected
         changeBackgroundColor(event: Event) {
-            if(this.lockSchedule == "inactive"){
-                const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-                if((square.className) == "inactive"){
-                    square.className = "active";
-                }
-                else {
-                    square.className = "inactive";
-                }
+            const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
+            if((square.className) == "inactive"){
+                square.className = "active";
+            }
+            else {
+                square.className = "inactive";
             }
 
             this.saveHourSelected(event);
@@ -325,103 +297,40 @@ export default defineComponent({
             this.hourCountC = "0";
             this.clearSelectedHours;
             this.$emit("scheduleIncomplete")
-        },
-        clearLockedSchedule(){
-            const squares = document.getElementsByClassName("active");
-            const unavailableS = document.getElementsByClassName("unavailable");
-            const availableS = document.getElementsByClassName("available");
-            const squaresSelect = document.getElementsByClassName("selected");
-
-            let lengthS = squares.length;
-            let lengthA = availableS.length;
-            let lengthU = unavailableS.length;
-            let lengthSel = squaresSelect.length;
-
-            for (var _i = 0; _i < lengthA; _i++) {
-                availableS[0].className = "locked";
-            } 
-
-            for (var _i = 0; _i < lengthU; _i++) {
-                unavailableS[0].className = "locked";
-            } 
-
-            for (var _i = 0; _i < lengthS; _i++) {
-                squares[0].className = "locked";
-            }
-
-            for (var _i = 0; _i < lengthSel; _i++) {
-                squaresSelect[0].className = "locked";
-            } 
-            
-        },
-        lockedSchedule(clearButton: HTMLInputElement){
-            const squares = document.getElementsByClassName("inactive");
-
-            let lengthS = squares.length;
-            for (var _i = 0; _i < lengthS; _i++) {
-                squares[0].className = "locked";
-            }
-
-            clearButton.style.display = "none";
         }, 
         saveHourSelected(event: Event){
             
             const square = document.getElementById((event.target as HTMLInputElement).id) as HTMLInputElement;
-            const squares = document.getElementsByClassName("active") as HTMLCollection;
-            const squaresSelect = document.getElementsByClassName("selected") as HTMLCollection;
             const messageError = document.getElementById("warning-message") as HTMLInputElement;
 
-            let lengthS = squares.length;
-            let lengthSel = squaresSelect.length;
+            this.selectedHoursTC = square.id;
 
-            if(this.fromSignupT == "true"){
+            if(this.hourCountC < 6 && this.hourCountC !=  0 ){
+                messageError.style.display = "none"
 
-                this.selectedHoursTC = square.id;
+                var hoursSelect = []
 
-                if(this.hourCountC < 6 && this.hourCountC !=  0 ){
-                    messageError.style.display = "none"
-
-                    var hoursSelect = []
-
-                    for(var i=0; i<this.selectedHoursTC.length; i++){
-                        hoursSelect.push(this.selectedHoursTC[i]);
-                    }
-
-                    if(this.hourCountC == 5){
-                        localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
-                        this.$emit("scheduleComplete")
-                    }
-                    else{
-                        this.$emit("scheduleIncomplete")
-                    }
+                for(var i=0; i<this.selectedHoursTC.length; i++){
+                    hoursSelect.push(this.selectedHoursTC[i]);
                 }
-                else if (this.hourCountC == 0){
-                    messageError.style.display = "flex"
-                    this.errorMessageC = 0;
-                    this.$emit("scheduleIncomplete")
+
+                if(this.hourCountC == 5){
+                    localStorage.setItem("hoursSelectedT", JSON.stringify(hoursSelect));
+                    this.$emit("scheduleComplete")
                 }
                 else{
-                    messageError.style.display = "flex"
-                    this.errorMessageC = 1;
                     this.$emit("scheduleIncomplete")
                 }
             }
+            else if (this.hourCountC == 0){
+                messageError.style.display = "flex"
+                this.errorMessageC = 0;
+                this.$emit("scheduleIncomplete")
+            }
             else{
-                if(this.lockSchedule == "home-active" && (((event.target as HTMLInputElement).className) == "active")){
-                    for(var i=0; i<lengthS; i ++){
-                        squares[i].className = "active";
-                    }
-
-                    for(var i=0; i<lengthSel; i ++){
-                        squaresSelect[i].className = "active";
-                    }
-
-                    square.className = "selected";
-
-                    this.$emit("session-enable-btn")
-
-                    localStorage.setItem("sessionSelected", square.id);
-                }
+                messageError.style.display = "flex"
+                this.errorMessageC = 1;
+                this.$emit("scheduleIncomplete")
             }
         }  
     }

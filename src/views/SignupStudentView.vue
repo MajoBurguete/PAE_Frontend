@@ -1,16 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import SignupForm from '../components/items/Register-Form.vue'
 import router from "../router";
 import axios from "axios";
 
 const api = 'http://localhost:8000/api/'
 const careers = ref([]);
+let dsb = true;
 
 export default defineComponent({
-    components: {
-        SignupForm
-    },
     mounted() {
 
         this.cleanInputs();
@@ -23,6 +20,7 @@ export default defineComponent({
         .catch(error => {
             console.log(error)
         })
+
     },
 
     data() {
@@ -30,71 +28,93 @@ export default defineComponent({
             careerList: careers,
             username: null,
             userpassword: null,
+            userConfirmPassword: "",
             userId: "",
             userMail: "",
             semester: 0,
-            userCareer: ""
+            userCareer: "",
+            disabledV: true,
+            focusPass: false,
+            focusConfPass: false
         }
     },
-    computed: {
-        isDisabled(){
-            /* if(this.checkForm()){
-                return true;
+    updated(){
+        const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+        errorMess.style.display = "none"
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            let password = form.user_password_signup
+            let confirmPassword = form.user_confirm_password_signup
+            if ((form.user_name_signup.checkValidity() && form.user_email_signup.checkValidity() && form.user_id_signup.checkValidity() && form.user_semester_signup.checkValidity() && form.user_career_signup.checkValidity() && password.checkValidity() && password.value == confirmPassword.value)) {
+                dsb = false
             }
-            return false; */
+            else {
+                dsb = true
+            }
+
+            form.classList.add('was-validated')
+        })
+
+        this.isDisabled = dsb;
+    },
+    computed: {
+        isDisabled: {
+            get(){
+                return this.disabledV;
+            },
+            set(val){
+                this.disabledV = val;
+            }
         }
+
     },
     methods: {
         backButton() {
             localStorage.setItem("fromSignupForm", "true")
-            router.push('http://localhost:3000/')
-        },
-        checkForm(){
-            'use strict'
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                form.classList.add('was-validated')
-                form.addEventListener('submit', function (event: Event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                }, false)
-            })
-
-            this.createUser();
-
+            router.push('/')
         },
         async createUser(){
-            let postUser = await axios
+            await axios
             .post(api + "users/", {
                 username: this.userId,
                 password: this.userpassword,
                 email: this.userMail,
                 first_name: this.username
             })
-
-            const userNumId = postUser.data.id
-
-            axios
-            .post(api + "pae_users/", {
-                id: userNumId,
-                semester: this.semester,
-                career: this.userCareer,
-                user_type: 0,
-                status: 0
-            })
             .then(result => {
-                console.log(result.data);
-                router.push("/")
+                const userNumId = result.data.id
+
+                axios
+                .post(api + "pae_users/", {
+                    id: userNumId,
+                    semester: this.semester,
+                    career: this.userCareer,
+                    user_type: 0,
+                    status: 0
+                })
+                .then(() => {
+                    localStorage.setItem("displayToast", "signupStudent");
+                    router.push("/")
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             })
             .catch(error => {
-                console.log(error);
+                console.log(error.response.data)
+                const errorMess = document.getElementById("signup-error") as HTMLInputElement;
+                const useridInp = document.getElementById("user_id_signup") as HTMLInputElement;
+
+                if(error.response.data.username[0] == "A user with that username already exists."){
+                    errorMess.style.display = "flex";
+                    useridInp.value = "";
+                }
+                else{
+                    errorMess.style.display = "none"
+                }
             })
         },
         cleanInputs(){
@@ -114,41 +134,49 @@ export default defineComponent({
         questionNameOnHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionNameOutOfHover(){
             const messageContainer = document.getElementById('popover-name') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionEmailOnHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionEmailOutOfHover(){
             const messageContainer = document.getElementById('popover-email') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionPasswordOnHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionPasswordOutOfHover(){
             const messageContainer = document.getElementById('popover-password') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         questionMatOnHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'pointer';
             messageContainer.style.visibility = "visible"
         },
         questionMatOutOfHover(){
             const messageContainer = document.getElementById('popover-mat') as HTMLInputElement;
 
+            document.body.style.cursor = 'auto';
             messageContainer.style.visibility = "hidden"
         },
         showPassword(passwordID: string, imageID: string){
@@ -157,14 +185,9 @@ export default defineComponent({
             if (password.type == "password") {
                 password.type = "text";
                 eye.src = "src/assets/img/no-visibility.png";
-                console.log(password.type);
-                console.log(eye.src);
             } else {
                 password.type = "password";
-                console.log(password.type);
                 eye.src = "src/assets/img/visibility.png";
-                console.log(eye.src);
-
             }
         }
     }
@@ -175,7 +198,7 @@ export default defineComponent({
 <template>
     <body>
         <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-        <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+        <form class="needs-validation" novalidate  @submit.prevent="" id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
@@ -213,7 +236,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
                                     <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
@@ -222,21 +245,6 @@ export default defineComponent({
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-md">
-                    <div class="mb-3">
-                        <label class="form-label">Confirma tu contraseña</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" required>
-                            <div class="input-group-append" id="pass-hide">
-                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
                         <div class="with-icon">
@@ -248,12 +256,28 @@ export default defineComponent({
                         </div>
                         <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
+                    <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="col-6 col-md">
+                    <div class="mb-3">
+                        <label class="form-label">Confirma tu contraseña</label>
+                        <div class="input-group">
+                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" onkeyup="this.pattern = form.user_password_signup.value;" required>
+                            <div class="input-group-append" id="pass-hide">
+                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
+                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                </span>
+                            </div>
+                        </div>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
+                    </div>
                 </div>
                 <div class="col-6 col-md">
                     <div class="input-group">
                         <label class="dropdown-text-semester">Semestre</label>
-                        <select v-model="semester" class="form-select" required>
-                            <!-- <option disabled selected value>Semestre</option> -->
+                        <select v-model="semester" class="form-select" id="user_semester_signup" required>
                             <option value="1">1º</option>
                             <option value="2">2º</option>
                             <option value="3">3º</option>
@@ -267,8 +291,8 @@ export default defineComponent({
                     </div>
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
-                        <select v-model="userCareer" class="form-select" required>
-                            <!-- <option disabled selected value>Carrera</option> -->
+                        <select v-model="userCareer" class="form-select" id="user_career_signup" required>
+
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>
@@ -277,7 +301,7 @@ export default defineComponent({
             <div class="button-container">
                 <div>
                     <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
-                    <button class="bigger-buttons" id="signup-button" type="submit" :disabled="isDisabled"> Registrarse </button>
+                    <button class="bigger-buttons" id="signup-button" @click="createUser" :disabled="isDisabled"> Registrarse </button>
                 </div>
             </div>
         </form>
@@ -329,9 +353,26 @@ export default defineComponent({
         margin-inline-end: 1vw;
     }
 
+    #back-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #ADBCE5;
+        transition: all 0.3s ease 0s;
+    }
+
     #signup-button{
         background-color: #26408B;
         margin-inline-start: 1vw;
+    }
+
+    #signup-button:hover{
+        border-color: transparent;
+        box-shadow: 0px 0px 0px 4px #7690CE;
+        transition: all 0.3s ease 0s;
+    }
+
+    #signup-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
     }
 
 /* Signup form */
@@ -426,6 +467,15 @@ export default defineComponent({
     .row {
         gap: 0.5vw;
         margin-top: 2vh;
+    }
+
+    /* Error message */
+    .error-message{
+        display: none;
+        color: rgb(221, 31, 31);
+        font-family: "Catamaran";
+        font-weight: lighter;
+        font-size: 3vh;
     }
 
 </style> 

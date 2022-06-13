@@ -1,11 +1,52 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import router from "../router";
 
 export default defineComponent({
     methods: {
         logout(){
             localStorage.removeItem("user-token");
-            localStorage.clear();
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("hoursSelectedT");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classesSelected");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("tutorSesId");
+            localStorage.removeItem("userType");
+            localStorage.removeItem("hoursAvailable");
+            localStorage.removeItem("userID");
+            localStorage.removeItem("userStatus");
+
+            router.push('/');
+        },
+        cleanSessionInfo(){
+            localStorage.removeItem("className");
+            localStorage.removeItem("sessionSelected");
+            localStorage.removeItem("questionText");
+            localStorage.removeItem("classId");
+            localStorage.removeItem("hoursAvailable");
+        },
+        homeBtn(){
+            this.cleanSessionInfo();
+            if(localStorage.getItem("userType") == "2"){
+                router.push('/admin-home');
+            }
+            else{
+                router.push('/home')
+            }
+        },
+        settingsBtn(){
+            this.cleanSessionInfo();
+            if(localStorage.getItem("userType") == "2"){
+                router.push('/admin-settings');
+            }
+            else if(localStorage.getItem("userType") == "0"){
+                router.push('/student-settings');
+            }
+            else{
+                router.push('/tutor-settings');
+            }
         }
     }
 })
@@ -13,7 +54,7 @@ export default defineComponent({
 
 <template>
     <body>
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" >
                     <img src="src/assets/img/PAE-black.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
@@ -32,13 +73,13 @@ export default defineComponent({
                                 <li><a class="dropdown-item" id= "lan" href="#">Español</a></li>
                             </ul>
                         </div>
-                        <a class="nav-link" href="#">
+                        <button class="nav-link" @click="settingsBtn">
                             <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
-                        </a>
-                        <a class="nav-link" href="home" >
+                        </button>
+                        <button class="nav-link" @click="homeBtn" >
                             <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
-                        </a>
-                        <a class="nav-link" href="/" @click="logout"> Cerrar Sesi&oacute;n</a>
+                        </button>
+                        <button class="nav-link" @click="logout"> Cerrar Sesi&oacute;n</button>
                     </div>
                 </div>
             </div>
@@ -48,8 +89,12 @@ export default defineComponent({
 </template>
 
 <style scoped>
+    body{
+        margin: 0 0 9vh 0;
+    }
+
     /* Estilos generales de la barra de navegacion */
-     .navbar{
+    .navbar{
         position: fixed;
         top: 0;
         width: 100vw;
@@ -62,9 +107,19 @@ export default defineComponent({
     
 
     /* Color de hover en elementos */
+    button:hover,
     a:hover {
         color: #A0BCFF;
     }
+    .nav-item {
+        display: none;
+    }
+
+    button{
+        background-color: transparent;
+        border-color: transparent;
+    }
+
     /* Control de tamaño y curso en titulo de navbar */
     .navbar-brand {
         width: 60%;
@@ -91,7 +146,8 @@ export default defineComponent({
         pointer-events: none;
     }
 
-    a{
+    a,
+    button{
         color: white;
         font-size: 2vw;
         font-family: "Ubuntu";
