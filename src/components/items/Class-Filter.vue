@@ -213,6 +213,8 @@ export default defineComponent({
 
         },
         fillChecks(){
+            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
+            
             const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
             const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
             const h2 = document.getElementsByClassName("filter-h2-id");
@@ -234,6 +236,7 @@ export default defineComponent({
 
             if(this.paletteColor == "blue"){
                 this.selectedClassC = classSelected.value;
+                console.log(this.selectedClassC)
                 this.$forceUpdate();
 
             }
