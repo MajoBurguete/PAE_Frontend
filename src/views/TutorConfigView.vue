@@ -27,11 +27,13 @@
                 semesterP: "",
                 hours: "",
                 classList: [],
+                scheduleList: [],
                 tutorS: [],
                 updt: false,
                 firstPass: true,
                 classesComplete: false,
-                scheduleComplete: false
+                scheduleComplete: false,
+                disable: true
             }
         },
 
@@ -42,6 +44,14 @@
                 },
                 set(val){
                     this.tutorS = val;
+                }
+            },
+            isDisabled: {
+                get() {
+                    return this.disable;
+                },
+                set(val) {
+                    this.disable = val;
                 }
             },
             tutorSubjects: {
@@ -161,12 +171,12 @@
                 await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
+                    this.tutorS = result.data
+                    this.scheduleList = result.data
                     var aux = [];
-
                     for(var i = 0; i < result.data.length; i++){
                         aux.push(result.data[i].day_hour);
                     }
-
                     this.tutorSchedule = aux;
                 })
                 .catch(error => {
@@ -177,11 +187,17 @@
             async saveChanges() {
                 const tutor = localStorage.getItem('userID')
                 const newClasses = JSON.parse(localStorage.getItem('classesSelected'));
+                const newHours = JSON.parse(localStorage.getItem('hoursSelectedT'));
                 var flag1 = 0
                 var limit1 = -1
                 var flag2 = 0
                 var limit2 = newClasses.length
                 var flag3 = 0
+                var limit3 = newHours.length
+                var flag4 = 0
+                var limit4 = this.scheduleList.length
+                var flag5 = 0
+                var flag6 = 0
                 
                 if(newClasses.length > 0) {
                     await axios
@@ -209,7 +225,7 @@
                             id_tutor: tutor,
                             id_subject: newClasses[i]
                         })
-                        .then(async result => {
+                        .then(async result3 => {
                             flag2 ++
                         })
                         .catch(error => {
@@ -217,16 +233,47 @@
                         })
                     }
                     this.tutorSubjects = newClasses
-                    while (flag3 != 1) {
-                        console.log("Flag1: " + flag1)
-                        console.log("Limit1: " + limit1)
-                        console.log("Flag2: " + flag2)
-                        console.log("Limit2: " + limit2)
-                        if (flag1 == limit1 && flag2 == limit2) {
-                            this.getSubjectsAndSchedule()
-                            console.log("khe")
-                            flag3 = 1
+                }
+
+                for(var i = 0; i < newHours.length; i++) {
+                    await axios
+                    .post(api + "schedules/", {
+                        id_user: tutor,
+                        day_hour: newHours[i]
+                    })
+                    .then(async result4 => {
+                        flag3 ++
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                }
+
+                while(flag5 != 1) {
+                    if(flag3 == limit3) {
+                        console.log("Ya: " + flag3)
+                        console.log("Flag3: " + flag3)
+                        console.log("Limit3: " + limit3)
+                        for (let i = 0; i < this.scheduleList.length; i++) {
+                            console.log(this.scheduleList[i].id)
+                            await axios
+                            .delete(api + 'schedules/' + this.scheduleList[i].id)
+                            .then(async result6 => {
+                                flag4++
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
                         }
+                        flag5 = 1
+                    }
+                }
+
+                while (flag6 != 1) {
+                    if (flag1 == limit1 && flag2 == limit2 && flag4 == limit4) {
+                        this.getSubjectsAndSchedule()
+                        flag6 = 1
+                        this.isDisabled = true
                     }
                 }
 
@@ -240,21 +287,25 @@
 
             classFilterCompleteOnChange(){
                 this.changeClassFiltStatus = true;
+                this.isDisabled = false;
                 this.$forceUpdate();
             },
             
             classFilterIncompleteOnChange(){
                 this.changeClassFiltStatus = false;
+                this.isDisabled = true;
                 this.$forceUpdate();
             },
 
             scheduleCompleteOnChange(){
                 this.changeScheduleStatus = true;
+                this.isDisabled = false;
                 this.$forceUpdate();
             },
 
             scheduleIncompleteOnChange(){
                 this.changeScheduleStatus = false;
+                this.isDisabled = true;
                 this.$forceUpdate();
             },
 
@@ -292,7 +343,7 @@
                         <div class="button-container">
                             <a class="btn-cont" href="tutor-session-record"> Historial </a>
                             <button class="btn-cont" data-bs-toggle="modal" data-bs-target="#class-modal"> Editar UFs </button>
-                            <button class="btn-cont" @click="saveChanges()"> Guardar Cambios </button>
+                            <button class="btn-cont" id="continue-button" :disabled="isDisabled" @click="saveChanges()"> Guardar Cambios </button>
                         </div>
                     </div>
                 </div>
@@ -316,6 +367,8 @@
 </template>
 
 <style scoped>
+
+
 
     body{
         display: flex;
@@ -348,6 +401,11 @@
         font-weight: normal;
         text-align: center;
         color: #26408B;
+    }
+
+    #continue-button:disabled{
+        background-color: #3d46608d;
+        color: #ffffffaa;
     }
 
     h4,
