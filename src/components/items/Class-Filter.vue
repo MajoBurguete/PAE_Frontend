@@ -214,6 +214,8 @@ export default defineComponent({
 
         },
         fillChecks(){
+            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
+            
             const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
             console.log(lcSelectedClass);
             console.log(this.selectedClassC)
@@ -238,6 +240,7 @@ export default defineComponent({
 
             if(this.paletteColor == "blue"){
                 this.selectedClassC = classSelected.value;
+                console.log(this.selectedClassC)
                 this.$forceUpdate();
 
             }

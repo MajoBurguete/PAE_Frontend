@@ -67,6 +67,7 @@
         methods: {
             clickCancel(){
                 this.onClickCancelBtn = true;
+                this.$emit("cancel-click-btn")
             },
             clickSave(){
                 this.onClickSaveBtn = true;
@@ -112,7 +113,7 @@
         <ClassFilter :cancelClick="onClickCancelBtn" :saveClick="onClickSaveBtn" v-on:cancel-btn="cancelEvent" v-on:save-btn="saveEvent" v-on:disable-btn="disableButton" v-on:enable-btn="enableButton" v-on:update-made="updateEvent" :callForceUpdate="changeUpdate"/>
         <div class="button-container">
             <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close" @click="clickCancel"> Cancelar </button>
-            <button id="save-button"  data-bs-dismiss="modal" aria-label="Close" @click="clickSave" :disabled="isDisabled"> Guardar cambios </button>
+            <button id="save-button"  data-bs-dismiss="modal" aria-label="Close" @click="clickSave" :disabled="isDisabled"> Finalizar selección </button>
         </div>
     </div>
 </template>
