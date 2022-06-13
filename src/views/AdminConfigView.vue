@@ -5,7 +5,7 @@
     import NavBar from "../components/Navbar.vue";
 
 
-    const api = 'http://localhost:8000/api/'
+    const api = 'http://localhost:5100/api/'
     let dsbS = true;
     let dsbA = true;
 

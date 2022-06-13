@@ -7,7 +7,7 @@ import NavBar from "../components/Navbar.vue"
 import router from "../router";
 import axios from 'axios';
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 let resultHours = []
 
 declare var bootstrap: any;

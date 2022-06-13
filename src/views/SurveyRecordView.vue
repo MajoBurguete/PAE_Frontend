@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 const userId = localStorage.getItem('selectedUser')
 
 export default defineComponent({

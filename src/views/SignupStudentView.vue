@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import router from "../router";
 import axios from "axios";
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 const careers = ref([]);
 let dsb = true;
 

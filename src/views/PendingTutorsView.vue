@@ -5,7 +5,7 @@ import TutorCard from "../components/items/Tutor-Card.vue"
 import router from "../router"
 import NavBar from "../components/Navbar.vue"
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 
 export default defineComponent({
     components: {

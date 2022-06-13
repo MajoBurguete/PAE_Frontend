@@ -5,7 +5,7 @@
     import NavBar from "../components/Navbar.vue";
     import ScheduleItem from "../components/items/Schedule-Item.vue";
 
-    const api = 'http://localhost:8000/api/'
+    const api = 'http://localhost:5100/api/'
 
     export default defineComponent({
         components: {

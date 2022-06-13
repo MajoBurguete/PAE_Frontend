@@ -4,7 +4,7 @@
     import router from "../router";
     import emailjs from 'emailjs-com';
 
-    const api = 'http://localhost:8000/api/'
+    const api = 'http://localhost:5100/api/'
     declare var bootstrap: any;
 
 

@@ -6,7 +6,7 @@ import router from "../router"
 import NavBar from "../components/Navbar.vue"
 import CancelModal from "../components/items/Cancel-Modal.vue"
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 
 export default defineComponent({
     components: {

@@ -6,7 +6,7 @@
     import ClassModal from '../components/items/Class-Modal.vue';
     import NavBar from "../components/Navbar.vue"
 
-    const api = 'http://localhost:8000/api/'
+    const api = 'http://localhost:5100/api/'
     var schedule = []
 
     export default defineComponent({
