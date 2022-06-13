@@ -501,7 +501,7 @@ export default defineComponent({
                     <h2 class="date">{{currentDateTime(2)}}</h2>
                 </div>
                 <div class="day-date">
-                    <h2 class="col-sm-3">Miercoles</h2>
+                    <h2 class="col-sm-3">Miércoles</h2>
                     <h2 class="date">{{currentDateTime(3)}}</h2>
                 </div>
                 <div class="day-date">

@@ -6,7 +6,7 @@ import axios from 'axios';
 import router from "../router"
 
 const api = 'http://localhost:8000/api/'
-const user = localStorage.getItem('userID')
+var user = localStorage.getItem('userID')
 
 export default defineComponent({
     components: {
@@ -44,6 +44,7 @@ export default defineComponent({
     },
 
     mounted() {
+        user = localStorage.getItem('userID')
         axios
         .get(api + 'students/?student=' + user)
         .then(result => {

@@ -194,9 +194,13 @@ export default defineComponent({
         async partnerListIsEmpty() {
             const message = document.getElementById("message-header") as HTMLInputElement;
             const dropdown = document.getElementById("dropdown") as HTMLInputElement;
+            console.log(this.partnerList.length)
             if (this.partnerList.length <= 0){
                 message.textContent = "Este usuario no tiene encuestas respondidas por otros usuarios"
                 dropdown.style.display = "none"
+            }
+            else {
+                message.textContent = "Encuestas sobre " + this.setUser.id__first_name
             }
         }
     },
@@ -214,7 +218,6 @@ export default defineComponent({
         this.getUser()
         this.getSurveyAndAnswerList()
         this.partnerListIsEmpty()
-        
     },
 
     components: {
@@ -230,7 +233,7 @@ export default defineComponent({
     <div class="container">
         <div class="head-container">
             <div class="message-container">
-                <h1 id="message-header">Encuestas sobre {{setUser.id__first_name}}</h1>
+                <h1 id="message-header"></h1>
             </div>
             <div class="dropdown-center" id="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

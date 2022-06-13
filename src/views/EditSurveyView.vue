@@ -437,7 +437,7 @@ export default defineComponent({
                         <div class="button-label-container">
                             <button class="add-button" id="multiple-button" data-bs-dismiss="modal" aria-label="Close"
                                 @click="addQuestion('1')"></button>
-                            <h1>Multiple</h1>
+                            <h1>Múltiple</h1>
                         </div>
                         <div class="button-label-container">
                             <button class="add-button" id="scale-button" data-bs-dismiss="modal" aria-label="Close"

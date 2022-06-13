@@ -364,7 +364,7 @@
                 <div class="user-schedule">
                     <div class="schedule-item">
                         <h1 class="schedule-h1"> Horario disponible </h1>
-                        <h3 class="schedule-h3">Edita tu horario o Unidades de Formación cuando lo necesites y recuerda guardar tus cambios</h3>
+                        <h3 class="schedule-h3">Edita tu horario o Unidades de Formación cuando lo necesites y recuerda guardar tus cambios.</h3>
                         <ScheduleItem v-on:schedule-complete = "scheduleCompleteOnChange" v-on:schedule-incomplete = "scheduleIncompleteOnChange" :scheduledHours="tutorSchedule" lock-schedule="home-active" showDate="inactive"/>
                     </div>
                 </div>

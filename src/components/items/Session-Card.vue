@@ -214,7 +214,7 @@ export default defineComponent({
                 <button id="edit-button" data-bs-toggle="modal" data-bs-target="#edit-session-modal" @click="editSession">Editar Asesor&iacute;a</button>
                 <button id="cancel-button" :disabled="isCancelDisabled" data-bs-toggle="modal" data-bs-target="#cancel-modal" @click="cancelSession">Cancelar Asesor&iacute;a</button>
             </div>
-            <h3 class="legend"> *Recuerda que no se pueden cancelar asesorias que están a menos de 3 horas de iniciar. </h3>
+            <h3 class="legend"> *Recuerda que no se pueden cancelar asesorías que están a menos de 3 horas de iniciar. </h3>
         </div>
     </div>
 </template>

@@ -426,7 +426,7 @@ export default defineComponent({
                 <div class="schedule-info">
                     <div class="schedule-instructions">
                         <label class="section-title"> Horario </label>
-                        <h2>Selecciona 5 horas que tengas libres para dar asesorias</h2>
+                        <h2>Selecciona 5 horas que tengas libres para dar asesorías</h2>
                     </div>
                     <ScheduleItem baseColor="#26408B" hoverColor="#263f8b85" showDate="inactive" fromSignupT="true" alignItemsVal="flex-start" v-on:schedule-complete = "scheduleCompleteOnChange" v-on:schedule-incomplete = "scheduleIncompleteOnChange"/>
 

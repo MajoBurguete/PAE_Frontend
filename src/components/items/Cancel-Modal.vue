@@ -82,7 +82,7 @@ export default defineComponent({
 <template>
     <body>
         <div class="cancel-container">
-            <h1>¿Estas seguro de cancelar la asesoría?</h1>
+            <h1>¿Estás seguro de cancelar la asesoría?</h1>
             <div class="button-container">
                 <button id="cancel-button" data-bs-dismiss="modal" aria-label="Close"> No, regresar </button>
                 <button id="save-button" @click="cancelSession" data-bs-dismiss="modal" aria-label="Close"> Sí, cancelar </button>
