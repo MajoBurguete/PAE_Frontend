@@ -665,7 +665,7 @@
                     <h1 class="user-h1-modal"> {{usernameP}} </h1>
                     <div class="modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" id="cancel-action-btn"> No, regresar </button>
-                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn" @click="deleteTutor"> Si, eliminar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" id="delete-action-btn" @click="deleteTutor"> Sí, eliminar </button>
                     </div>
                 </div>
             </div>
