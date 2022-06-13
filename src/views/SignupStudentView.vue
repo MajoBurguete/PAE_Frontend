@@ -116,7 +116,6 @@ export default defineComponent({
                     errorMess.style.display = "none"
                 }
             })
-
         },
         cleanInputs(){
             const userName = document.getElementById('user_name_signup') as HTMLInputElement;
@@ -272,6 +271,7 @@ export default defineComponent({
                                 </span>
                             </div>
                         </div>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
@@ -292,6 +292,7 @@ export default defineComponent({
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
                         <select v-model="userCareer" class="form-select" id="user_career_signup" required>
+
                             <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
                         </select>
                     </div>

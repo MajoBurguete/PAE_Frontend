@@ -182,6 +182,9 @@ export default defineComponent({
 </script>
 
 <template>
+    <header>
+        <NavBar/>
+    </header>
     <div class="container">
             <div class="message-container">
                 ¡Ay&uacute;danos con tu opini&oacute;n!
@@ -343,5 +346,4 @@ button {
 header {
     margin-bottom: 7vh;
 }
-
 </style>

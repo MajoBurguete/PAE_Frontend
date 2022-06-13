@@ -187,7 +187,6 @@
             },
             login() {
                 const errorMess = document.getElementById('login-error') as HTMLInputElement;
-                
                 axios
                 .post('http://localhost:8000/auth/', {
                     username: this.username,
@@ -207,7 +206,6 @@
                     this.updateErrorMess = "Tu usuario o tu contraseña es incorrecto"
 
                     errorMess.style.display = "flex"
-
                 })
             },
             toLogin() {
@@ -322,7 +320,6 @@
                         }, function (error) {
                             console.log('FAILED...', error);
                         });
-
                     
                 })
                 .catch(error => {
@@ -463,6 +460,7 @@
         font-weight: bold;
         margin: 0 0 5vh 0;
     }
+
 
     h3 {
         font-family: "Montserrat";

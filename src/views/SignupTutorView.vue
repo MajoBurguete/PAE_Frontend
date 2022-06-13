@@ -137,6 +137,7 @@ export default defineComponent({
             this.changeUpdateModal = true;
             this.$forceUpdate();
         },
+
         receivedUpdateModal(){
             this.changeUpdateModal = false;
             this.$forceUpdate();
@@ -241,6 +242,35 @@ export default defineComponent({
                 else{
                     errorMess.style.display = "none"
                 }
+            })
+
+            this.createUser()
+        },
+        async createUser(){
+            let postUser = await axios
+            .post(api + "users/", {
+                username: this.userId,
+                password: this.userpassword,
+                email: this.userMail,
+                first_name: this.username
+            })
+
+            const userNumId = postUser.data.id
+
+            axios
+            .post(api + "pae_users/", {
+                id: userNumId,
+                semester: this.semester,
+                career: this.userCareer,
+                user_type: 0,
+                status: 0
+            })
+            .then(result => {
+                console.log(result.data);
+                router.push("/")
+            })
+            .catch(error => {
+                console.log(error);
             })
         },
 
@@ -397,6 +427,7 @@ export default defineComponent({
                                 </span>
                             </div>
                         </div>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                 </div>
                 <div class="col-6 col-md">

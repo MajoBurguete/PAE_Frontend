@@ -621,6 +621,7 @@ export default defineComponent({
         font-weight: bolder;
         font-size: 4vh;
     }
+
     h4{
         font-family: "Montserrat";
         font-weight: 50;
@@ -646,7 +647,7 @@ export default defineComponent({
         margin: 0 -16vw 0 0;
     }
 
-    #date-and-class-a{
+    #date-and-class-a{ 
         font-family: "Ubuntu";
         font-weight: normal;
         background-color: #26408B;
@@ -671,7 +672,6 @@ export default defineComponent({
         justify-content: center;
         gap:5vw;
     }
-
     .title-container{
         display: flex;
         gap: 1vw;
@@ -679,7 +679,6 @@ export default defineComponent({
         justify-content: center;
         margin: 1vh;
     }
-
     .card-container{
         display: flex;
         flex-direction: column;
@@ -692,7 +691,6 @@ export default defineComponent({
     .schedule-container{
         margin-top: 1vh;
     }
-
     #selected{
         height: 2vh;
         width: auto;
@@ -702,7 +700,6 @@ export default defineComponent({
         height: 2vh;
         width: auto;
         filter: invert(58%) sepia(44%) saturate(287%) hue-rotate(167deg) brightness(93%) contrast(89%);
-
     }
 
 
@@ -919,5 +916,8 @@ export default defineComponent({
 
     #cancel-button:hover{
         box-shadow: 0px 0px 0px 4px #c3eae8;
+
+    header {
+        margin-bottom: 7vh;
     }
 </style>

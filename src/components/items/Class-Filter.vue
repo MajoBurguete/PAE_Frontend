@@ -1,12 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import axios from "axios";
-
 const api = 'http://localhost:8000/api/'
-
 const subjects = ref([]);
 const sessions = ref([]);
-
 export default defineComponent({
     mounted() {
         axios
@@ -51,6 +48,20 @@ export default defineComponent({
         callForceUpdate:{
             type: Boolean,
             default: false
+    updated(){
+        const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+        const checkL = check.length;
+        if(this.paletteColor == "blue"){
+            for(var i=0; i<checkL; i++){
+                console.log(i)
+                console.log(check[i])
+                check[i].type = "checkbox";
+            }
+        }
+        else {
+           for(var i=0; i<checkL; i++){
+                check[i].type = "radio";
+            } 
         }
     },
     data() {
@@ -170,17 +181,20 @@ export default defineComponent({
         },
         restartForceUpdate() {
             this.updateFC = false;
+    props: {
+        paletteColor: {
+            type: String,
+            default: "blue" 
         }
     },
     methods: {
         searchElements(){
             var input, td, temp, h1, i, j, filter,  txtValue;
-
             input = document.getElementById('search-input') as HTMLInputElement;
             filter = input.value.toUpperCase();
             td = document.getElementsByClassName('table-data');
-            h1 = document.getElementsByClassName("filter-h1");
 
+            h1 = document.getElementsByClassName("filter-h1");
             
             for(i = 0; i < h1.length; i++){
                 txtValue = h1[i].textContent || h1[i].innerText;
@@ -192,6 +206,7 @@ export default defineComponent({
                 }
             }
         },
+
         arraysMatch(){
             const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
             if(lcSelectedClass.length == this.selectedClassC.length){
@@ -238,7 +253,6 @@ export default defineComponent({
                 this.selectedClassC = classSelected.value;
                 console.log(this.selectedClassC)
                 this.$forceUpdate();
-
             }
             else{
                 var sk = []
@@ -322,35 +336,37 @@ export default defineComponent({
 
 <style scoped>
 
-
     h1{
         font-family: "Montserrat";
         font-weight: bolder;
         font-size: 2.5vh;
         margin: 0;
     }
-
     h2{
         font-family: "Montserrat";
         font-weight: medium;
         font-size: 1.8vh;
         margin: 0;
     }
-
     /* Radio button style */
-
     .form-check{
         display: flex;
         gap: 0.7vw;
         align-items: center;
     }
-
     .form-check-input{
         background-color: transparent;
         border-color: white;
         min-width: 1.2vw;
     }
-
+    .form-check-input-green{
+        background-color: transparent;
+        border-color: green;
+        min-width: 1.2vw;
+    }
+    .form-check-input-green:checked{
+        background-color: green;
+    }
     .form-check-input:checked{
         background-color: white;
     }
@@ -373,18 +389,15 @@ export default defineComponent({
 
 
     /* Table styles */
-
     .table-scroll{
         padding: 3vh 3vw 3vh 3vw;
     }
-
     table{
         border-radius: 10px;
         border-style: hidden;
         width: 40vw;
         margin: 0;
     }
-
     tbody { 
         display: block;
         border-style: hidden;
@@ -394,15 +407,12 @@ export default defineComponent({
         overflow-y: auto;  
         overflow-x: hidden;  
     }
-
     tr{
         min-width: 100%;
     }
-
     tr:last-child{
         border-bottom: 0;
     }
-
     /* Search bar */
     #search-input{
         font-family: "Montserrat";
@@ -427,6 +437,6 @@ export default defineComponent({
     td {
         width: 40vw;
     }
-    
 
+    
 </style>

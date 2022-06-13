@@ -5,8 +5,8 @@ import axios from "axios";
 import NavBar from "../components/Navbar.vue"
 import emailjs from 'emailjs-com';
 
-const now = new Date();
 
+const now = new Date();
 const api = 'http://localhost:8000/api/'
 var id_subject = ref (localStorage.getItem("classId"))
 var description = ref ("")
@@ -328,7 +328,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
     .container{
         display: flex;
         flex-direction: row;
@@ -336,35 +335,28 @@ export default defineComponent({
         padding: 0 2vw;
         
     }
-
     .left{
         margin-right: 10vw;
     }
-
-
     h1{
         color: #6F9492;
         font-family: "Montserrat";
         font-weight: bolder;
     }
-
     h2{
         font-family: "Montserrat";
         font-weight: normal;
         color: #96BECC;
         font-size: 3vh;
     }
-
     img{
         width: 30%;
         height: auto;
         margin: -8vh 0 0 0;
     }
-
     button{
         border: transparent;
     }
-
     textarea{
         width: 45vw;
         height: 25vh;
@@ -372,7 +364,6 @@ export default defineComponent({
         border: transparent;
         box-shadow: 0px 0px 0px 10px #DAF4EA;
     }
-
     a{
         text-decoration: none;
         font-family: "Ubuntu";
@@ -412,9 +403,7 @@ export default defineComponent({
         cursor: pointer;
     }
 
-
     /*Button to come back*/
-
     #back-button{
         font-size: 8vh;
         background-color: #6F9492;
@@ -423,9 +412,15 @@ export default defineComponent({
         height: 6vh;
         padding: 0vh 0;
     }
+    
+    #plus-icon{
+        width: 10%;
+        height: 10%;
+        margin: 3vh 0 0 0;
+        cursor: pointer;
+    }
 
     /* Button to send request */
-
     #send-button{
         text-decoration: none;
         font-family: "Ubuntu";
@@ -448,7 +443,6 @@ export default defineComponent({
         box-shadow: 0px 0px 0px 4px #7690CE;
         transition: all 0.3s ease 0s;
     }
-
     /* Modal */
 
     .modal-lg{
@@ -568,6 +562,26 @@ export default defineComponent({
 
     #confirm-button,
     #edit-button{
+    .className,
+    .sessionSel,
+    .questionVal{
+        color: black;
+        font-family: "Catamaran";
+    }
+    .className{
+        font-size: 5vh;
+        font-weight: bold;
+    }
+    .sessionSel{
+        font-weight: medium;
+        font-size: 3vh;
+    }
+    .questionVal{
+        font-weight: lighter;
+        font-size: 3vh;
+    }
+    #confirm-button{
+        background-color: #365295;
         font-family: "Ubuntu";
         font-weight: normal;
         color: white;
@@ -590,9 +604,7 @@ export default defineComponent({
     header {
         margin-bottom: 9vh;
     }
-
-
-
-
-
+    header {
+        margin-bottom: 9vh;
+    }
 </style>

@@ -95,6 +95,11 @@ export default defineComponent({
             }
         }
     },
+    components: {
+        ScheduleItem,
+        ClassFilter,
+        NavBar
+    },
     methods: {
         questionOnHover(){
             const messageContainer = document.getElementById('popover') as HTMLInputElement;
