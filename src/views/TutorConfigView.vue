@@ -20,7 +20,7 @@
             this.getTutorData()
         },
 
-        data(){
+        data(){ 
             return{
                 usernameP: "",
                 careerP: "",
@@ -244,7 +244,7 @@
                 this.$forceUpdate();
             },
 
-             scheduleCompleteOnChange(){
+            scheduleCompleteOnChange(){
                 this.changeScheduleStatus = true;
                 this.$forceUpdate();
             },
