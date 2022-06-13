@@ -186,13 +186,13 @@
                 if(newClasses.length > 0) {
                     await axios
                     .get(api + 'subjects_by_tutor/?tutor=' + tutor)
-                    .then(result => {
+                    .then(async result => {
                         limit1 = result.data.length
                         for(let i = 0; i < result.data.length; i++) {
-                            axios
+                            await axios
                             .delete(api + 'tutor_subjects/' + result.data[i].id)
-                            .then(result2 => {
-                                flag1 = flag1 + 1
+                            .then(async result2 => {
+                                flag1 ++
                             })
                             .catch(error => {
                                 console.log(error)
@@ -209,8 +209,8 @@
                             id_tutor: tutor,
                             id_subject: newClasses[i]
                         })
-                        .then(result => {
-                            flag2 = flag2 + 1
+                        .then(async result => {
+                            flag2 ++
                         })
                         .catch(error => {
                             console.log(error)
@@ -218,6 +218,10 @@
                     }
                     this.tutorSubjects = newClasses
                     while (flag3 != 1) {
+                        console.log("Flag1: " + flag1)
+                        console.log("Limit1: " + limit1)
+                        console.log("Flag2: " + flag2)
+                        console.log("Limit2: " + limit2)
                         if (flag1 == limit1 && flag2 == limit2) {
                             this.getSubjectsAndSchedule()
                             console.log("khe")
