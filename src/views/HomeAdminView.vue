@@ -12,6 +12,14 @@
             NavBar,
             ScheduleItem
         },
+        beforeMount() {
+            const token = localStorage.getItem('user-token')
+            const type = localStorage.getItem('userType')
+
+            if(token == null || type != '2') {
+                router.push('/')
+            }
+        },
         mounted(){
             this.getTutorListB();
             this.getStudentListB();
@@ -31,7 +39,6 @@
             if(this.changeFirstPass){
                 this.toTutorsTab()
                 this.changeFirstPass = false;
-                console.log(this.changeFirstPass)
             }
         },
         data(){
@@ -373,7 +380,6 @@
                 await axios
                 .get(api + 'tutors')
                 .then(result => {
-                    console.log(result.data)
                     this.updateTutorList = result.data;
 
                 })
@@ -481,14 +487,12 @@
                 }
 
                 this.updateScheduledHours = sk;
-                console.log('hours: ' + this.scheduledHours)
             },
 
             async getRecentTutors(studentS: string) {
                 await axios
                 .get(api + 'recent_tutors_of_student/?student=' + studentS)
                 .then(result => {
-                    console.log(result.data);
                     this.updateRecentTutorsList = result.data;
                 })
                 .catch(error => {
@@ -511,7 +515,6 @@
             },
             clickTutor(i: number) {
                 const tutorS = this.updateTutorList[i];
-                console.log(tutorS)
 
                 this.clearTutorsSelectedH1();
                 
@@ -528,7 +531,6 @@
                 
             },
             clickStudent(i: number) {
-                console.log(this.updateStudentList)
                 const studentS = this.updateStudentList[i];
 
                 this.clearStudentsSelectedH1();
@@ -550,7 +552,6 @@
                 .then(result => {
                     this.getTutorListB();
                     this.getStudentListB();
-                    console.log(this.changeTabC);
                     if(this.changeTabC == "student" && this.updateStudentList.length != 0){
                         this.clickStudent(0)
                     }

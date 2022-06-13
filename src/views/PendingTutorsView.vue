@@ -5,13 +5,20 @@ import TutorCard from "../components/items/Tutor-Card.vue"
 import router from "../router"
 import NavBar from "../components/Navbar.vue"
 
-
 const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
     components: {
         TutorCard,
         NavBar
+    },
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+
+        if(token == null || type != '2') {
+            router.push('/')
+        }
     },
     mounted() {
         this.getTutors()
@@ -52,7 +59,6 @@ export default defineComponent({
             .then(result => {
                 this.tutorsList = result.data
                 const half = Math.round(this.tutorsList.length/2);
-                console.log(half)
                 this.defineHalves(half);
             })
             .catch(error => {

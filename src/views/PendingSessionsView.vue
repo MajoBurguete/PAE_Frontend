@@ -6,9 +6,6 @@ import router from "../router"
 import NavBar from "../components/Navbar.vue"
 import CancelModal from "../components/items/Cancel-Modal.vue"
 
-declare var bootstrap: any;
-
-
 const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
@@ -17,9 +14,20 @@ export default defineComponent({
         CancelModal,
         NavBar
     },
+
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+
+        if(token == null || type != '2') {
+            router.push('/')
+        }
+    },
+
     mounted() {
         this.getSessions()
     },
+
     data() {
         return{
             placeTxt: "",
@@ -198,8 +206,7 @@ export default defineComponent({
 
             axios
             .put(api + "sessions/" +  sessionIdLS + "/", info)
-            .then(result => {
-                console.log(result.data)
+            .then(() => {
                 this.updateCards();
             })
             .catch(error => {
@@ -228,8 +235,7 @@ export default defineComponent({
 
             axios
             .put(api + "sessions/" +  sessionIdLS + "/", info)
-            .then(result => {
-                console.log(result.data)
+            .then(() => {
                 this.updateCards();
             })
             .catch(error => {

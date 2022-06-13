@@ -171,9 +171,6 @@ export default defineComponent({
                             day_hour: tutorScheduleS[i],
                             available: true
                         })
-                        .then(result => {
-                            console.log(result.data);
-                        })
                         .catch(error => {
                             console.log(error);
                         })
@@ -184,9 +181,6 @@ export default defineComponent({
                         .post(api + 'tutor_subjects/', {
                             id_tutor: userNumId,
                             id_subject: subjectsSelected[i]
-                        })
-                        .then(result => {
-                            console.log(result.data);
                         })
                         .catch(error => {
                             console.log(error);

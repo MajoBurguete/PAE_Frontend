@@ -28,13 +28,22 @@ export default defineComponent({
         }
     },
 
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+        const status = localStorage.getItem('userStatus')
+
+        if(token == null || type != '1'|| status != '0') {
+            router.push('/')
+        }
+    },
+
     mounted() {
         const user = localStorage.getItem('userID')
 
         axios
         .get(api + 'sessions_of_specific_tutor/?tutor=' + user)
         .then(result => {
-            console.log(result.data)
             this.tutorSessions = result.data
         })
         .catch(error => {

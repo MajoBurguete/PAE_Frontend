@@ -17,6 +17,16 @@ export default defineComponent({
             fileObject: null,
         }
     },
+
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const status = localStorage.getItem('userStatus')
+
+        if(token == null || status != '1') {
+            router.push('/')
+        }
+    },
+
     mounted(){
         this.getQuestions()
     },
@@ -84,7 +94,6 @@ export default defineComponent({
                await axios
                .get(api + 'recent_completed_session/?tutor=' + id_user)
                .then(result => {
-                   console.log(result.data)
                    this.id_student = result.data[0].id_student
                })
                this.id_tutor = id_user
@@ -106,9 +115,6 @@ export default defineComponent({
                         date: now2,
                         answer: input.value
                     })
-                    .then(result => {
-                        console.log(result.data)
-                    })
                     .catch(error => {
                         console.log(error)
                     })
@@ -127,9 +133,6 @@ export default defineComponent({
                                     id_tutor: this.id_tutor,
                                     date: now2,
                                     answer: input.value
-                                })
-                                .then(result => {
-                                    console.log(result.data)
                                 })
                                 .catch(error => {
                                     console.log(error)
@@ -150,9 +153,6 @@ export default defineComponent({
                                 date: now2,
                                 answer: input.value
                             })
-                            .then(result => {
-                                console.log(result.data)
-                            })
                             .catch(error => {
                                 console.log(error)
                             })
@@ -169,9 +169,6 @@ export default defineComponent({
                     
                     await axios
                     .post(api + 'answer_files/', formData)
-                    .then(result => {
-                        console.log(result.data)
-                    })
                     .catch(error => {
                         console.log(error)
                     })

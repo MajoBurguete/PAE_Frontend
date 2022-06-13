@@ -37,6 +37,14 @@
             }
 
         },
+        beforeMount() {
+            const token = localStorage.getItem('user-token')
+            const type = localStorage.getItem('userType')
+
+            if(token == null || type != '2') {
+                router.push('/')
+            }
+        },
         mounted() {
             this.getAdminNames()
             this.getSubjectNames()
@@ -163,7 +171,6 @@
                 .get(api + 'admins/')
                 .then(result => {
                     this.adminList = result.data
-                    console.log(this.adminList)
                 })
 
                 if(this.adminList.length < 2) {
@@ -185,7 +192,6 @@
                     .get(api + 'subjects/')
                     .then(result => {
                         this.subjectList = result.data
-                        console.log(this.subjectList)
                     })
 
                 const subject = document.getElementById("subject-radio") as HTMLInputElement;
@@ -198,7 +204,6 @@
                     .get(api + 'careers/')
                     .then(result => {
                         this.careerList = result.data
-                        console.log(this.careerList)
                     })
             },
 
@@ -296,7 +301,6 @@
                     await axios
                     .delete(api + "users/" + this.adminList[this.index].id)
                     .then(result => {
-                        console.log(result.data)
                         if (this.adminList[this.index].id == localStorage.getItem("userID")) {
                             router.push("/")
                         }
@@ -311,8 +315,7 @@
                 else {
                     await axios
                         .delete(api + "subjects/" + this.subjectList[this.index].id)
-                        .then(result => {
-                            console.log(result.data)
+                        .then(() => {
                             this.getSubjectNames()
                         })
                         .catch(error => {
@@ -345,7 +348,6 @@
                 await axios
                 .put(api + "users/" + item.id + "/", info)
                 .then(result => {
-                    console.log(result.data)
                     this.AdminName = ''
                     this.$forceUpdate()
                     this.getAdminNames()
@@ -355,14 +357,11 @@
                 })
             },
             async saveAdmin() {
-                console.log(this.adminSwitch)
                 const input = document.getElementById('admin_name') as HTMLInputElement;
                 if(this.adminSwitch == 1 && input.value != ""){
-                    console.log("Jajajaja")
                     this.editAdmin()
                 }
                 else {
-                    console.log("me estoy creando")
                     await axios
                     .post(api + 'users/', {
                         username: this.AdminMat,
@@ -380,8 +379,7 @@
                             user_type: 2,
                             status: 0
                         })
-                        .then(result => {
-                            console.log(result.data);
+                        .then(() => {
                             this.$forceUpdate()
                             this.getAdminNames()
                         })
@@ -412,11 +410,9 @@
                 }
                 subjectCareerList.push(this.subjectCareer)
                 if (this.subjectSwitch == 1) {
-                    console.log("UwuUwu")
                     axios
                     .put(api + "subjects/" + this.selection.id + "/", info)
-                    .then(result => {
-                        console.log(result.data)
+                    .then(() => {
                         this.getSubjectNames()
                     })
                     .catch(error => {
@@ -427,8 +423,7 @@
                     info.id = this.subjectID
                     axios
                     .post(api + "subjects/", info)
-                    .then(result => {
-                        console.log(result.data)
+                    .then(() => {
                         this.getSubjectNames()
                     })
                     .catch(error => {
@@ -449,7 +444,6 @@
                 this.subjectID = ''
             },
             setSubjectModal(index: number, i: number) {
-                console.log("1" + this.selection.id , this.selection.id_career[0], this.selection.semester, this.selection.name)
                 const id = document.getElementById('subject_id') as HTMLInputElement;
                 const name = document.getElementById('subject_name') as HTMLInputElement;
                 const semester = document.getElementById('subject_semester') as HTMLInputElement;
@@ -483,10 +477,8 @@
                 const list = document.getElementsByClassName('admin-list');
 
                 if (index == 0){
-                    console.log("alo policia")
                     list[i].checked = true;
                     this.selection = this.adminList[i];
-                    console.log(this.selection)
                     this.adminSwitch = 1;
                     id.disabled = true
                     password.disabled = true

@@ -77,7 +77,7 @@ export default defineComponent({
             router.push('/')
         },
         async createUser(){
-            let postUser = await axios
+            await axios
             .post(api + "users/", {
                 username: this.userId,
                 password: this.userpassword,
@@ -95,8 +95,7 @@ export default defineComponent({
                     user_type: 0,
                     status: 0
                 })
-                .then(result => {
-                    console.log(result.data);
+                .then(() => {
                     localStorage.setItem("displayToast", "signupStudent");
                     router.push("/")
                 })
@@ -187,14 +186,9 @@ export default defineComponent({
             if (password.type == "password") {
                 password.type = "text";
                 eye.src = "src/assets/img/no-visibility.png";
-                console.log(password.type);
-                console.log(eye.src);
             } else {
                 password.type = "password";
-                console.log(password.type);
                 eye.src = "src/assets/img/visibility.png";
-                console.log(eye.src);
-
             }
         }
     }
@@ -205,7 +199,7 @@ export default defineComponent({
 <template>
     <body>
         <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-        <form class="needs-validation" novalidate id="student-form">
+        <form class="needs-validation" novalidate  @submit.prevent="" id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">

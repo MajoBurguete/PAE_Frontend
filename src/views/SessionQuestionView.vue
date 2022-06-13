@@ -21,16 +21,24 @@ export default defineComponent({
     components: {
         NavBar
     },
-    mounted(){
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+        const status = localStorage.getItem('userStatus')
+
+        if(token == null || type == '2'|| status != '0') {
+            router.push('/')
+        }
+    },
+    mounted() {
         let txt = localStorage.getItem("questionText");
         this.getSessionTutor();
-        if(txt != null && txt.length != 0){
-            console.log("ams")
+        if(txt != null && txt.length != 0) {
             this.questionVal = txt;
             this.$forceUpdate();
         }
     },
-    data(){
+    data() {
         return{
             classIdS: localStorage.getItem("classId"),
             classNameS: localStorage.getItem("className"),
@@ -43,7 +51,7 @@ export default defineComponent({
             adminEmails: ""
         }
     },
-    updated(){
+    updated() {
         if(this.fileName != ""){
             this.updateFile()
         }
@@ -91,7 +99,6 @@ export default defineComponent({
             await axios
             .get(api + "ordered_tutors_for_session/?subject=" + idSubject + "&dayHour=" + dayHour)
             .then(result => {
-                console.log(result.data[0])
                 localStorage.setItem("tutorSesId", result.data[0].id_tutor__id)
             })
             .catch(error => {
@@ -143,7 +150,7 @@ export default defineComponent({
         },
 
         async postSession() {
-            //id_subject.value = this.classId;
+
             description.value = this.questionVal;
             let formData = new FormData();
             id_tutor.value = localStorage.getItem("tutorSesId");
@@ -161,7 +168,7 @@ export default defineComponent({
 
             await axios
             .post('http://localhost:8000/api/sessions/', formData)
-            .then(async result => {
+            .then(async () => {
                 var emails = []
                 var emailString = ""
 

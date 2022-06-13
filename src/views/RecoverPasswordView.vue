@@ -1,12 +1,7 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
-    import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
     import router from "../router";
-    /* const user = ref({
-        username: '',
-        password: ''
-    }) */
 
     const api = 'http://localhost:8000/api/'
     let dsb = true
@@ -80,14 +75,9 @@
                 if (password.type == "password") {
                     password.type = "text";
                     eye.src = "src/assets/img/no-visibility.png";
-                    console.log(password.type);
-                    console.log(eye.src);
                 } else {
                     password.type = "password";
-                    console.log(password.type);
                     eye.src = "src/assets/img/visibility.png";
-                    console.log(eye.src);
-
                 }
             },
             showConfirmPassword(){
@@ -96,14 +86,9 @@
                 if (password.type == "password") {
                     password.type = "text";
                     eye.src = "src/assets/img/no-visibility.png";
-                    console.log(password.type);
-                    console.log(eye.src);
                 } else {
                     password.type = "password";
-                    console.log(password.type);
                     eye.src = "src/assets/img/visibility.png";
-                    console.log(eye.src);
-
                 }
             },
             cleanInputs(){

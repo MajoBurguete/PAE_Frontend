@@ -33,6 +33,16 @@ export default defineComponent({
         }
     },
 
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+        const status = localStorage.getItem('userStatus')
+
+        if(token == null || type != '0'|| status != '0') {
+            router.push('/')
+        }
+    },
+
     mounted() {
         axios
         .get(api + 'students/?student=' + user)
@@ -48,7 +58,6 @@ export default defineComponent({
         axios
         .get(api + 'sessions_of_specific_student/?student=' + user)
         .then(result => {
-            console.log(result.data)
             this.studentSessions = result.data
         })
         .catch(error => {

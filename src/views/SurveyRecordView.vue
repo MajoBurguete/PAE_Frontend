@@ -22,20 +22,18 @@ export default defineComponent({
     },
     computed: {
         changeCurrentPartner:  {
-            get(){
+            get() {
                 return this.currentPartner;
             },
-            set(val){
-                console.log(val)
+            set(val) {
                 this.currentPartner = val;
             }
         },
         changeDate:  {
-            get(){
+            get() {
                 return this.currentDate;
             },
-            set(val){
-                console.log(val)
+            set(val) {
                 this.currentDate = val;
             }
         },
@@ -43,8 +41,7 @@ export default defineComponent({
             get(){
                 return this.partnerList;
             },
-            set(val){
-                console.log(val)
+            set(val) {
                 this.partnerList = val;
             }
         }
@@ -201,6 +198,15 @@ export default defineComponent({
                 message.textContent = "Este usuario no tiene encuestas respondidas por otros usuarios"
                 dropdown.style.display = "none"
             }
+        }
+    },
+
+     beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+
+        if(token == null || type != '2') {
+            router.push('/')
         }
     },
    

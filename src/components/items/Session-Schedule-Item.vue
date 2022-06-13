@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { store, useStore } from '../../store'
+import { useStore } from '../../store'
 
 export default defineComponent({
     setup () {

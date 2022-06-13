@@ -1,13 +1,8 @@
 <script lang="ts">
     import { defineComponent, ref } from "vue";
-    import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
     import router from "../router";
     import emailjs from 'emailjs-com';
-    /* const user = ref({
-        username: '',
-        password: ''
-    }) */
 
     const api = 'http://localhost:8000/api/'
     declare var bootstrap: any;
@@ -70,7 +65,6 @@
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
                 .then(result => {
-                    console.log(result.data.length)
                     const message = document.getElementById('no-match') as HTMLInputElement;
                     if (result.data.length > 0){
                         message.style.display = "none"
@@ -116,13 +110,9 @@
                 if (password.type == "password") {
                     password.type = "text";
                     eye.src = "src/assets/img/no-visibility.png";
-                    console.log(password.type);
-                    console.log(eye.src);
                 } else {
                     password.type = "password";
-                    console.log(password.type);
                     eye.src = "src/assets/img/visibility.png";
-                    console.log(eye.src);
 
                 }
             },
@@ -206,7 +196,6 @@
                 .then(result => {
                     errorMess.style.display = "none";
                     this.token = result.data.token
-                    console.log(this.token)
                     localStorage.setItem('user-token', result.data.token);
                     localStorage.removeItem("hoursSelectedT");
                     localStorage.removeItem("classesSelected");
@@ -308,36 +297,20 @@
                 tutorCard.style.backgroundColor = "white";
                 tutorTitle.style.color = "black";
             },
+            
             toSignupTutorForm() {
                 router.push('http://localhost:3000/tutor-signup')
             },
+
             toSignupStudentForm() {
                 router.push('http://localhost:3000/student-signup')
             },
-            checkForm(){
-                /* 'use strict'
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
 
-                // Loop over them and prevent submission
-                Array.prototype.slice.call(forms)
-                    .forEach(function (form) {
-                    form.addEventListener('submit', function (event: Event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                }) */
-            },
             async sendEmail(event: Event) {
                 event.preventDefault()
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
                 .then(result => {
-                    console.log(result.data.length)
                     var templateParams = {
                         user_email: result.data[0].id__email,
                         link: 'localhost:3000/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'

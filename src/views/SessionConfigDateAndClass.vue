@@ -4,9 +4,6 @@ import ScheduleItem from "../components/items/Session-Schedule-Item.vue";
 import ClassFilter from "../components/items/Class-Filter.vue";
 import NavBar from "../components/Navbar.vue"
 import router from "../router";
-import axios from "axios";
-
-const api = 'http://localhost:8000/api/'
 
 export default defineComponent({
     components: {
@@ -14,6 +11,17 @@ export default defineComponent({
         ClassFilter,
         NavBar
     },
+
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+        const status = localStorage.getItem('userStatus')
+
+        if(token == null || type == '2'|| status != '0') {
+            router.push('/')
+        }
+    },
+
     mounted(){
         const subjectC = localStorage.getItem("className");
         const hoursA = JSON.parse(localStorage.getItem("hoursAvailable"))
@@ -114,7 +122,6 @@ export default defineComponent({
             else{
                 this.getHours = [];
             }
-            console.log(this.getHours)
             this.disableNextBtn();
         },
         nextButtonOnClick(){
