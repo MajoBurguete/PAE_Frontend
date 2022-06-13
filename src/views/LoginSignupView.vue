@@ -3,6 +3,7 @@
     import { RouterLink, RouterView } from "vue-router";
     import axios from 'axios'
     import router from "../router";
+    import emailjs from 'emailjs-com';
     /* const user = ref({
         username: '',
         password: ''
@@ -11,14 +12,17 @@
     const api = 'http://localhost:8000/api/'
     declare var bootstrap: any;
 
+
     export default defineComponent({
         data() {
             return {
+                idMatch: true,
                 username: '',
                 password: '',
                 token: localStorage.getItem('user-token') || null,
                 modalMessage: "Tu cuenta ha sido creada con éxito",
-                errorMessage: "Tu usuario o tu contraseña es incorrecto"
+                errorMessage: "Tu usuario o tu contraseña es incorrecto",
+                idRecoverPassword: ""
             }
         },
         mounted(){
@@ -34,6 +38,14 @@
                 myModal.show()
                 localStorage.setItem("displayToast", "empty")
             }
+            else if (messToast == "recoverPassword"){
+                this.updateModalMess = "Tu contraseña ha sido cambiada con éxito"
+                myModal.show()
+                localStorage.setItem("displayToast", "empty")
+            }
+        },
+        updated(){
+            this.checkMatch()
         },
         computed: {
             updateModalMess: {
@@ -54,6 +66,22 @@
             },
         },
         methods:{
+            async checkMatch(){
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    console.log(result.data.length)
+                    const message = document.getElementById('no-match') as HTMLInputElement;
+                    if (result.data.length > 0){
+                        message.style.display = "none"
+                        this.idMatch = false
+                    }
+                    else{
+                        message.style.display = "flex"
+                        this.idMatch = true;
+                    }
+                })
+            },
             async detectUserType(){
                 await axios
                 .get(api + "current_user_data/?schoolID=" + this.username)
@@ -303,6 +331,30 @@
                         form.classList.add('was-validated')
                     }, false)
                 }) */
+            },
+            async sendEmail(event: Event) {
+                event.preventDefault()
+                await axios
+                .get(api + "current_user_data/?schoolID=" + this.idRecoverPassword)
+                .then(result => {
+                    console.log(result.data.length)
+                    var templateParams = {
+                        user_email: result.data[0].id__email,
+                        link: 'localhost:3000/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
+                    };
+                    emailjs
+                        .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
+                        .then(response => {
+                            console.log('SUCCESS!', response.status, response.text);
+                        }, function (error) {
+                            console.log('FAILED...', error);
+                        });
+
+                    
+                })
+                .catch(error => {
+                    console.log(error)
+                })
             }
         }
     })
@@ -310,6 +362,7 @@
 
 
 <template>
+
     <body>
         <div class="flexContainer">
             <div class="section-login" id="section-login">
@@ -319,22 +372,26 @@
                     <h3> ¿Aún no te has registrado? </h3>
                 </div>
                 <div class="form-container" id="form-container">
-                    <div class="account-selection" id="account-selection"> 
+                    <div class="account-selection" id="account-selection">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="election" id="election">
                             <h1 id="account-type-h1"> Elige tu tipo de cuenta </h1>
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground" @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
-                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img" alt="...">
+                                    <div class="card" id="card-student" @mouseover="changeStudentCardBackground"
+                                        @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
+                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img"
+                                            alt="...">
                                         <div class="card-body" id="card-student-body">
                                             <h5 class="card-title" id="student-title">Estudiante</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
-                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground" @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
-                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img" alt="...">
+                                    <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground"
+                                        @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
+                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img"
+                                            alt="...">
                                         <div class="card-body" id="card-tutor-body">
                                             <h5 class="card-title" id="tutor-title">Asesor</h5>
                                         </div>
@@ -348,31 +405,35 @@
 
             <div class="section-signup" id="section-signup">
                 <div class="container-login" id="container-login">
-                    <h1 class="login-message"> ¡Hola de <br/> nuevo! </h1>
+                    <h1 class="login-message"> ¡Hola de <br /> nuevo! </h1>
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <form class="needs-validation" novalidate  @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate @submit.prevent="checkForm">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" id="user_email_login" v-model="username" placeholder="A0XXXXXXX"  @input="checkForm" required>
+                                <input type="text" class="form-control" id="user_email_login" v-model="username"
+                                    placeholder="A0XXXXXXX" @input="checkForm" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="user_password_login"  v-model="password" placeholder="Contraseña"  @input="checkForm" required>
+                                    <input type="password" class="form-control" id="user_password_login"
+                                        v-model="password" placeholder="Contraseña" @input="checkForm" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image_login">
+                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                                alt="visibility eye" id="visibility_password_image_login">
                                         </span>
                                     </div>
                                 </div>
                                 <h3 class="error-message" id="login-error"> {{updateErrorMess}} </h3>
                             </div>
-                            <a class="login-question-h3" data-bs-toggle="modal" data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
+                            <a class="login-question-h3" data-bs-toggle="modal"
+                                data-bs-target="#password-modal">¿Olvidaste tu contraseña?</a>
                         </div>
                         <button id="signin-button" type="submit" @click="login">Iniciar Sesión</button>
                     </div>
@@ -392,23 +453,28 @@
         <div class="modal fade" id="password-modal" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
-                    <h4>Ingresa tu correo institucional para recuperar tu cuenta</h4>
-                    <form>
-                        <label class="modal-label">correo</label>
-                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required @input="checkForm">
+                    <h4>Ingresa tu matrícula para recuperar tu cuenta</h4>
+                    <form class="needs-validation" novalidate>
+                        <label class="modal-label">Matrícula</label>
+                        <h6 id="no-match"> No existe un perfil registrado con esa matrícula </h6>
+                        <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX"
+                            v-model="idRecoverPassword" required @input="checkForm">
+                        <div class="password-button-container">
+                            <button class="return-password-button" data-bs-dismiss="modal"
+                                aria-label="Close">Regresar</button>
+                            <button class="new-password-button" type="submit" data-bs-target="#message-modal"
+                                data-bs-toggle="modal" @click="sendEmail($event)" :disabled="idMatch">Recuperar Cuenta</button>
+                        </div>
                     </form>
-                    <div class="password-button-container">
-                        <button class="return-password-button" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
-                        <button class="new-password-button" type="submit" data-bs-target="#password-modal1" data-bs-toggle="modal">Recuperar Cuenta</button>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="password-modal1" tabindex="-1" aria-labelledby="passwordModal" aria-hidden="true">
+        <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="messageModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="password-modal-container">
                     <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
-                    <button class="return-password-button-modal" data-bs-dismiss="modal" aria-label="Close">Regresar</button>
+                    <button class="return-password-button-modal" data-bs-dismiss="modal"
+                        aria-label="Close" @click="createUser">Regresar</button>
                 </div>
             </div>
         </div>
@@ -424,6 +490,7 @@
         font-weight: bold;
         margin: 0 0 5vh 0;
     }
+
     h3 {
         font-family: "Montserrat";
         font-weight: normal;
@@ -431,6 +498,7 @@
         color: white;
         margin: 1.5vh 0 0 0;
     }
+
     button {
         font-family: "Ubuntu";
         font-weight: normal;
@@ -447,6 +515,7 @@
         box-shadow: 0px 0px 0px 4px #ffffffb5;
         transition: all 0.3s ease 0s;
     }
+
     .new-password-button {
         background-color: #365295;
         font-size: 2.5vh;
@@ -454,6 +523,7 @@
         color: white;
         width: 15vw;
     }
+    
     .return-password-button {
         background-color: #769ABA;
         font-size: 2.5vh;
@@ -461,6 +531,7 @@
         color: white;
         width: 15vw;
     }
+
     .return-password-button-modal {
         background-color: #365295;
         font-size: 3vh;
@@ -473,6 +544,25 @@
         width: 35%;
         height: 35%;
     }
+
+    button:disabled {
+        background-color: #3d46608d;
+        color: #ffffffaa;
+    }
+
+    button:disabled:hover{
+        border-color: transparent;
+        box-shadow: none;
+        transition: all 0.3s ease 0s;
+    }
+
+    h6 {
+        color: rgb(192, 21, 21);
+        display: none;
+        font-family: "Catamaran";
+        font-weight: lighter;
+    }
+
     h4 {
         font-family: 'Montserrat';
         font-style: normal;
@@ -480,6 +570,7 @@
         text-align: center;
         font-size: 3vh;
     }
+
     #password-modal-container {
         display: flex;
         flex-direction: column;

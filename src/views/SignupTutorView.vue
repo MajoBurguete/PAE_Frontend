@@ -140,7 +140,7 @@ export default defineComponent({
             this.$forceUpdate();
         },
         async createUser() {
-            let postUser = await axios
+            await axios
             .post(api + "users/", {
                 username: this.userId,
                 password: this.userpassword,

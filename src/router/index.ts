@@ -83,6 +83,11 @@ const router = createRouter({
       path: "/survey-record",
       name: "surveyRecord",
       component: () => import('../views/SurveyRecordView.vue')
+    },
+    {
+      path: "/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998",
+      name: "recoverPassword",
+      component: () => import('../views/RecoverPasswordView.vue')
     }
   ],
 });
