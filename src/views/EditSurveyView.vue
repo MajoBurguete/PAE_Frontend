@@ -68,11 +68,21 @@ export default defineComponent({
     components: {
         NavBar
     },
+
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+
+        if(token == null || type != '2') {
+            router.push('/')
+        }
+    },
+
     mounted() {
-        console.log(this.isEmpty)
         this.getStudentSurvey()
         this.getTutorSurvey()
     },
+
     data() {
         return {
             empty: false,

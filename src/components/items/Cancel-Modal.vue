@@ -47,11 +47,8 @@ export default defineComponent({
 
             await axios
             .put(api + "sessions/" + this.sessionId + "/", info)
-            .then(result => {
-                console.log(result.data)
+            .then(() => {
                 this.$emit("session-canceled-event")
-
-                console.log('tutor email: ' + this.tutorEmail)
 
                 var templateParams = {
                     tutor_email: this.tutorEmail,

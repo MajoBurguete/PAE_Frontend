@@ -142,7 +142,7 @@ export default defineComponent({
         if(this.status == "Cancelada"){
             statusElement.style.color = "#FF0000"
         }
-        if(this.status == "Confirmada"){
+        if(this.status == "Completada"){
             statusElement.style.color = "#338C31"
         }
     },

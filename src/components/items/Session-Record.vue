@@ -7,9 +7,6 @@ export default defineComponent({
             sessionList: this.sessionL
         }
     },
-    mounted(){
-        console.log(this.sessionL)
-    },
     updated(){
         this,this.updateSessionL = this.sessionL;
     },

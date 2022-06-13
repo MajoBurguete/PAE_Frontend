@@ -112,8 +112,7 @@ export default defineComponent({
         if(this.selectedClassC.length == 0){
             this.$emit("disable-btn")
         }
-        else{
-            console.log("arrayMatch: " + this.arraysMatch())
+        else {
             if(this.arraysMatch()){
                 this.$emit("disable-btn")
             }
@@ -217,8 +216,6 @@ export default defineComponent({
             this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
             
             const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
-            console.log(lcSelectedClass);
-            console.log(this.selectedClassC)
             const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
             const h2 = document.getElementsByClassName("filter-h2-id");
             var txtValue, i, j;
@@ -227,7 +224,6 @@ export default defineComponent({
                 for( j=0; j<check.length; j++){
                     txtValue = h2[j].textContent || h2[j].innerText;
                     if(txtValue == lcSelectedClass[i]){ 
-                        console.log(txtValue)
                         check[j].checked = true;
                         break;
                     }
@@ -275,8 +271,7 @@ export default defineComponent({
         saveChanges(){
             var classesSelect = []
 
-            console.log(this.selectedClassC)
-            for(var i=0; i<this.selectedClassC.length; i++){
+            for(var i=0; i<this.selectedClassC.length; i++) {
                 classesSelect.push(this.selectedClassC[i]);
             }
 

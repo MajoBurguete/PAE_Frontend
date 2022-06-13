@@ -30,7 +30,6 @@ export default defineComponent({
         homeBtn(){
             this.cleanSessionInfo();
             if(localStorage.getItem("userType") == "2"){
-                console.log(localStorage.getItem("userType"));
                 router.push('/admin-home');
             }
             else{
@@ -40,7 +39,6 @@ export default defineComponent({
         settingsBtn(){
             this.cleanSessionInfo();
             if(localStorage.getItem("userType") == "2"){
-                console.log(localStorage.getItem("userType"));
                 router.push('/admin-settings');
             }
             else if(localStorage.getItem("userType") == "0"){

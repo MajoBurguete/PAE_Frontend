@@ -313,6 +313,20 @@
                 this.updateVarN = true;
                 this.$forceUpdate()
             }
+        },
+
+        beforeMount() {
+            const token = localStorage.getItem('user-token')
+            const type = localStorage.getItem('userType')
+            const status = localStorage.getItem('userStatus')
+
+            if(token == null || type != '1'|| status != '0') {
+                router.push('/')
+            }
+        },
+
+        mounted() {
+            this.getTutorData()
         }
     })
 </script>

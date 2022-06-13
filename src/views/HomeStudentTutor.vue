@@ -49,6 +49,16 @@ export default defineComponent({
             surveyCheck: localStorage.getItem("userStatus")
         }
     },
+    
+    beforeMount() {
+        const token = localStorage.getItem('user-token')
+        const type = localStorage.getItem('userType')
+
+        if(token == null || type == '2') {
+            router.push('/')
+        }
+    },
+
     mounted() {
         this.getHours()
 
@@ -271,9 +281,6 @@ export default defineComponent({
         async testMethod(){
             await axios
             .get(api + "sessions")
-            .then(result => {
-                console.log(result.data)
-            })
             .catch( error => {
                 console.log(error)
             })
@@ -335,7 +342,6 @@ export default defineComponent({
                 .get(api + 'recent_sessions_of_student/?student=' + userID)
                 .then(result => {
                     resultHours = result.data
-                    console.log(result.data)
                 })
                 .catch(error => {
                     console.log(error)
@@ -345,7 +351,6 @@ export default defineComponent({
                 .get(api + 'recent_sessions_of_tutor/?tutor=' + userID)
                 .then(result => {
                     resultHours = result.data
-                    console.log(result.data)
                 })
                 .catch(error => {
                     console.log(error)
@@ -392,9 +397,6 @@ export default defineComponent({
             this.sessionsIds = sk;
             this.updateCurrentDaysHours = currentWeekHours;
             this.updateNextDaysHours = nextWeekHours;
-            console.log(currentWeekHours)
-
-            
         },
 
         async getFile(id: string){
@@ -403,8 +405,6 @@ export default defineComponent({
             axios
             .get(api + "sessions_files/" + id)
             .then( result => {
-                console.log(result.data)
-
                 if(result.data.file != null){
                     fileCont.style.visibility = "visible";
                     this.updateFileURL = result.data.file
@@ -473,11 +473,9 @@ export default defineComponent({
             this.updateWeek = this.weekList[index];
             this.updateWeekLock = index.toString();
             if(this.updateWeek == "Semana actual"){
-                console.log(this.updateCurrentDaysHours)
                 this.updateHours = this.updateCurrentDaysHours;
             }
             else{
-                console.log(this.updateNextDaysHours.length)
                 this.updateHours = this.updateNextDaysHours;
             }
         },

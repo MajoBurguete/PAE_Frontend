@@ -38,8 +38,7 @@ export default defineComponent({
                     }
             axios
             .put(api + "pae_users/" + this.userId + "/", info)
-            .then(result => {
-                console.log(result);
+            .then(() => {
                 this.$emit("confirm-tutor")
 
                 var templateParams = {
@@ -62,8 +61,7 @@ export default defineComponent({
         deleteTutor(){
             axios
             .delete(api + "users/" + this.userId + "/")
-            .then(result => {
-                console.log(result.data)
+            .then(() => {
                 this.$emit("delete-tutor")
             })
             .catch(error => {
