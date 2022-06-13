@@ -322,6 +322,7 @@ export default defineComponent({
 
 <style scoped>
 
+
     h1{
         font-family: "Montserrat";
         font-weight: bolder;
@@ -421,6 +422,10 @@ export default defineComponent({
 
     .id-container{
         display: flex;
+    }
+
+    td {
+        width: 40vw;
     }
     
 

@@ -331,7 +331,7 @@ export default defineComponent({
             const currentDay = current.getDay();
             const currentDate = current.getDate();
             //casos que no funcionan: checarlo en sabado/domingo, primeras y ultimas fechas del mes, 
-            for(var i = -4; i < 5; i++){
+            for(var i = -5; i < 6; i++){
                 var tempDate = currentDate+i +(Number(this.weekLock)*7);
                 var tempMonth = current.getMonth();
                 var lengthMonth1 = 31;
