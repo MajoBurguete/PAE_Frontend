@@ -463,7 +463,6 @@
         font-family: "Montserrat";
         font-weight: bold;
         margin: 0 0 5vh 0;
-        src: url('../assets/fonts/Montserrat-Bold.ttf');
     }
 
     h3 {
