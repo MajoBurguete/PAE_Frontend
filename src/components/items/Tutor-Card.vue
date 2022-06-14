@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import axios from 'axios';
 import emailjs from 'emailjs-com';
 
-const api = 'http://localhost:8000/api/'
+const api = 'http://localhost:5100/api/'
 
 export default defineComponent({
     props: {

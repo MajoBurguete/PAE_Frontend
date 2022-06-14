@@ -167,7 +167,7 @@ export default defineComponent({
             } 
 
             await axios
-            .post('http://localhost:8000/api/sessions/', formData)
+            .post(api + "sessions/", formData)
             .then(async () => {
                 var emails = []
                 var emailString = ""

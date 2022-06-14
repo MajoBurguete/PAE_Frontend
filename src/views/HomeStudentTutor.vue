@@ -286,7 +286,7 @@ export default defineComponent({
             })
         },
         sendFeedback() {
-            router.push('http://localhost:3000/feedback-survey');
+            router.push('/feedback-survey');
         },
         logout() {
             localStorage.removeItem("user-token");

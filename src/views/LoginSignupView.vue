@@ -82,7 +82,7 @@
                 .then( result => {
                     this.storeUserInfo(result.data[0].id, result.data[0].user_type, result.data[0].status)
                     if(result.data[0].user_type == 2){
-                        router.push('http://localhost:3000/admin-home');
+                        router.push('/admin-home');
                     }
                     else if(result.data[0].user_type == 1 && result.data[0].status == 2){
                         const errorMess = document.getElementById('login-error') as HTMLInputElement;
@@ -92,7 +92,7 @@
 
                     }
                     else{
-                        router.push('http://localhost:3000/home')
+                        router.push('/home')
                     }
                 })
                 .catch( error => {
@@ -189,7 +189,7 @@
                 const errorMess = document.getElementById('login-error') as HTMLInputElement;
                 
                 axios
-                .post('http://localhost:8000/auth/', {
+                .post('http://localhost:5100/auth/', {
                     username: this.username,
                     password: this.password
                 })
@@ -299,11 +299,11 @@
             },
             
             toSignupTutorForm() {
-                router.push('http://localhost:3000/tutor-signup')
+                router.push('/tutor-signup')
             },
 
             toSignupStudentForm() {
-                router.push('http://localhost:3000/student-signup')
+                router.push('/student-signup')
             },
 
             async sendEmail(event: Event) {
@@ -313,7 +313,7 @@
                 .then(result => {
                     var templateParams = {
                         user_email: result.data[0].id__email,
-                        link: 'localhost:3000/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
+                        link: 'localhost:5200/recover-password-LHKUgkugbKLHP986787Ohilufy6UFogGOUIg7gJKgfu5P998'
                     };
                     emailjs
                         .send('service_2efcuwp', 'template_ihpizrj', templateParams, 'LPBuS8HK51bdTE-9Y')
