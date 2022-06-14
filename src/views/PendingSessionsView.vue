@@ -270,42 +270,63 @@ export default defineComponent({
 
 <template>
     <header>
-        <NavBar/>
+        <NavBar />
     </header>
+
     <body>
         <div class="sessions-container">
             <div class="row" v-for="n in Math.round(subjectList.length/2)" :key="n">
-                <div class="col" >
-                    <div class="card-container" id="left" v-for="(subject, i) in firstHalf" :key="i" >
-                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-on:cancel-session-event="cancelSession" v-if="i+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="i" listPlacement="firstHalf" ></SessionCard>
+                <div class="col">
+                    <div class="card-container" id="left" v-for="(subject, i) in firstHalf" :key="i">
+                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput"
+                            v-on:cancel-session-event="cancelSession" v-if="i+1==n"
+                            :class-name="subject['id_subject__name']" :date="formatDate(subject['date'])"
+                            :place="defineSpot(subject['spot'])" :sessionId="subject['id']"
+                            :tutor-name="subject['id_tutor__id__first_name']" :tutor-id="subject['id_tutor__id__email']"
+                            :student-name="subject['id_student__id__first_name']"
+                            :student-id="subject['id_student__id__email']" :indexSession="i.toString()"
+                            listPlacement="firstHalf"></SessionCard>
                     </div>
                 </div>
                 <div class="col" id="right">
                     <div class="card-container" id="right" v-for="(subject, j) in secondHalf" :key="j">
-                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput" v-on:cancel-session-event="cancelSession" v-if="j+1==n" :class-name="subject.id_subject__name" :date="formatDate(subject.date)" :place="defineSpot(subject.spot)" :sessionId="subject.id" :tutor-name="subject.id_tutor__id__first_name" :tutor-id="subject.id_tutor__id__email" :student-name="subject.id_student__id__first_name" :student-id="subject.id_student__id__email" :indexSession="j" listPlacement="secondHalf" ></SessionCard>
+                        <SessionCard v-on:confirm-session-event="confirmSession" v-on:edit-session-event="cleanInput"
+                            v-on:cancel-session-event="cancelSession" v-if="j+1==n"
+                            :class-name="subject['id_subject__name']" :date="formatDate(subject['date'])"
+                            :place="defineSpot(subject['spot'])" :sessionId="subject['id']"
+                            :tutor-name="subject['id_tutor__id__first_name']" :tutor-id="subject['id_tutor__id__email']"
+                            :student-name="subject['id_student__id__first_name']"
+                            :student-id="subject['id_student__id__email']" :indexSession="j.toString()"
+                            listPlacement="secondHalf"></SessionCard>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="modal fade" id="edit-session-modal" tabindex="-1" aria-labelledby="sessionModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <h1> Lugar de la asesoría </h1>
-                        <h2> Ingresa el link o espacio </h2>
-                        <input id="session-place"  v-model="placeTxt" placeholder="Escribe el lugar de la asesoría..." type="text">
-                        <div class="modal-button-container">
-                            <button data-bs-dismiss="modal" aria-label="Close"  @click="confirmPlace" :disabled="isDisabled" id="confirm-btn-modal"> Confirmar </button>
-                            <button data-bs-dismiss="modal" aria-label="Close" @click="cleanInput" id="cancel-btn-modal"> Cancelar </button>
-                        </div>
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <h1> Lugar de la asesoría </h1>
+                    <h2> Ingresa el link o espacio </h2>
+                    <input id="session-place" v-model="placeTxt" placeholder="Escribe el lugar de la asesoría..."
+                        type="text">
+                    <div class="modal-button-container">
+                        <button data-bs-dismiss="modal" aria-label="Close" @click="confirmPlace" :disabled="isDisabled"
+                            id="confirm-btn-modal"> Confirmar </button>
+                        <button data-bs-dismiss="modal" aria-label="Close" @click="cleanInput" id="cancel-btn-modal">
+                            Cancelar </button>
                     </div>
                 </div>
+            </div>
         </div>
 
         <div class="modal fade" id="cancel-modal" aria-labelledby="cancelModal" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" id="cancel-modal-lg">
                 <div class="modal-content" id="cancel-modal-content">
-                    <CancelModal v-on:session-canceled-event="updateCards" :date="updateOriginalDate" :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT" :sessionId="updateSessionI" :tutorEmail="updateTutorID" :studentEmail="updateStudentID" :className="updateClassN"/>
+                    <CancelModal v-on:session-canceled-event="updateCards" :date="updateOriginalDate"
+                        :description="updateDescriptionTxt" :placeTxt="updatePlace" :request_time="updateRequestT"
+                        :sessionId="updateSessionI" :tutorEmail="updateTutorID" :studentEmail="updateStudentID"
+                        :className="updateClassN" />
                 </div>
             </div>
         </div>

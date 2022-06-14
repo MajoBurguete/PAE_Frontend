@@ -2,30 +2,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    data() {
-        return{
-            sessionList: this.sessionL
-        }
-    },
-    updated(){
-        this,this.updateSessionL = this.sessionL;
-    },
     props: {
         sessionL: {
-            type: Array,
+            type: Object,
             default: []
         }
     },
-    computed: {
-        updateSessionL:{
-            get(){
-                return this.sessionList;
-            },
-            set(val){
-                this.sessionList = val; 
-            }
-        }
-    }, 
 
     methods: {
         formatDate(date) {
@@ -63,9 +45,9 @@ export default defineComponent({
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(session, i) in sessionList" :key="i">
-                            <td><h2>{{ session.id_student__id__first_name }}</h2></td>
-                            <td><h2>{{ session.id_tutor__id__first_name }}</h2></td>
+                        <tr v-for="(session, i) in sessionL" :key="i">
+                            <td><h2>{{ session['id_student__id__first_name'] }}</h2></td>
+                            <td><h2>{{ session['id_tutor__id__first_name'] }}</h2></td>
                             <td><h2>{{ session.id_subject__name }}</h2></td>
                             <td><h2>{{ formatDate(session.date) }}</h2></td>
                             <td><h2>{{ formatStatus(session.status) }}</h2></td>

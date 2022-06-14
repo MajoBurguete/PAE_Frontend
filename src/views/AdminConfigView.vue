@@ -159,10 +159,10 @@
                 const eye = document.getElementById(imageID) as HTMLImageElement;
                 if (password.type == "password") {
                     password.type = "text";
-                    eye.src = "src/assets/img/no-visibility.png";
+                    eye.src = "../assets/img/no-visibility.png";
                 } else {
                     password.type = "password";
-                    eye.src = "src/assets/img/visibility.png";
+                    eye.src = "../assets/img/visibility.png";
                 }
             },
             async getAdminNames() {
@@ -325,9 +325,9 @@
             },
             assignDelete(i: number) {
                 this.index = i;
-                const list = document.getElementsByClassName('subject-list');
+                const list = document.getElementsByClassName('subject-list') as HTMLCollectionOf<HTMLInputElement>;
                 if (this.changeTabC == "admin"){
-                    const list = document.getElementsByClassName('admin-list');
+                    const list = document.getElementsByClassName('admin-list') as HTMLCollectionOf<HTMLInputElement>;
                     list[i].checked = true;
                     this.selection = this.adminList[i];
                 }
@@ -401,7 +401,7 @@
                 const semester = document.getElementById('subject_semester') as HTMLInputElement;
                 const career = document.getElementById('subject_career') as HTMLInputElement;
                 const list = document.getElementsByClassName('form-control');
-                let subjectCareerList = []
+                let subjectCareerList = [""]
                 var info = {
                     'id': this.selection.id,
                     'name': this.subjectName,
@@ -448,7 +448,7 @@
                 const name = document.getElementById('subject_name') as HTMLInputElement;
                 const semester = document.getElementById('subject_semester') as HTMLInputElement;
                 const career = document.getElementById('subject_career') as HTMLInputElement;
-                const list = document.getElementsByClassName('subject-list');
+                const list = document.getElementsByClassName('subject-list') as HTMLCollectionOf<HTMLInputElement>;
                 
 
                 if (index == 0){
@@ -474,7 +474,7 @@
                 const name = document.getElementById('admin_name') as HTMLInputElement;
                 const password = document.getElementById('admin_password') as HTMLInputElement;
                 const email = document.getElementById('admin_email') as HTMLInputElement;
-                const list = document.getElementsByClassName('admin-list');
+                const list = document.getElementsByClassName('admin-list') as HTMLCollectionOf<HTMLInputElement>;
 
                 if (index == 0){
                     list[i].checked = true;
@@ -514,7 +514,6 @@
     <header>
         <NavBar />
     </header>
-
     <body>
         <h1 id="table-title-tab"> Administradores </h1>
         <div class="page-container">
@@ -538,7 +537,7 @@
                                         <input class="form-check-input admin-list" type="radio" name="form-admin-btn"
                                             id="admin-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-admin"> {{admin.id__first_name}} </h2>
+                                            <h2 class="filter-h1-admin"> {{admin['id__first_name']}} </h2>
                                         </label>
                                     </div>
                                     <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#admin-modal"
@@ -567,7 +566,7 @@
                                         <input class="form-check-input subject-list" type="radio"
                                             name="form-subject-btn" id="subject-radio" @click="assignDelete(i)">
                                         <label class="form-check-label" for="check-input">
-                                            <h2 class="filter-h1-subject"> {{subject.name}} </h2>
+                                            <h2 class="filter-h1-subject"> {{subject['name']}} </h2>
                                         </label>
                                     </div>
                                     <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#subject-modal"
@@ -590,8 +589,8 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content" id="delete-modal-content">
                     <h1 class="h1-modal"> Eliminar: </h1>
-                    <h1 class="user-h1-modal" v-if="tab == 'admin'"> {{selection.id__first_name}} </h1>
-                    <h1 class="user-h1-modal" v-else> {{selection.name}} </h1>
+                    <h1 class="user-h1-modal" v-if="tab == 'admin'"> {{selection['id__first_name']}} </h1>
+                    <h1 class="user-h1-modal" v-else> {{selection['name']}} </h1>
                     <div class=" modal-button-container">
                         <button data-bs-dismiss="modal" aria-label="Close" class="option-button" id="cancel-action-btn">
                             No, regresar </button>
@@ -625,7 +624,7 @@
                             placeholder="Contraseña" minlength="1" maxlength="100" required>
                             <div class="input-group-append">
                                 <span class="input-group-text" @click="showPassword('admin_password','visibility_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
+                                    <img src="../assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
                                 </span>
                             </div>
                         </div>
@@ -669,7 +668,7 @@
                         <h1 class="h2-modal"> Carrera</h1>
                         <div class="input-group">
                             <select class="form-select" id="subject_career" v-model="subjectCareer" default required>
-                                <option v-for="(career, i) in careerList" :key="i" :id="'career-option' + i">{{ career.id }}</option>
+                                <option v-for="(career, i) in careerList" :key="i" :id="'career-option' + i">{{ career['id'] }}</option>
                             </select>
                         </div>
                         <div class="modal-button-container">
@@ -904,7 +903,7 @@
         width: 35vw;
         margin: 0.8vh 0 0 0.8vw;
         padding: 0.3vh 4vh;
-        background-image: url('src/assets/img/search.png');
+        background-image: url('../assets/img/search.png');
         background-position: 0.4vw 0.5vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 3%;
@@ -931,7 +930,7 @@
         border-radius: 100%;
         background-position: center;
         background-color: #6F9492;
-        background-image: url('src/assets/img/writing-white.png');
+        background-image: url('../assets/img/writing-white.png');
         background-repeat: no-repeat;
         background-size: 70%;
     }

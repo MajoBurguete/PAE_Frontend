@@ -188,8 +188,8 @@
                 const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
                 const title = document.getElementById('uf-tutors-title') as HTMLInputElement;
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
-                const ufList = document.getElementById('uf-list');
-                const recentTutorsL = document.getElementById('recent-tutors-list');
+                const ufList = document.getElementById('uf-list') as HTMLElement;
+                const recentTutorsL = document.getElementById('recent-tutors-list') as HTMLElement;;
 
                 this.getStudentListB()
 
@@ -215,8 +215,8 @@
 
                 this.changeTabC = "student"
 
-                const cardUser = document.getElementById('card-user');
-                const warningMess = document.getElementById('warning-message');
+                const cardUser = document.getElementById('card-user') as HTMLElement;
+                const warningMess = document.getElementById('warning-message') as HTMLElement;;
 
                 if(this.updateStudentList.length != 0){
                     cardUser.style.display = "flex";
@@ -235,12 +235,12 @@
                 const studentTab = document.getElementById("students-tab") as HTMLInputElement;
                 const tutorsTab = document.getElementById("tutors-tab") as HTMLInputElement;
                 const input = document.getElementById('search-input') as HTMLInputElement;
-                const studentsListT = document.getElementById('students-list') as HTMLInputElement;
+                const studentsListT = document.getElementById('students-list') as HTMLElement;
                 const tutorsListT = document.getElementById('tutors-list') as HTMLInputElement;
                 const title = document.getElementById('uf-tutors-title') as HTMLInputElement;
                 const deleteButton = document.getElementById('delete-user') as HTMLInputElement;
-                const ufList = document.getElementById('uf-list');
-                const recentTutorsL = document.getElementById('recent-tutors-list');
+                const ufList = document.getElementById('uf-list') as HTMLElement;
+                const recentTutorsL = document.getElementById('recent-tutors-list') as HTMLElement;;
 
                 this.getTutorListB();
 
@@ -270,8 +270,8 @@
                     this.clickTutor(0);
                 }
 
-                const cardUser = document.getElementById('card-user');
-                const warningMess = document.getElementById('warning-message');
+                const cardUser = document.getElementById('card-user') as HTMLElement;
+                const warningMess = document.getElementById('warning-message') as HTMLElement;
 
                 if(this.updateTutorList.length != 0){
                     cardUser.style.display = "flex";
@@ -434,7 +434,7 @@
                 return date;
             },
             async getScheduledHoursByStudent(studentS: string) {
-                var dates = []
+                var dates: any[] = []
 
                 await axios
                 .get(api + 'schedule_of_student/?student=' + studentS)
@@ -446,9 +446,9 @@
                     console.log(error);
                 })
 
-                let sk = []
-                let currentWeekHours = []
-                let nextWeekHours = []
+                let sk: any[] = []
+                let currentWeekHours: any[] = []
+                let nextWeekHours: any[] = []
                 for(let i = 0; i < dates.length; i++) {
                     var objectD = {
                         day_hour: '',
@@ -500,14 +500,14 @@
                 })
             },
             clearTutorsSelectedH1(){
-                const tutorsListT = document.getElementById('tutors-list').getElementsByTagName("h1") as HTMLCollection;
+                const tutorsListT = document.getElementById('tutors-list')?.getElementsByTagName("h1") as HTMLCollectionOf<HTMLElement>;
 
                 for(var i=0; i<tutorsListT.length; i++){
                     tutorsListT[i].style.fontWeight = "normal"
                 }
             },
             clearStudentsSelectedH1(){
-                const studentsListT = document.getElementById('students-list').getElementsByTagName("h1") as HTMLCollection;
+                const studentsListT = document.getElementById('students-list')?.getElementsByTagName("h1") as HTMLCollectionOf<HTMLElement>;
 
                 for(var i=0; i<studentsListT.length; i++){
                     studentsListT[i].style.fontWeight = "normal"
@@ -518,7 +518,7 @@
 
                 this.clearTutorsSelectedH1();
                 
-                const elementS = document.getElementById(tutorS.id).getElementsByTagName("h1") as HTMLCollection;
+                const elementS = document.getElementById(tutorS.id)?.getElementsByTagName("h1") as HTMLCollectionOf<HTMLElement>;
                 elementS[0].style.fontWeight = "bold"
 
                 this.updateUserId = tutorS.id;
@@ -535,7 +535,7 @@
 
                 this.clearStudentsSelectedH1();
 
-                const elementS = document.getElementById(studentS.id).getElementsByTagName("h1") as HTMLCollection;
+                const elementS = document.getElementById(studentS.id)?.getElementsByTagName("h1") as HTMLCollectionOf<HTMLElement>;
                 elementS[0].style.fontWeight = "bold"
 
                 this.updateUserId = studentS.id;
@@ -595,9 +595,9 @@
                 <div class="table-scroll" id="students-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" :id=student.id @click="clickStudent(i)">
+                            <tr v-for="(student, i) in studentList" :key="i"  class="table-data-student" :id="student['id']" @click="clickStudent(i)">
                                 <td> 
-                                    <h1 class="filter-h1-student"> {{student.id__first_name}} </h1>
+                                    <h1 class="filter-h1-student"> {{student['id__first_name']}} </h1>
                                 </td>
                             </tr>
                         </tbody>
@@ -606,9 +606,9 @@
                 <div class="table-scroll" id="tutors-list">
                     <table class="table table-bordered" id="table">
                         <tbody class="style-2">
-                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" :id=tutor.id @click="clickTutor(j)">
+                            <tr v-for="(tutor, j) in tutorList" :key="j"  class="table-data-tutor" :id="tutor['id']" @click="clickTutor(j)">
                                 <td> 
-                                    <h1 class="filter-h1-tutor"> {{tutor.id__first_name}} </h1>
+                                    <h1 class="filter-h1-tutor"> {{tutor['id__first_name']}} </h1>
                                 </td>
                             </tr>
                         </tbody>
@@ -622,11 +622,11 @@
                 <div id="card-user">
                     <div class="information">
                         <div class="question-container-image">
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
+                            <img src="../assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
                             <div class="tooltip-style" id="popover">
-                                <img src="src/assets/img/circle.png" id="scheduled">
+                                <img src="../assets/img/circle.png" id="scheduled">
                                 Asesoría agendada <br>
-                                <img src="src/assets/img/circle.png" id="available">
+                                <img src="../assets/img/circle.png" id="available">
                                 Hora disponible
                             </div>
                         </div>
@@ -637,10 +637,10 @@
                         <div class="uf-user-container">
                             <h1 class="cont-h1 uf-h1" id="uf-tutors-title"> Unidades de formación </h1>
                             <div class="uf-list  style-2" id="uf-list">
-                                <h2 v-for="(classTutor, k) in classList" :key="k" class="uf-h2"> {{classTutor.id_subject__name}} </h2>
+                                <h2 v-for="(classTutor, k) in classList" :key="k" class="uf-h2"> {{classTutor['id_subject__name']}} </h2>
                             </div>
                             <div class="recent-tutors-list  style-2" id="recent-tutors-list">
-                                <h2 v-for="(recentT, l) in recentTutorsList" :key="l" class="uf-h2"> {{recentT.id_tutor__id__first_name}} </h2>
+                                <h2 v-for="(recentT, l) in recentTutorsList" :key="l" class="uf-h2"> {{recentT['id_tutor__id__first_name']}} </h2>
                             </div>
                         </div>
                         <div class="button-container">
@@ -1036,7 +1036,7 @@
         width: 18.5vw;
         margin: 0 0 0 0;
         padding: 0.3vh 4vh;
-        background-image: url('src/assets/img/search.png');
+        background-image: url('../assets/img/search.png');
         background-position: 0.4vw 0.5vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 7%;

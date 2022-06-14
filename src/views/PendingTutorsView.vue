@@ -81,12 +81,12 @@ export default defineComponent({
         <div class="row" v-for="n in Math.round(tutorsList.length/2)" :key="n">
             <div class="col" >
                 <div class="card-container" id="left" v-for="(tutor, i) in firstHalf" :key="i" >
-                    <TutorCard  v-if="i+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name" :userId="tutor.id" :userEmail="tutor.id__email" v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
+                    <TutorCard  v-if="i+1==n" :semester="tutor['semester']" :career="tutor['career']" :tutor-name="tutor['id__first_name']" :userId="tutor['id']" :userEmail="tutor['id__email']" v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
                 </div>
             </div>
             <div class="col" id="right">
                 <div class="card-container" id="right" v-for="(tutor, j) in secondHalf" :key="j">
-                    <TutorCard v-if="j+1==n" :semester="tutor.semester" :career="tutor.career" :tutor-name="tutor.id__first_name" :userId="tutor.id" :userEmail="tutor.id__email" v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
+                    <TutorCard v-if="j+1==n" :semester="tutor['semester']" :career="tutor['career']" :tutor-name="tutor['id__first_name']" :userId="tutor['id']" :userEmail="tutor['id__email']" v-on:confirm-tutor="updateCards" v-on:delete-tutor="updateCards"></TutorCard>
                 </div>
             </div>
         </div>

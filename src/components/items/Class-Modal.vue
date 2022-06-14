@@ -94,7 +94,7 @@
                 this.$forceUpdate();
             },
             checkClasses(){
-                const lcSelectedClass = localStorage.getItem("classesSelected");
+                const lcSelectedClass = (localStorage.getItem("classesSelected") || '');
 
                 if(lcSelectedClass.length == 0){
                     this.$emit("disable-classes");

@@ -23,12 +23,12 @@ export default defineComponent({
         if(this.paletteColor == "blue"){
             table.style.backgroundColor = "#8B9FD9";
             table.style.boxShadow = "0px 0px 0px 2px #26408B";
-            input.style.backgroundImage = "url(" + "src/assets/img/search-blue.png" + ")";
+            input.style.backgroundImage = "url(" + "../assets/img/search-blue.png" + ")";
             table.style.color = "white";            
         } else {
             table.style.backgroundColor = "#E1F0EA";
             table.style.boxShadow = "0px 0px 0px 2px #C2E7D9";
-            input.style.backgroundImage = "url(" + "src/assets/img/search.png" + ")";
+            input.style.backgroundImage = "url(" + "../assets/img/search.png" + ")";
             table.style.color = "#6F9492";
         }
 
@@ -65,7 +65,7 @@ export default defineComponent({
     },
     updated(){
         if(this.passFirstM){
-            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollectionOf<HTMLInputElement>;
             const checkL = check.length;
             if(this.paletteColor == "blue"){
                 for(var i=0; i<checkL; i++){
@@ -82,7 +82,7 @@ export default defineComponent({
             let classNameId = localStorage.getItem("className");
 
             if(classNameId != null && classNameId.length != 0){
-                const inputCheck = document.getElementById(classNameId);
+                const inputCheck = document.getElementById(classNameId) as HTMLInputElement;
 
                 inputCheck.checked = true;
             }            
@@ -193,7 +193,7 @@ export default defineComponent({
             }
         },
         arraysMatch(){
-            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
+            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected") || "");
             if(lcSelectedClass.length == this.selectedClassC.length){
                 for(var i = 0; i < lcSelectedClass.length; i ++){
                     if (lcSelectedClass.indexOf(this.selectedClassC[i]) == -1) {
@@ -205,7 +205,7 @@ export default defineComponent({
             return false;
         },
         cleanChecks(){
-            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollectionOf<HTMLInputElement>;
 
             for( var i=0; i<check.length; i++){
                 check[i].checked = false;
@@ -213,11 +213,11 @@ export default defineComponent({
 
         },
         fillChecks(){
-            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
+            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected") || "")
             
-            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected"));
-            const check = document.getElementsByClassName('form-check-input') as HTMLCollection;
-            const h2 = document.getElementsByClassName("filter-h2-id");
+            const lcSelectedClass = JSON.parse(localStorage.getItem("classesSelected") || "");
+            const check = document.getElementsByClassName('form-check-input') as HTMLCollectionOf<HTMLInputElement>;
+            const h2 = document.getElementsByClassName("filter-h2-id") as HTMLCollectionOf<HTMLInputElement>;
             var txtValue, i, j;
 
             for( i=0; i<lcSelectedClass.length; i++){
@@ -241,13 +241,12 @@ export default defineComponent({
 
             }
             else{
-                var sk = []
+                var sk: any[] = []
                 localStorage.setItem("classId", classSelected.value);
                 localStorage.setItem("className", classSelected.id);
 
                 let response = await axios.get(api + 'available_sessions/?subject=' + localStorage.getItem("classId") + '&user=' + localStorage.getItem("userID"))
                 this.sessions = response.data
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                 for(var i=0; i<this.sessions.length; i++) {
                     sk.push(this.sessions[i].day_hour)
                 } 
@@ -265,11 +264,11 @@ export default defineComponent({
             }
         },
         returnToOriginalState(){
-            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected"))
+            this.setSelectedClass = JSON.parse(localStorage.getItem("classesSelected") || "")
             this.onCancelClick = false;
         },
         saveChanges(){
-            var classesSelect = []
+            var classesSelect: any[] = []
 
             for(var i=0; i<this.selectedClassC.length; i++) {
                 classesSelect.push(this.selectedClassC[i]);
@@ -286,13 +285,15 @@ export default defineComponent({
 </script>
 
 <template>
+
     <body>
         <div class="table-scroll">
             <table class="table table-bordered" id="table">
                 <thead>
                     <tr>
                         <td>
-                            <input type="text" id="search-input" v-on:keyup="searchElements" placeholder="Busca la materia..">
+                            <input type="text" id="search-input" v-on:keyup="searchElements"
+                                placeholder="Busca la materia..">
                         </td>
                     </tr>
                 </thead>
@@ -300,14 +301,15 @@ export default defineComponent({
                     <tr v-for="(subject, i) in subjectList" :key="i" class="table-data">
                         <td>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="form-btn"  :id=subject.name  :value=subject.id  @click="changeCheck" >
+                                <input class="form-check-input" type="radio" name="form-btn" :id="subject['name']"
+                                    :value="subject['id']" @click="changeCheck">
                                 <label class="form-check-label" for="check-input">
                                     <div class="text-container">
-                                        <h1 class="filter-h1">{{ subject.name }}</h1>
+                                        <h1 class="filter-h1">{{ subject['name'] }}</h1>
                                         <div class="id-container">
-                                            <h2 class="filter-h2-id">{{ subject.id }}</h2>
+                                            <h2 class="filter-h2-id">{{ subject['id'] }}</h2>
                                             <h2>&nbsp;|&nbsp;</h2>
-                                            <h2 class="filter-h2-career">{{ subject.id_career[0] }}</h2>
+                                            <h2 class="filter-h2-career">{{ subject['id_career[0]'] }}</h2>
                                         </div>
                                     </div>
                                 </label>
@@ -412,7 +414,7 @@ export default defineComponent({
         width: 38vw;
         margin: 0 0 0.5vh 0.5vw;
         padding: 0.3vh 4vh;
-        /*background-image: url('src/assets/img/loupe.png');*/
+        /*background-image: url('../assets/img/loupe.png');*/
         background-position: 0.2vw 0.4vh; /* Position the search icon */
         background-repeat: no-repeat; /* Do not repeat the icon image */
         background-size: 3.5%;

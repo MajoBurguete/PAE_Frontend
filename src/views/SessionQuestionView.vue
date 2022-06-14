@@ -8,11 +8,11 @@ import emailjs from 'emailjs-com';
 const now = new Date();
 
 const api = 'http://localhost:5100/api/'
-var id_subject = ref (localStorage.getItem("classId"))
+var id_subject = ref(localStorage.getItem("classId") || '')
 var description = ref ("")
-const date = ref (localStorage.getItem("sessionSelected"))
-const id_tutor = ref (0)
-const id_student = ref (localStorage.getItem("userID"))
+const date = ref(localStorage.getItem("sessionSelected") || '')
+const id_tutor = ref ("0")
+const id_student = ref(localStorage.getItem("userID") || '')
 const status = ref (0)
 const request_time = ref (now.toISOString())
 
@@ -153,7 +153,7 @@ export default defineComponent({
 
             description.value = this.questionVal;
             let formData = new FormData();
-            id_tutor.value = localStorage.getItem("tutorSesId");
+            id_tutor.value = (localStorage.getItem("tutorSesId") || '');
             formData.append('description', description.value);
             formData.append('date', this.getSessionDate(date.value));
             formData.append('status', status.value.toString());
@@ -169,7 +169,7 @@ export default defineComponent({
             await axios
             .post(api + "sessions/", formData)
             .then(async () => {
-                var emails = []
+                var emails: any[] = []
                 var emailString = ""
 
                 await axios
@@ -246,7 +246,7 @@ export default defineComponent({
 
         saveFile(event) {
             const file = document.getElementById("session-file") as HTMLInputElement;
-            this.fileC = [file.files[0].name];
+            this.fileC = [file.files![0].name];
             this.changeFileName;
             this.updateFile();
             this.fileObject = event.target.files[0]
@@ -277,7 +277,7 @@ export default defineComponent({
             <div class="left">
                 <button id="back-button">
                     <a href="date-and-class">
-                        <img src="src/assets/img/left-arrow.png"/>
+                        <img src="../assets/img/left-arrow.png"/>
                     </a>
                 </button>
             </div>
@@ -291,7 +291,7 @@ export default defineComponent({
                     <h3 class="file-name"> {{fileName}} </h3>
                 </div>
                 <div class="file-container" id="file-container">
-                    <img id="plus-icon" src="src/assets/img/plus-icon.png"/>
+                    <img id="plus-icon" src="../assets/img/plus-icon.png"/>
                     <input class="form-control" type="file" @change="saveFile($event)" id="session-file">
                 </div>
                 <button id="send-button" data-bs-toggle="modal" data-bs-target="#class-modal" :disabled="isDisabled">

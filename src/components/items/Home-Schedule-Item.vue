@@ -63,7 +63,7 @@ export default defineComponent({
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
 
-        const dates = document.getElementsByClassName("date") as HTMLCollection;
+        const dates = document.getElementsByClassName("date") as HTMLCollectionOf<HTMLElement>;
 
         if (this.showDate == "active"){
             for(var i = 0; i < 5; i++){
@@ -276,7 +276,7 @@ export default defineComponent({
     <body class="schedule-body">
         <div class="warning-container" id="warning-message">
             <img src="..\..\assets\img\warning.png"/>
-            <h2 id="error-message-h2">{{errorMessageC}}</h2>
+            <h2 id="error-message-h2">error</h2>
         </div>
         <div id="weekly-schedule">
             <div class="date-header">

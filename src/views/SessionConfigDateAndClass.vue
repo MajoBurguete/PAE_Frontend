@@ -24,7 +24,7 @@ export default defineComponent({
 
     mounted(){
         const subjectC = localStorage.getItem("className");
-        const hoursA = JSON.parse(localStorage.getItem("hoursAvailable"))
+        const hoursA = JSON.parse(localStorage.getItem("hoursAvailable") || '')
         if(subjectC != null){
             if(hoursA.length == 0){
                 this.legendDescription = "No hay horarios disponibles para esta materia"
@@ -116,8 +116,8 @@ export default defineComponent({
             this.getHours
         },
         updateHours(){
-            if(JSON.parse(localStorage.getItem("hoursAvailable")) != null){
-                this.getHours = JSON.parse(localStorage.getItem("hoursAvailable"));
+            if (JSON.parse(localStorage.getItem("hoursAvailable") || '') != null){
+                this.getHours = JSON.parse(localStorage.getItem("hoursAvailable") || '');
             }
             else{
                 this.getHours = [];
@@ -157,13 +157,13 @@ export default defineComponent({
         <div class="container-side">
             <div class="container-title">
                 <h1>Horario de Preferencia</h1>
-                <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover">
+                <img src="../assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover">
                     <div class="tooltip-style" id="popover">
-                        <img src="src/assets/img/circle.png" id="selected">
+                        <img src="../assets/img/circle.png" id="selected">
                         Horario Seleccionado <br>
-                        <img src="src/assets/img/circle.png" id="available">
+                        <img src="../assets/img/circle.png" id="available">
                         Horario Disponible <br>
-                        <img src="src/assets/img/circle.png" id="unavailable">
+                        <img src="../assets/img/circle.png" id="unavailable">
                         Horario No Disponible
                     </div>
             </div>

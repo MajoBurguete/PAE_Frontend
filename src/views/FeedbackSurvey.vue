@@ -1,5 +1,5 @@
 <script lang="ts">
-import router from '@/router';
+import router from '../router';
 import axios from 'axios';
 import { defineComponent } from "vue";
 
@@ -188,25 +188,25 @@ export default defineComponent({
             </div>
         <form name="form" @submit.prevent="submitAnswer">
             <div class="form-container" v-for="(survey, i) in surveyList" :key="i">
-                <div class="question-container" v-if=" survey.question_type == '0'">
-                    <label for="openQuestion" class="form-label">{{survey.question}}</label>
+                <div class="question-container" v-if=" survey['question_type'] == '0'">
+                    <label for="openQuestion" class="form-label">{{survey['question']}}</label>
                     <textarea type="form-control" class="form-control" :id="'comment' + i" rows="3" required></textarea>
                 </div>
-                <div class="question-container"  v-if=" survey.question_type == '1'">
-                    <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
+                <div class="question-container"  v-if=" survey['question_type'] == '1'">
+                    <label for="closedQuestion" class="form-label">{{survey['question']}}</label><br>
                     <div class="answer-container">
                         <div v-for="(choice, j) in choicesList" :key="j" >
-                            <div  v-if="choice.id_question == survey.id" class="form-check">
-                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" required :value=choice.choice>
+                            <div  v-if="choice['id_question'] == survey['id']" class="form-check">
+                            <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" required :value="choice['choice']">
                             <label class="form-check-label" for="flexRadioDefault1">
-                                {{ choice.choice }} 
+                                {{ choice['choice'] }} 
                             </label> <br>
                             </div> 
                         </div> 
                     </div>
                 </div>
-                <div class="question-container" v-if=" survey.question_type == '2'">
-                    <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
+                <div class="question-container" v-if=" survey['question_type'] == '2'">
+                    <label for="scaleQuestion" class="form-label">{{survey['question']}}</label><br>
                     <div class="scale-container">
                         <label for="scaleQuestion" class="form-step">1</label>
                         <label for="scaleQuestion" class="form-step">2</label>
@@ -230,9 +230,9 @@ export default defineComponent({
                         </div>
                     </div>
                 </div>
-                <div class="question-container"  v-if=" survey.question_type == '3'">
+                <div class="question-container"  v-if=" survey['question_type'] == '3'">
                     <div class="mb-3">
-                        <label for="formFile" class="form-label">{{survey.question}}</label>
+                        <label for="formFile" class="form-label">{{survey['question']}}</label>
                         <input class="form-control" type="file" @change="saveFile($event)" :id="'formFile' + i" required>
                     </div>
                 </div>

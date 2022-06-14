@@ -185,10 +185,10 @@ export default defineComponent({
             const eye = document.getElementById(imageID) as HTMLImageElement;
             if (password.type == "password") {
                 password.type = "text";
-                eye.src = "src/assets/img/no-visibility.png";
+                eye.src = "../assets/img/no-visibility.png";
             } else {
                 password.type = "password";
-                eye.src = "src/assets/img/visibility.png";
+                eye.src = "../assets/img/visibility.png";
             }
         }
     }
@@ -197,32 +197,38 @@ export default defineComponent({
 
 
 <template>
+
     <body>
         <img class="PAE-logo" src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
-        <form class="needs-validation" novalidate  @submit.prevent="" id="student-form">
+        <form class="needs-validation" novalidate @submit.prevent="" id="student-form">
             <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
                         <div class="with-icon">
                             <label class="form-label">Nombre completo</label>
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionNameOnHover" @mouseleave="questionNameOutOfHover">
+                            <img src="../assets/img/question-icon.png" class="question"
+                                @mouseover="questionNameOnHover" @mouseleave="questionNameOutOfHover">
                             <div class="tooltip-style" id="popover-name">
                                 Máximo 100 caracteres, sin números ni caracteres especiales.
                             </div>
                         </div>
-                        <input type="text" v-model="username" class="form-control" id="user_name_signup" placeholder="Nombre" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" minlength="1" maxlength="100" required>
+                        <input type="text" v-model="username" class="form-control" id="user_name_signup"
+                            placeholder="Nombre" pattern="[ a-zA-ZÀ-ÿ\u00f1\u00d1]+" minlength="1" maxlength="100"
+                            required>
                     </div>
                 </div>
                 <div class="col-6 col-md">
                     <div class="mb-3">
                         <div class="with-icon">
                             <label class="form-label">Correo Institucional</label>
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionEmailOnHover" @mouseleave="questionEmailOutOfHover">
+                            <img src="../assets/img/question-icon.png" class="question"
+                                @mouseover="questionEmailOnHover" @mouseleave="questionEmailOutOfHover">
                             <div class="tooltip-style" id="popover-email">
                                 Correo válido dentro del dominio “@tec” o “@itesm”.
                             </div>
                         </div>
-                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required >
+                        <input type="email" v-model="userMail" class="form-control" id="user_email_signup"
+                            placeholder="A0XXXXXXX@tec.com" pattern="^((A|a)0)[0-9]{7}@(itesm|tec).mx$" required>
                     </div>
                 </div>
             </div>
@@ -231,16 +237,21 @@ export default defineComponent({
                     <div class="mb-3">
                         <div class="with-icon">
                             <label class="form-label">Contraseña</label>
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
+                            <img src="../assets/img/question-icon.png" class="question"
+                                @mouseover="questionPasswordOnHover" @mouseleave="questionPasswordOutOfHover">
                             <div class="tooltip-style" id="popover-password">
                                 Entre 8-50 caracteres, mínimo una minúscula, una mayúscula y un número
                             </div>
                         </div>
                         <div class="input-group">
-                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup" placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.user_confirm_password_signup.pattern = this.value;" required>
+                            <input type="password" v-model="userpassword" class="form-control" id="user_password_signup"
+                                placeholder="Contraseña" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$"
+                                onkeyup="form.user_confirm_password_signup.pattern = this.value;" required>
                             <div class="input-group-append">
-                                <span class="input-group-text" @click="showPassword('user_password_signup','visibility_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_password_image">
+                                <span class="input-group-text"
+                                    @click="showPassword('user_password_signup','visibility_password_image')">
+                                    <img src="../assets/img/visibility.png" class="img-fluid" alt="visibility eye"
+                                        id="visibility_password_image">
                                 </span>
                             </div>
                         </div>
@@ -250,25 +261,31 @@ export default defineComponent({
                     <div class="mb-3">
                         <div class="with-icon">
                             <label class="form-label">Matrícula</label>
-                            <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover" @mouseleave="questionMatOutOfHover">
+                            <img src="../assets/img/question-icon.png" class="question" @mouseover="questionMatOnHover"
+                                @mouseleave="questionMatOutOfHover">
                             <div class="tooltip-style" id="popover-mat">
                                 Debe comenzar con 'A' y seguida de 8 números.
                             </div>
                         </div>
-                        <input type="text" v-model="userId" class="form-control" id="user_id_signup" placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
+                        <input type="text" v-model="userId" class="form-control" id="user_id_signup"
+                            placeholder="A0XXXXXXX" pattern="^(A0)[0-9]{7}$" required>
                     </div>
                     <h3 class="error-message" id="signup-error"> Ya existe una cuenta con esa matrícula </h3>
                 </div>
             </div>
-            <div class = "row">
+            <div class="row">
                 <div class="col-6 col-md">
                     <div class="mb-3">
                         <label class="form-label">Confirma tu contraseña</label>
                         <div class="input-group">
-                            <input type="password" v-model="userConfirmPassword" class="form-control" id="user_confirm_password_signup" placeholder="Contraseña" onkeyup="this.pattern = form.user_password_signup.value;" required>
+                            <input type="password" v-model="userConfirmPassword" class="form-control"
+                                id="user_confirm_password_signup" placeholder="Contraseña"
+                                onkeyup="this.pattern = form.user_password_signup.value;" required>
                             <div class="input-group-append" id="pass-hide">
-                                <span class="input-group-text" @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
-                                    <img src="src/assets/img/visibility.png" class="img-fluid" alt="visibility eye" id="visibility_confirm_password_image">
+                                <span class="input-group-text"
+                                    @click="showPassword('user_confirm_password_signup','visibility_confirm_password_image')">
+                                    <img src="../assets/img/visibility.png" class="img-fluid" alt="visibility eye"
+                                        id="visibility_confirm_password_image">
                                 </span>
                             </div>
                         </div>
@@ -292,7 +309,8 @@ export default defineComponent({
                     <div class="input-group">
                         <label class="dropdown-text-career">Carrera</label>
                         <select v-model="userCareer" class="form-select" id="user_career_signup" required>
-                            <option v-for="(career, i) in careerList" :key="i" :value="career.id">{{ career.id }}</option>
+                            <option v-for="(career, i) in careerList" :key="i" :value="career['id']">{{ career['id'] }}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -300,7 +318,8 @@ export default defineComponent({
             <div class="button-container">
                 <div>
                     <button class="bigger-buttons" id="back-button" @click="backButton"> Regresar </button>
-                    <button class="bigger-buttons" id="signup-button" @click="createUser" :disabled="isDisabled"> Registrarse </button>
+                    <button class="bigger-buttons" id="signup-button" @click="createUser" :disabled="isDisabled">
+                        Registrarse </button>
                 </div>
             </div>
         </form>

@@ -39,7 +39,7 @@ export default defineComponent({
 
         const squares = document.getElementsByClassName("locked") as HTMLCollection;
 
-        let hoursStore = JSON.parse(localStorage.getItem("hoursAvailable"))
+        let hoursStore = JSON.parse(localStorage.getItem("hoursAvailable") || '')
         if(hoursStore != null && hoursStore.length != 0){
             this.scheduledHours = hoursStore;
             this.checkLockedSchedule(squares);
@@ -623,7 +623,6 @@ export default defineComponent({
         width: 46vw;
         display: flex;
         flex-direction: column;
-        align-items: v-bind(alignItemsVal);
         background-color: transparent;
     }
 
@@ -755,10 +754,6 @@ export default defineComponent({
 
     .available{
         background-color: v-bind(baseColor);
-    }
-
-    .unavailable{
-        background-color: v-bind(unavailableColor);
     }
 
     .locked:hover {

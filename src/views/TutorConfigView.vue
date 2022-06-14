@@ -117,7 +117,7 @@
                 await axios
                 .get(api + 'schedule_by_tutor/?tutor=' + user)
                 .then(result => {
-                    var aux = []
+                    var aux: any[] = []
                     for(var i = 0; i < result.data.length; i++){
                         aux.push(result.data[i].day_hour);
                     }
@@ -150,7 +150,7 @@
                     console.log(error)
                 })
 
-                var sk = []
+                var sk: any[] = []
                 for(let i = 0; i < this.classList.length; i++) {
                     sk.push(this.classList[i].id_subject__id)
                 }
@@ -173,7 +173,7 @@
                 .then(result => {
                     this.tutorS = result.data
                     this.scheduleList = result.data
-                    var aux = [];
+                    var aux: any[] = [];
                     for(var i = 0; i < result.data.length; i++){
                         aux.push(result.data[i].day_hour);
                     }
@@ -186,8 +186,8 @@
 
             async saveChanges() {
                 const tutor = localStorage.getItem('userID')
-                const newClasses = JSON.parse(localStorage.getItem('classesSelected'));
-                const newHours = JSON.parse(localStorage.getItem('hoursSelectedT'));
+                const newClasses = JSON.parse(localStorage.getItem('classesSelected') || '');
+                const newHours = JSON.parse(localStorage.getItem('hoursSelectedT') || '');
                 var flag1 = 0
                 var limit1 = -1
                 var flag2 = 0
@@ -325,9 +325,6 @@
             }
         },
 
-        mounted() {
-            this.getTutorData()
-        }
     })
 </script>
 
@@ -346,7 +343,7 @@
                     <div class="uf-user-container">
                         <h1 class="cont-h1 uf-h1"> Unidades de formación </h1>
                         <div class="uf-list-names  style-2">
-                            <h2 v-for="(classN, j) in classList" :key="k" class="uf-h2"> {{classN.id_subject__name}} </h2>
+                            <h2 v-for="(classN, j) in classList" :key="j" class="uf-h2"> {{classN['id_subject__name']}} </h2>
                         </div>
                     </div>
                     <div class="button-time-container">

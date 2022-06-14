@@ -8,7 +8,7 @@ import router from "../router";
 import axios from 'axios';
 
 const api = 'http://localhost:5100/api/'
-let resultHours = []
+let resultHours: any[] = []
 
 declare var bootstrap: any;
 
@@ -357,9 +357,9 @@ export default defineComponent({
                 })
             }
 
-            let sk = []
-            let currentWeekHours = []
-            let nextWeekHours = []
+            let sk = [""]
+            let currentWeekHours = [""]
+            let nextWeekHours = [""]
             for(let i = 0; i < resultHours.length; i++) {
                 const date = new Date(resultHours[i].date)
                 const day = date.getDay()
@@ -512,11 +512,11 @@ export default defineComponent({
                 </div>
                 <div class="title-container">
                     <label>Asesorías pendientes</label>
-                    <img src="src/assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
+                    <img src="../assets/img/question-icon.png" class="question" @mouseover="questionOnHover" @mouseleave="questionOutOfHover"/>
                     <div class="tooltip-style" id="popover">
-                        <img src="src/assets/img/circle.png" id="selected">
+                        <img src="../assets/img/circle.png" id="selected">
                         Asesoria Seleccionada <br>
-                        <img src="src/assets/img/circle.png" id="available">
+                        <img src="../assets/img/circle.png" id="available">
                         Asesoria Agendada
                     </div>
                 </div>

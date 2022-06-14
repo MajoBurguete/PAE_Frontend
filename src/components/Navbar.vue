@@ -57,7 +57,7 @@ export default defineComponent({
         <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" >
-                    <img src="src/assets/img/PAE-black.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
+                    <img src="../assets/img/PAE-black.png" class="img-fluid" alt="Responsive image" id="PAE-logo">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -66,7 +66,7 @@ export default defineComponent({
                     <div class="navbar-nav">                     
                         <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="src/assets/img/language.png" class="img-fluid" alt="language icon">
+                                <img src="../assets/img/language.png" class="img-fluid" alt="language icon">
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a class="dropdown-item" id= "lan" href="#">English</a></li>
@@ -74,10 +74,10 @@ export default defineComponent({
                             </ul>
                         </div>
                         <button class="nav-link" @click="settingsBtn">
-                            <img src="src/assets/img/settings-black.png" class="img-fluid" alt="settings icon">
+                            <img src="../assets/img/settings-black.png" class="img-fluid" alt="settings icon">
                         </button>
                         <button class="nav-link" @click="homeBtn" >
-                            <img src="src/assets/img/home-black.png" class="img-fluid" alt="home icon">
+                            <img src="../assets/img/home-black.png" class="img-fluid" alt="home icon">
                         </button>
                         <button class="nav-link" @click="logout"> Cerrar Sesi&oacute;n</button>
                     </div>

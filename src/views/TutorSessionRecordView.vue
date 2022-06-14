@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import SessionRecord from "../components/items/Session-Record.vue"
 import NavBar from "../components/Navbar.vue"
@@ -62,7 +62,7 @@ export default defineComponent({
         <div class="button-container">
             <button>
                 <a href="tutor-settings">
-                    <img src="src/assets/img/left-arrow.png"/>
+                    <img src="../assets/img/left-arrow.png"/>
                 </a>
             </button>
         </div>

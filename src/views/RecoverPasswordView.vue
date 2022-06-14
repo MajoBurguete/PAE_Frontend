@@ -74,10 +74,10 @@
                 const eye = document.getElementById("visibility_new_password_image") as HTMLImageElement;
                 if (password.type == "password") {
                     password.type = "text";
-                    eye.src = "src/assets/img/no-visibility.png";
+                    eye.src = "../assets/img/no-visibility.png";
                 } else {
                     password.type = "password";
-                    eye.src = "src/assets/img/visibility.png";
+                    eye.src = "../assets/img/visibility.png";
                 }
             },
             showConfirmPassword(){
@@ -85,10 +85,10 @@
                 const eye = document.getElementById("visibility_confirm_password_image") as HTMLImageElement;
                 if (password.type == "password") {
                     password.type = "text";
-                    eye.src = "src/assets/img/no-visibility.png";
+                    eye.src = "../assets/img/no-visibility.png";
                 } else {
                     password.type = "password";
-                    eye.src = "src/assets/img/visibility.png";
+                    eye.src = "../assets/img/visibility.png";
                 }
             },
             cleanInputs(){
@@ -339,7 +339,7 @@
                                         pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,50}$" onkeyup="form.confirm_password.pattern = this.value;" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showNewPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                            <img src="../assets/img/visibility.png" class="img-fluid"
                                                 alt="visibility eye" id="visibility_new_password_image">
                                         </span>
                                     </div>
@@ -353,7 +353,7 @@
                                         placeholder="Confirma Contraseña" onkeyup="this.pattern = form.new_password.value;"  required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showConfirmPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                            <img src="../assets/img/visibility.png" class="img-fluid"
                                                 alt="visibility eye" id="visibility_confirm_password_image">
                                         </span>
                                     </div>
@@ -478,7 +478,7 @@
     /*Flexbox which contains two divs (section-recoverPassword y section-signup*/
     .flexContainer {
         display: flex;
-        background-image: url("src/assets/img/patternF7.png");
+        background-image: url("../assets/img/patternF7.png");
         width: 100vw;
         height: 100vh;
         background-size: cover;

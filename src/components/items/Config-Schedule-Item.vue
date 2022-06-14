@@ -37,7 +37,7 @@ export default defineComponent({
         }
     },
     mounted() {
-        const dates = document.getElementsByClassName("date") as HTMLCollection;
+        const dates = document.getElementsByClassName("date") as HTMLCollectionOf<HTMLElement>;
 
         if (this.showDate == "active"){
             for(var i = 0; i < 5; i++){
@@ -308,7 +308,7 @@ export default defineComponent({
             if(this.hourCountC < 6 && this.hourCountC !=  0 ){
                 messageError.style.display = "none"
 
-                var hoursSelect = []
+                var hoursSelect: any[] = []
 
                 for(var i=0; i<this.selectedHoursTC.length; i++){
                     hoursSelect.push(this.selectedHoursTC[i]);

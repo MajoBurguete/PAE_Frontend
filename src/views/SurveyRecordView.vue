@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import router from "../router"
 import NavBar from "../components/Navbar.vue"
 import axios from 'axios';
 
@@ -240,7 +241,7 @@ export default defineComponent({
                     {{currentPartner}} {{ formatDate(currentDate) }}
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownCenterBtn">
-                     <li v-for="(partner, i) in partnerList" :key="i"><button class="dropdown-item" type="button" @click="changeSurvey(partner)">{{partner.name}} {{ formatDate(partner.date) }}</button></li>
+                     <li v-for="(partner, i) in partnerList" :key="i"><button class="dropdown-item" type="button" @click="changeSurvey(partner)">{{partner['name']}} {{ formatDate(partner['date']) }}</button></li>
                 </ul>
             </div>
         </div>
@@ -248,26 +249,26 @@ export default defineComponent({
             <form>
                 <div class="survey-container" v-for="(survey, i) in surveyList" :key="i">
                     <div class="for" v-for="(answer, j) in answerList" :key="j">
-                        <div class="question-container" v-if="survey.question_type == '0' && answer.id_question == survey.id && answer.date == currentDate">
-                            <label for="openQuestion" class="form-label">{{survey.question}}</label>
-                            <textarea type="form-control" class="form-control" id="comments" rows="3" disabled :placeholder="answer.answer"></textarea>
+                        <div class="question-container" v-if="survey['question_type'] == '0' && answer['id_question'] == survey['id'] && answer['date'] == currentDate">
+                            <label for="openQuestion" class="form-label">{{survey['question']}}</label>
+                            <textarea type="form-control" class="form-control" id="comments" rows="3" disabled :placeholder="answer['answer']"></textarea>
                         </div>
-                        <div class="question-container" v-if="survey.question_type == '1' && answer.id_question == survey.id && answer.date == currentDate">
-                            <label for="closedQuestion" class="form-label">{{survey.question}}</label><br>
+                        <div class="question-container" v-if="survey['question_type'] == '1' && answer['id_question'] == survey['id'] && answer['date'] == currentDate">
+                            <label for="closedQuestion" class="form-label">{{survey['question']}}</label><br>
                             <div class="answer-container">
                                 <div v-for="(choice, j) in choicesList" :key="j" >
-                                    <div  v-if="choice.id_question == survey.id" class="form-check">
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice v-if="answer.answer == choice.choice" disabled checked>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value=choice.choice v-else disabled>
+                                    <div  v-if="choice['id_question'] == survey['id']" class="form-check">
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value="choice['choice']" v-if="answer['answer'] == choice['choice']" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault' + i" :id="'closedAnswer' + j" :value="choice['choice']" v-else disabled>
                                     <label class="form-check-label" for="flexRadioDefault1">
-                                        {{ choice.choice }} 
+                                        {{ choice['choice'] }} 
                                     </label> <br>
                                     </div> 
                                 </div> 
                             </div>
                         </div>
-                        <div class="question-container" v-if=" survey.question_type == '2' && answer.id_question == survey.id && answer.date == currentDate">
-                            <label for="scaleQuestion" class="form-label">{{survey.question}}</label><br>
+                        <div class="question-container" v-if=" survey['question_type'] == '2' && answer['id_question'] == survey['id'] && answer['date'] == currentDate">
+                            <label for="scaleQuestion" class="form-label">{{survey['question']}}</label><br>
                             <div class="scale-container">
                                 <label for="scaleQuestion" class="form-step">1</label>
                                 <label for="scaleQuestion" class="form-step">2</label>
@@ -280,15 +281,15 @@ export default defineComponent({
                                     <label class="form-check-label" for="flexRadioDefault1">
                                     Nada Claro
                                     </label>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" v-if="answer.answer == '1'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" v-if="answer['answer'] == '1'" disabled checked>
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer1' + i" value="1" v-else disabled>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" v-if="answer.answer == '2'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" v-if="answer['answer'] == '2'" disabled checked>
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer2' + i" value="2" v-else disabled>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" v-if="answer.answer == '3'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" v-if="answer['answer'] == '3'" disabled checked>
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer3' + i" value="3" v-else disabled>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" v-if="answer.answer == '4'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" v-if="answer['answer'] == '4'" disabled checked>
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer4' + i" value="4" v-else disabled>
-                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" v-if="answer.answer == '5'" disabled checked>
+                                    <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" v-if="answer['answer'] == '5'" disabled checked>
                                     <input class="form-check-input" type="radio" :name="'flexRadioDefault2' + i" :id="'scaleAnswer5' + i" value="5" v-else disabled>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                     Muy Claro
@@ -298,11 +299,11 @@ export default defineComponent({
                         </div>
                     </div>
                     <div class="for" v-for="(answerFile, j) in answerFileList" :key="j">
-                        <div class="question-container" v-if=" survey.question_type == '3' && answerFile.id_question == survey.id && answerFile.date == currentDate">
+                        <div class="question-container" v-if=" survey['question_type'] == '3' && answerFile['id_question'] == survey['id'] && answerFile['date'] == currentDate">
                             <div class="file-container">
-                                <label for="formFile" class="form-label">{{ survey.question }}</label>
+                                <label for="formFile" class="form-label">{{ survey['question'] }}</label>
                                 <label class="form-check-label"> Descargar: </label>
-                                <a class="file-link" :href="answerFile.file" target="_blank"> {{formatFileName(answerFile.file)}}</a>
+                                <a class="file-link" :href="answerFile['file']" target="_blank"> {{formatFileName(answerFile['file'])}}</a>
                             </div>
                         </div>
                     </div>

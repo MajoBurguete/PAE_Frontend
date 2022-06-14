@@ -109,10 +109,10 @@
                 const eye = document.getElementById("visibility_password_image_login") as HTMLImageElement;
                 if (password.type == "password") {
                     password.type = "text";
-                    eye.src = "src/assets/img/no-visibility.png";
+                    eye.src = "../assets/img/no-visibility.png";
                 } else {
                     password.type = "password";
-                    eye.src = "src/assets/img/visibility.png";
+                    eye.src = "../assets/img/visibility.png";
 
                 }
             },
@@ -353,7 +353,7 @@
                                 <div class="col-sm-5">
                                     <div class="card" id="card-student" @mouseover="changeStudentCardBackground"
                                         @mouseleave="changeNormalStudentBackground" @click="toSignupStudentForm">
-                                        <img src="src/assets/img/student-card.png" class="card-img-top" id="student-img"
+                                        <img src="../assets/img/student-card.png" class="card-img-top" id="student-img"
                                             alt="...">
                                         <div class="card-body" id="card-student-body">
                                             <h5 class="card-title" id="student-title">Estudiante</h5>
@@ -363,7 +363,7 @@
                                 <div class="col-sm-5">
                                     <div class="card" id="card-tutor" @mouseover="changeTutorCardBackground"
                                         @mouseleave="changeNormalTutorBackground" @click="toSignupTutorForm">
-                                        <img src="src/assets/img/tutor-card.png" class="card-img-top" id="tutor-img"
+                                        <img src="../assets/img/tutor-card.png" class="card-img-top" id="tutor-img"
                                             alt="...">
                                         <div class="card-body" id="card-tutor-body">
                                             <h5 class="card-title" id="tutor-title">Asesor</h5>
@@ -382,23 +382,23 @@
                     <button class="login-button" id="login-button" type="button" @click="toLogin"> Ingresa </button>
                     <h3> ¿Ya tienes cuenta? </h3>
                 </div>
-                <form class="needs-validation" novalidate @submit.prevent="checkForm">
+                <form class="needs-validation" novalidate @submit.prevent="">
                     <div class="login-form" id="login-form">
                         <img src="../assets/img/PAE-with-name-black.png" alt="PAELogoNotFound">
                         <div class="form">
                             <div class="mb-3">
                                 <label class="form-label">Matrícula</label>
                                 <input type="text" class="form-control" id="user_email_login" v-model="username"
-                                    placeholder="A0XXXXXXX" @input="checkForm" required>
+                                    placeholder="A0XXXXXXX" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="user_password_login"
-                                        v-model="password" placeholder="Contraseña" @input="checkForm" required>
+                                        v-model="password" placeholder="Contraseña" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text" @click="showPassword">
-                                            <img src="src/assets/img/visibility.png" class="img-fluid"
+                                            <img src="../assets/img/visibility.png" class="img-fluid"
                                                 alt="visibility eye" id="visibility_password_image_login">
                                         </span>
                                     </div>
@@ -431,7 +431,7 @@
                         <label class="modal-label">Matrícula</label>
                         <h6 id="no-match"> No existe un perfil registrado con esa matrícula </h6>
                         <input type="email" class="form-control" id="user_email_signup" placeholder="A0XXXXXXX"
-                            v-model="idRecoverPassword" required @input="checkForm">
+                            v-model="idRecoverPassword" required>
                         <div class="password-button-container">
                             <button class="return-password-button" data-bs-dismiss="modal"
                                 aria-label="Close">Regresar</button>
@@ -447,7 +447,7 @@
                 <div class="modal-content" id="password-modal-container">
                     <h4>En breve te llegará un correo para poder cambiar tu contraseña</h4>
                     <button class="return-password-button-modal" data-bs-dismiss="modal"
-                        aria-label="Close" @click="createUser">Regresar</button>
+                        aria-label="Close">Regresar</button>
                 </div>
             </div>
         </div>
@@ -602,7 +602,7 @@
     /*Flexbox which contains two divs (section-login y section-signup*/
     .flexContainer {
         display: flex;
-        background-image: url("src/assets/img/patternF7.png");
+        background-image: url("../assets/img/patternF7.png");
         width: 100vw;
         height: 100vh;
         background-size: cover;
