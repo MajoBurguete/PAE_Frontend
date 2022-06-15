@@ -185,10 +185,10 @@ export default defineComponent({
             const eye = document.getElementById(imageID) as HTMLImageElement;
             if (password.type == "password") {
                 password.type = "text";
-                eye.src = "../assets/img/no-visibility.png";
+                eye.src = "../src/assets/img/no-visibility.png";
             } else {
                 password.type = "password";
-                eye.src = "../assets/img/visibility.png";
+                eye.src = "../src/assets/img/visibility.png";
             }
         }
     }

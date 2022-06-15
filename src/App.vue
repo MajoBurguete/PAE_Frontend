@@ -16,61 +16,61 @@
 
 @font-face {
   font-family: "Catamaran";
-  src: url('../assets/fonts/Catamaran-Bold.ttf');
+  src: url('assets/fonts/Catamaran-Bold.ttf');
   font-weight: bold;
 }
 
 @font-face {
   font-family: "Catamaran";
-  src: url('../assets/fonts/Catamaran-Medium.ttf');
+  src: url('assets/fonts/Catamaran-Medium.ttf');
   font-weight: 100;
 }
 
 @font-face {
   font-family: "Catamaran";
-  src: url('../assets/fonts/Catamaran-Regular.ttf');
+  src: url('assets/fonts/Catamaran-Regular.ttf');
   font-weight: normal;
 }
 
 @font-face {
   font-family: "Catamaran";
-  src: url('../assets/fonts/Catamaran-Light.ttf');
+  src: url('assets/fonts/Catamaran-Light.ttf');
   font-weight: lighter;
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url('../assets/fonts/Montserrat-Bold.ttf');
+  src: url('assets/fonts/Montserrat-Bold.ttf');
   font-weight: bolder;
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url('../assets/fonts/Montserrat-SemiBold.ttf');
+  src: url('assets/fonts/Montserrat-SemiBold.ttf');
   font-weight: bold;
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url('../assets/fonts/Montserrat-Medium.ttf');
+  src: url('assets/fonts/Montserrat-Medium.ttf');
   font-weight: 50;
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url('../assets/fonts/Montserrat-Regular.ttf');
+  src: url('assets/fonts/Montserrat-Regular.ttf');
   font-weight: normal;
 }
 
 @font-face {
   font-family: "Ubuntu";
-  src: url('../assets/fonts/Ubuntu-Italic.ttf');
+  src: url('assets/fonts/Ubuntu-Italic.ttf');
   font-weight: normal;
 }
 
 @font-face {
   font-family: "Ubuntu";
-  src: url('../assets/fonts/Ubuntu-LightItalic.ttf');
+  src: url('assets/fonts/Ubuntu-LightItalic.ttf');
   font-weight: lighter;
 }
 
