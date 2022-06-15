@@ -3,7 +3,7 @@ import router from '../router';
 import axios from 'axios';
 import { defineComponent } from "vue";
 
-const api = 'http://localhost:5100/api/'
+const api = 'http://10.50.84.114:5100/api/'
 const user_type = localStorage.getItem('userType')
 
 export default defineComponent({

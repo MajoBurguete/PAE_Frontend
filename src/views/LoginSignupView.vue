@@ -4,7 +4,7 @@
     import router from "../router";
     import emailjs from 'emailjs-com';
 
-    const api = 'http://localhost:5100/api/'
+    const api = 'http://10.50.84.114:5100/api/'
     declare var bootstrap: any;
 
 
@@ -189,7 +189,7 @@
                 const errorMess = document.getElementById('login-error') as HTMLInputElement;
                 
                 axios
-                .post('http://localhost:5100/auth/', {
+                .post('http://10.50.84.114:5100/auth/', {
                     username: this.username,
                     password: this.password
                 })

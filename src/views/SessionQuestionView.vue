@@ -7,7 +7,7 @@ import emailjs from 'emailjs-com';
 
 const now = new Date();
 
-const api = 'http://localhost:5100/api/'
+const api = 'http://10.50.84.114:5100/api/'
 var id_subject = ref(localStorage.getItem("classId") || '')
 var description = ref ("")
 const date = ref(localStorage.getItem("sessionSelected") || '')

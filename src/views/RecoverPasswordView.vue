@@ -3,7 +3,7 @@
     import axios from 'axios'
     import router from "../router";
 
-    const api = 'http://localhost:5100/api/'
+    const api = 'http://10.50.84.114:5100/api/'
     let dsb = true
 
     export default defineComponent({

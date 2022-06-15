@@ -2,7 +2,7 @@
 import { defineComponent, ref } from "vue";
 import axios from "axios";
 
-const api = 'http://localhost:5100/api/'
+const api = 'http://10.50.84.114:5100/api/'
 
 const subjects = ref([]);
 const sessions = ref([]);

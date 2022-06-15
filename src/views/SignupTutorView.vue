@@ -8,7 +8,7 @@ import router from "../router";
 import axios from "axios";
 import emailjs from 'emailjs-com';
 
-const api = 'http://localhost:5100/api/'
+const api = 'http://10.50.84.114:5100/api/'
 const careers = ref([]);
 let dsb = true;
 
